@@ -1,0 +1,90 @@
+# =========================
+# Frontend Angular / Node
+# =========================
+
+node_modules/
+dist/
+.angular/
+.cache/
+
+# Angular build files
+*.ngbuild
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+
+# =========================
+# Backend Python / Django
+# =========================
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+
+# Django static/media (je nach Deployment)
+staticfiles/
+media/
+
+
+# =========================
+# IDE / Editor
+# =========================
+
+.vscode/
+.idea/
+
+# VS Code settings (optional)
+*.code-workspace
+
+
+# =========================
+# Operating System
+# =========================
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+
+# =========================
+# Environment / Secrets
+# =========================
+
+*.env
+*.secret
+*.pem
+
+
+# =========================
+# Temporary files
+# =========================
+
+*.tmp
+*.temp
+*.swp
+*.bak
+
+
+# =========================
+# Logs
+# =========================
+
+logs/
+*.log
