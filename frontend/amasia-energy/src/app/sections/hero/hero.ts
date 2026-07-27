@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
-import { ThreeEngineService } from '../../three/core/three-engine';
+import { ThreeEngine } from '../../three/core/three-engine';
 
 @Component({
   selector: 'app-hero',
@@ -12,7 +12,7 @@ export class HeroComponent implements AfterViewInit {
   @ViewChild('canvas')
   canvas!: ElementRef<HTMLCanvasElement>;
 
-  constructor(private threeEngine: ThreeEngineService) {}
+  constructor(private threeEngine: ThreeEngine) {}
 
   ngAfterViewInit() {
     this.threeEngine.init(this.canvas.nativeElement);
