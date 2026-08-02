@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
 import * as THREE from 'three';
 import { EXRLoader } from 'three/addons/loaders/EXRLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 import { GltfLoader } from '../loaders/gltf-loader';
 import { TextureManager } from '../materials/texture-manager';
-import { ArnoldLightLoader } from '../lighting/arnold-light-loader';
-import { VolumetricAtmosphere } from '../effects/volumetric-atmosphere';
 
 @Injectable({
   providedIn: 'root',
@@ -15,19 +12,10 @@ export class ThreeEngine {
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
-
-  private controls!: OrbitControls;
-
   private mixer?: THREE.AnimationMixer;
+  private action?: THREE.AnimationAction;
   private animationDuration = 0;
-
-  private clock = new THREE.Clock();
-  private hdriRotationDegrees = -323.6632782938925;
-  private arnoldLights!: ArnoldLightLoader;
-  private atmosphere!: VolumetricAtmosphere;
-
-  private targetScrollPercent = 0;
-  private currentScrollPercent = 0;
+  private scrollPercent = 0;
 
   constructor(
     private gltfLoader: GltfLoader,
@@ -35,91 +23,166 @@ export class ThreeEngine {
   ) {}
 
   async init(canvas: HTMLCanvasElement) {
-    // ==========================
-    // SCENE
-    // ==========================
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x050606);
 
-    this.atmosphere = new VolumetricAtmosphere(this.scene);
-    this.atmosphere.create();
+    const bgCanvas = document.createElement('canvas');
+    bgCanvas.width = 1;
+    bgCanvas.height = 512;
+    const ctx = bgCanvas.getContext('2d')!;
+    const gradient = ctx.createLinearGradient(0, 0, 0, 512);
+    gradient.addColorStop(0, '#000000');
+    gradient.addColorStop(1, '#000000');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 1, 512);
+    const bgTexture = new THREE.CanvasTexture(bgCanvas);
+    bgTexture.colorSpace = THREE.SRGBColorSpace;
+    this.scene.background = bgTexture;
 
-    // ==========================
-    // RENDERER
-    // ==========================
     this.renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: true,
       alpha: false,
-      powerPreference: 'high-performance',
     });
 
-    this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.15;
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
-    this.resize(canvas);
-
-    // ==========================
-    // HDRI
-    // ==========================
     await this.loadHDRILighting();
-    this.arnoldLights = new ArnoldLightLoader(this.scene);
-    await this.arnoldLights.load('/three/lighting/arnold-lighting.json');
-
-    // ==========================
-    // MODEL
-    // ==========================
     await this.loadModel();
 
-    window.addEventListener('resize', () => this.resize(canvas));
-    window.addEventListener('scroll', () => this.onScroll());
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (maxScroll <= 0) {
+        return;
+      }
+      this.scrollPercent = THREE.MathUtils.clamp(scrollTop / maxScroll, 0, 1);
+    });
 
-    this.onScroll();
     this.animate();
-  }
-
-  private degreesToRadians(degrees: number) {
-    return (degrees * Math.PI) / 180;
   }
 
   private async loadHDRILighting() {
     try {
-      const exrLoader = new EXRLoader();
-      const hdriTexture = await exrLoader.loadAsync('/three/hdri/hdri_1.exr');
-
-      hdriTexture.rotation = this.degreesToRadians(this.hdriRotationDegrees);
-      hdriTexture.updateMatrix();
-
-      const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
-      pmremGenerator.compileCubemapShader();
-
-      const envMap = pmremGenerator.fromEquirectangular(hdriTexture).texture;
-
+      const loader = new EXRLoader();
+      const hdri = await loader.loadAsync('/three/hdri/hdri_1.exr');
+      const pmrem = new THREE.PMREMGenerator(this.renderer);
+      const envMap = pmrem.fromEquirectangular(hdri).texture;
       this.scene.environment = envMap;
-      this.scene.environmentIntensity = 1.5;
-      envMap.mapping = THREE.EquirectangularReflectionMapping;
-
-      hdriTexture.dispose();
-      pmremGenerator.dispose();
+      this.scene.environmentRotation = new THREE.Euler(0, THREE.MathUtils.degToRad(120), 0);
+      this.scene.environmentIntensity = 3;
+      hdri.dispose();
+      pmrem.dispose();
     } catch (error) {
-      console.warn('HDRI error:', error);
+      console.warn('HDRI Fehler', error);
     }
   }
 
-  private resize(canvas: HTMLCanvasElement) {
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
+  private async loadModel() {
+    const gltf = await this.gltfLoader.load('/three/models/MyHeroAnimation.glb');
+    console.log('GLTF geladen', gltf);
 
-    this.renderer.setSize(width, height, false);
+    this.scene.add(gltf.scene);
+    console.log('GLTF Kameras:', gltf.cameras);
 
-    if (this.camera) {
-      this.camera.aspect = width / height;
-      this.camera.updateProjectionMatrix();
+    gltf.scene.traverse((obj) => {
+      if (obj instanceof THREE.Camera) {
+        console.log('Camera Node:', obj.name);
+      }
+    });
+
+    await this.applyGuaranteedTexturesToMeshes(gltf.scene);
+    this.setupCamera(gltf);
+    this.setupAnimation(gltf);
+  }
+
+  private setupCamera(gltf: any) {
+    let camera: THREE.PerspectiveCamera | undefined;
+
+    if (gltf.cameras && gltf.cameras.length > 0) {
+      const gltfCamera = gltf.cameras[0];
+      if (gltfCamera instanceof THREE.PerspectiveCamera) {
+        camera = gltfCamera;
+      }
     }
+
+    if (!camera) {
+      gltf.scene.traverse((object: THREE.Object3D) => {
+        if (object instanceof THREE.PerspectiveCamera) {
+          camera = object;
+        }
+      });
+    }
+
+    if (!camera) {
+      console.error('Keine Kamera in GLB gefunden!');
+      camera = new THREE.PerspectiveCamera(22.9, this.canvasAspect(), 0.1, 1000);
+      camera.position.set(0, 0, 10);
+      camera.lookAt(0, 0, 0);
+    }
+
+    this.camera = camera;
+    this.camera.aspect = this.canvasAspect();
+    this.camera.updateProjectionMatrix();
+
+    console.log('AKTIVE GLB KAMERA:', this.camera.name);
+    console.log('POSITION:', this.camera.position);
+    console.log('ROTATION:', this.camera.rotation);
+  }
+
+  private setupAnimation(gltf: any) {
+    if (!gltf.animations || gltf.animations.length === 0) {
+      console.warn('Keine Animation gefunden');
+      return;
+    }
+
+    const clip = gltf.animations[0];
+    console.log('Animation:', clip.name);
+    console.log('Dauer:', clip.duration);
+    console.log(
+      'Tracks:',
+      clip.tracks.map((t: any) => t.name),
+    );
+
+    this.animationDuration = clip.duration;
+    this.mixer = new THREE.AnimationMixer(this.scene);
+    this.action = this.mixer.clipAction(clip);
+    this.action.reset();
+    this.action.enabled = true;
+    this.action.setEffectiveWeight(1);
+    this.action.play();
+
+    console.log('Animation aktiviert');
+  }
+
+  private async applyGuaranteedTexturesToMeshes(object: THREE.Object3D) {
+    const flavor = 'Keylime';
+    const bodyMaterial = await this.textureManager.loadPBRMaterial(flavor, 'Body_Texture_Main');
+    const aluminiumMaterial = await this.textureManager.loadPBRMaterial(
+      flavor,
+      'Top_Bottom_Aluminium',
+    );
+    const tabMaterial = await this.textureManager.loadPBRMaterial(flavor, 'Opening_Tab_Aluminium');
+
+    object.traverse((child) => {
+      if (!(child instanceof THREE.Mesh)) {
+        return;
+      }
+
+      child.castShadow = true;
+      child.receiveShadow = true;
+      child.frustumCulled = false;
+
+      const name = child.name.toLowerCase();
+
+      if (name.includes('body_texture_main') || name.includes('body')) {
+        child.material = bodyMaterial;
+      } else if (name.includes('top_bottom_aluminium') || name.includes('top_bottom')) {
+        child.material = aluminiumMaterial;
+      } else if (name.includes('opening_tab') || name.includes('tab')) {
+        child.material = tabMaterial;
+      }
+    });
   }
 
   private canvasAspect() {
@@ -127,167 +190,14 @@ export class ThreeEngine {
     return canvas.clientWidth / canvas.clientHeight;
   }
 
-  private async loadModel() {
-    const gltf = await this.gltfLoader.load('/three/models/MyHeroAnimation.glb');
-
-    this.scene.add(gltf.scene);
-
-    await this.applyGuaranteedTexturesToMeshes(gltf.scene);
-
-    // ==========================
-    // CAMERA
-    // ==========================
-    if (gltf.cameras.length > 0) {
-      const gltfCamera = gltf.cameras[0];
-      if (gltfCamera instanceof THREE.PerspectiveCamera) {
-        this.camera = gltfCamera;
-      } else {
-        this.camera = new THREE.PerspectiveCamera(22.9, this.canvasAspect(), 0.01, 5000);
-      }
-      this.camera.fov = 22.9;
-      this.camera.aspect = this.canvasAspect();
-      this.camera.near = 0.01;
-      this.camera.far = 5000;
-      this.camera.updateProjectionMatrix();
-      this.camera.updateMatrixWorld(true);
-    } else {
-      this.camera = new THREE.PerspectiveCamera(22.9, this.canvasAspect(), 0.01, 5000);
-      this.camera.position.z = 10;
-    }
-
-    // ==========================
-    // CONTROLS (Maus-Interaktion)
-    // ==========================
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.enableDamping = true;
-    this.controls.dampingFactor = 0.05;
-    this.controls.enableZoom = false;
-    this.controls.enablePan = false;
-    this.controls.enabled = false;
-
-    // ==========================
-    // ANIMATION
-    // ==========================
-    if (gltf.animations.length > 0) {
-      this.mixer = new THREE.AnimationMixer(gltf.scene);
-
-      gltf.animations.forEach((clip: THREE.AnimationClip) => {
-        const action = this.mixer!.clipAction(clip);
-        action.play();
-
-        this.animationDuration = Math.max(this.animationDuration, clip.duration);
-      });
-
-      this.mixer.setTime(0);
-    }
-  }
-
-  private async applyGuaranteedTexturesToMeshes(object: THREE.Object3D) {
-    const flavorNames = ['Blueberry', 'Lime', 'Orange', 'Strawberry'];
-    const loadedTextures: { [key: string]: THREE.Texture } = {};
-
-    for (const flavor of flavorNames) {
-      const tex = await this.textureManager.loadFlavor(flavor);
-      tex.colorSpace = THREE.SRGBColorSpace;
-      tex.flipY = false;
-      loadedTextures[flavor] = tex;
-    }
-
-    const bodyMeshes: THREE.Mesh[] = [];
-
-    object.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-
-        if (child.geometry.attributes['uv1']) {
-          child.geometry.setAttribute('uv', child.geometry.attributes['uv1']);
-        }
-
-        const materials = Array.isArray(child.material) ? child.material : [child.material];
-
-        materials.forEach((material: any) => {
-          const name = material.name ? material.name.toLowerCase() : '';
-
-          if (name.includes('body')) {
-            bodyMeshes.push(child);
-          }
-
-          if (name.includes('aluminium')) {
-            const aluminiumMaterial = material as THREE.MeshPhysicalMaterial;
-            aluminiumMaterial.color.setRGB(0.75, 0.78, 0.82);
-            aluminiumMaterial.metalness = 1.0;
-            aluminiumMaterial.roughness = 0.22;
-            aluminiumMaterial.envMapIntensity = 1.8;
-            aluminiumMaterial.clearcoat = 0.0;
-            aluminiumMaterial.reflectivity = 1.0;
-            aluminiumMaterial.needsUpdate = true;
-          }
-        });
-      }
-    });
-
-    const assignedFlavors: string[] = [];
-    const remainingFlavors = ['Blueberry', 'Orange', 'Strawberry'];
-
-    bodyMeshes.forEach((mesh, index) => {
-      let chosenFlavor = '';
-
-      if (index === 0) {
-        chosenFlavor = 'Lime';
-      } else if (index <= 3) {
-        chosenFlavor = remainingFlavors[index - 1];
-      } else {
-        const allFlavors = ['Lime', 'Blueberry', 'Orange', 'Strawberry'];
-        const randomIndex = Math.floor(Math.random() * allFlavors.length);
-        chosenFlavor = allFlavors[randomIndex];
-      }
-
-      assignedFlavors.push(chosenFlavor);
-      const texture = loadedTextures[chosenFlavor];
-
-      mesh.material = new THREE.MeshPhysicalMaterial({
-        map: texture,
-        color: 0xffffff,
-        roughness: 0.22,
-        metalness: 0,
-        clearcoat: 1,
-        clearcoatRoughness: 0.12,
-        envMapIntensity: 2,
-      });
-    });
-
-    console.log('Zugewiesene Texturen für alle Dosen:', assignedFlavors);
-  }
-
-  private onScroll() {
-    const scrollY = window.scrollY || document.documentElement.scrollTop;
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-
-    if (maxScroll > 0) {
-      const scrollMultiplikator = 2.0;
-      const rawPercent = (scrollY / maxScroll) * scrollMultiplikator;
-      this.targetScrollPercent = Math.max(0, Math.min(1, rawPercent));
-    } else {
-      this.targetScrollPercent = 0;
-    }
-  }
-
-  private animate() {
-    requestAnimationFrame(() => this.animate());
-
-    this.currentScrollPercent += (this.targetScrollPercent - this.currentScrollPercent) * 0.05;
+  private animate = () => {
+    requestAnimationFrame(this.animate);
 
     if (this.mixer && this.animationDuration > 0) {
-      this.mixer.setTime(this.currentScrollPercent * this.animationDuration);
+      const time = this.scrollPercent * this.animationDuration;
+      this.mixer.setTime(time);
     }
 
-    if (this.controls) {
-      this.controls.enabled = this.currentScrollPercent > 0.2;
-      this.controls.update();
-    }
-
-    this.atmosphere.update(performance.now() * 0.001);
     this.renderer.render(this.scene, this.camera);
-  }
+  };
 }
