@@ -1,10 +1,11 @@
 import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { ThreeEngine } from '../../three/core/three-engine';
+import { Nav } from '../shared/nav/nav';
 
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [],
+  imports: [Nav],
   templateUrl: './hero.html',
   styleUrl: './hero.scss',
 })

@@ -1,0 +1,40 @@
+<nav class="nav">
+  <div class="nav__container">
+    <a href="#" class="logo">
+      <h2>AMASIA</h2>
+    </a>
+
+    <ul class="nav__links">
+      <li>
+        <a href="#">About</a>
+      </li>
+      <li>
+        <a href="#">Flavors</a>
+      </li>
+      <li>
+        <a href="#">Pricing</a>
+      </li>
+      <li>
+        <a href="#">Contact</a>
+      </li>
+    </ul>
+
+    <div class="nav__actions">
+      <a href="#" class="nav__button"> Get Started </a>
+
+      <button class="hamburger" (click)="toggleMenu()" [class.active]="menuOpen">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" [class.open]="menuOpen">
+    <a href="#"> About </a>
+    <a href="#"> Flavors </a>
+    <a href="#"> Pricing </a>
+    <a href="#"> Contact </a>
+    <a href="#" class="mobile-button"><h4>Get Started</h4> </a>
+  </div>
+</nav>
