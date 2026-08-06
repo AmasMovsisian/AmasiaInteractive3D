@@ -4,6 +4,7 @@ import { EXRLoader } from 'three/addons/loaders/EXRLoader.js';
 
 import { GltfLoader } from '../loaders/gltf-loader';
 import { TextureManager } from '../materials/texture-manager';
+import { ScrollService } from '../../core/services/scroll.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,13 +18,13 @@ export class ThreeEngine {
   private action?: THREE.AnimationAction;
 
   private animationDuration = 0;
-  private scrollPercent = 0;
 
   private originalCameraFov = 0;
 
   constructor(
     private gltfLoader: GltfLoader,
     private textureManager: TextureManager,
+    private scrollService: ScrollService,
   ) {}
 
   async init(canvas: HTMLCanvasElement) {
@@ -72,22 +73,6 @@ export class ThreeEngine {
     await this.loadHDRILighting();
 
     await this.loadModel();
-
-    window.addEventListener(
-      'scroll',
-      () => {
-        const scrollTop = window.scrollY;
-
-        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-
-        if (maxScroll <= 0) return;
-
-        this.scrollPercent = THREE.MathUtils.clamp(scrollTop / maxScroll, 0, 1);
-      },
-      {
-        passive: true,
-      },
-    );
 
     this.animate();
   }
@@ -259,7 +244,9 @@ export class ThreeEngine {
     requestAnimationFrame(this.animate);
 
     if (this.mixer && this.animationDuration > 0) {
-      const time = this.scrollPercent * this.animationDuration;
+      const progress = this.scrollService.progress();
+
+      const time = progress * this.animationDuration;
 
       this.mixer.setTime(time);
     }

@@ -1,0 +1,22 @@
+.story {
+  position: fixed;
+  right: 10%;
+  top: 45%;
+  transform: translateY(-50%);
+  width: 400px;
+  z-index: 20;
+  color: black;
+  pointer-events: none;
+
+
+  h1 {
+    font-size: 64px;
+    margin-bottom: 20px;
+    
+  }
+
+  p {
+    font-size: 20px;
+    line-height: 1.6;
+  }
+}
