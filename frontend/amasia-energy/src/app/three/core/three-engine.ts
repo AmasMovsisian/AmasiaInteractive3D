@@ -20,10 +20,10 @@ export class ThreeEngine {
   private arnoldLightLoader!: ArnoldLightLoader;
   private canvas!: HTMLCanvasElement;
   private readonly enableHDRI = true;
-  private readonly hdriStartRotation = THREE.MathUtils.degToRad(120);
+  private readonly hdriStartRotation = THREE.MathUtils.degToRad(80);
   private readonly hdriRotationAmount = THREE.MathUtils.degToRad(360);
   private readonly enableFallbackLight = true;
-  private readonly fallbackLightIntensity = 2.5;
+  private readonly fallbackLightIntensity = 1.5;
 
   constructor(
     private gltfLoader: GltfLoader,
@@ -61,7 +61,7 @@ export class ThreeEngine {
 
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.0;
+    this.renderer.toneMappingExposure = 1.2;
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
     this.renderer.shadowMap.enabled = true;
@@ -106,7 +106,7 @@ export class ThreeEngine {
       const envMap = pmrem.fromEquirectangular(hdri).texture;
       this.scene.environment = envMap;
       this.scene.environmentRotation = new THREE.Euler(0, this.hdriStartRotation, 0);
-      this.scene.environmentIntensity = 2.5;
+      this.scene.environmentIntensity = 2;
       hdri.dispose();
       pmrem.dispose();
       console.log('HDRI loaded successfully');
@@ -135,6 +135,16 @@ export class ThreeEngine {
   private async loadModel() {
     const gltf = await this.gltfLoader.load('/three/models/MyHeroAnimation.glb');
     this.scene.add(gltf.scene);
+    gltf.scene.traverse((child: THREE.Object3D) => {
+  console.log(
+    'GLB:',
+    child.name,
+    '| type:',
+    child.type,
+    '| parent:',
+    child.parent?.name,
+  );
+});
     await this.applyGuaranteedTexturesToMeshes(gltf.scene);
     this.setupCamera(gltf);
     this.setupAnimation(gltf);
@@ -225,13 +235,83 @@ export class ThreeEngine {
     this.action.play();
   }
 
-  private async applyGuaranteedTexturesToMeshes(object: THREE.Object3D) {
-    const flavor = 'Keylime';
-    const bodyMaterial = await this.textureManager.loadPBRMaterial(flavor, 'Body_Texture_Main');
-    const aluminiumMaterial = await this.textureManager.loadPBRMaterial(flavor, 'Top_Bottom_Aluminium');
-    const tabMaterial = await this.textureManager.loadPBRMaterial(flavor, 'Opening_Tab_Aluminium');
+private async applyGuaranteedTexturesToMeshes(
+  object: THREE.Object3D,
+) {
+  const keylimeBodyMaterial =
+    await this.textureManager.loadPBRMaterial(
+      'Keylime',
+      'Body_Texture_Main',
+    );
 
-    object.traverse((child: THREE.Object3D) => {
+  const keylimeAluminiumMaterial =
+    await this.textureManager.loadPBRMaterial(
+      'Keylime',
+      'Top_Bottom_Aluminium',
+    );
+
+  const keylimeTabMaterial =
+    await this.textureManager.loadPBRMaterial(
+      'Keylime',
+      'Opening_Tab_Aluminium',
+    );
+
+  const blackBodyMaterial =
+    await this.textureManager.loadPBRMaterial(
+      'BlackEdition',
+      'Body_Texture_Main',
+    );
+
+  const blackAluminiumMaterial =
+    await this.textureManager.loadPBRMaterial(
+      'BlackEdition',
+      'Top_Bottom_Aluminium',
+    );
+
+  const blackTabMaterial =
+    await this.textureManager.loadPBRMaterial(
+      'BlackEdition',
+      'Opening_Tab_Aluminium',
+    );
+
+
+  const centerGroup = object.getObjectByName('Can_Center_GRP');
+  const leftGroup = object.getObjectByName('Can_Left_GRP');
+  const rightGroup = object.getObjectByName('Can_Right_GRP');
+
+  console.log('====================================');
+  console.log('MATERIAL GROUPS');
+  console.log('CENTER:', centerGroup);
+  console.log('LEFT:', leftGroup);
+  console.log('RIGHT:', rightGroup);
+  console.log('====================================');
+
+  if (!centerGroup) {
+    console.error('Can_Center_GRP NOT FOUND!');
+  }
+
+  if (!leftGroup) {
+    console.error('Can_Left_GRP NOT FOUND!');
+  }
+
+  if (!rightGroup) {
+    console.error('Can_Right_GRP NOT FOUND!');
+  }
+
+
+  const applyMaterialsToCan = (
+    canGroup: THREE.Object3D,
+    bodyMaterial: THREE.MeshPhysicalMaterial,
+    aluminiumMaterial: THREE.MeshPhysicalMaterial,
+    tabMaterial: THREE.MeshPhysicalMaterial,
+    flavor: string,
+  ) => {
+    console.log(
+      `Applying ${flavor} materials to:`,
+      canGroup.name,
+    );
+
+    canGroup.traverse((child: THREE.Object3D) => {
       if (!(child instanceof THREE.Mesh)) {
         return;
       }
@@ -242,24 +322,76 @@ export class ThreeEngine {
 
       const name = child.name.toLowerCase();
 
-      if (name.includes('body_texture_main') || name.includes('body')) {
+
+      if (name.includes('body_texture_main')) {
         child.material = bodyMaterial;
-        this.debugMaterial(child, bodyMaterial);
+
+        console.log(
+          `${flavor} BODY:`,
+          child.name,
+        );
+
         return;
       }
 
-      if (name.includes('top_bottom_aluminium') || name.includes('top_bottom')) {
+
+      if (name.includes('top_bottom_aluminium')) {
         child.material = aluminiumMaterial;
-        this.debugMaterial(child, aluminiumMaterial);
+
+        console.log(
+          `${flavor} ALUMINIUM:`,
+          child.name,
+        );
+
         return;
       }
 
-      if (name.includes('opening_tab') || name.includes('tab')) {
+
+      if (name.includes('opening_tab_aluminium')) {
         child.material = tabMaterial;
-        this.debugMaterial(child, tabMaterial);
+
+        console.log(
+          `${flavor} TAB:`,
+          child.name,
+        );
+
+        return;
       }
     });
+  };
+
+  if (centerGroup) {
+    applyMaterialsToCan(
+      centerGroup,
+      blackBodyMaterial,
+      blackAluminiumMaterial,
+      blackTabMaterial,
+      'BlackEdition',
+    );
   }
+
+  if (leftGroup) {
+    applyMaterialsToCan(
+      leftGroup,
+      keylimeBodyMaterial,
+      keylimeAluminiumMaterial,
+      keylimeTabMaterial,
+      'Keylime',
+    );
+  }
+
+  if (rightGroup) {
+    applyMaterialsToCan(
+      rightGroup,
+      keylimeBodyMaterial,
+      keylimeAluminiumMaterial,
+      keylimeTabMaterial,
+      'Keylime',
+    );
+  }
+}
+
+
 
   private debugMaterial(mesh: THREE.Mesh, material: THREE.Material) {
     console.log('MATERIAL:', {

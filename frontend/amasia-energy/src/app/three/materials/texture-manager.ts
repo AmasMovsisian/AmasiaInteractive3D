@@ -7,16 +7,21 @@ import * as THREE from 'three';
 export class TextureManager {
   private loader = new THREE.TextureLoader();
 
-  private async loadTexture(path: string): Promise<THREE.Texture | null> {
+  private async loadTexture(
+    path: string,
+  ): Promise<THREE.Texture | null> {
     try {
       const texture = await this.loader.loadAsync(path);
+
       console.log('Texture loaded:', path);
+
       texture.flipY = false;
       texture.generateMipmaps = true;
       texture.minFilter = THREE.LinearMipmapLinearFilter;
       texture.magFilter = THREE.LinearFilter;
       texture.anisotropy = 16;
       texture.needsUpdate = true;
+
       return texture;
     } catch (error) {
       console.error('Texture FAILED:', path, error);
@@ -24,19 +29,33 @@ export class TextureManager {
     }
   }
 
-  async loadPBRMaterial(flavor: string, materialFolder: string): Promise<THREE.MeshPhysicalMaterial> {
+  async loadPBRMaterial(
+    flavor: string,
+    materialFolder: string,
+  ): Promise<THREE.MeshPhysicalMaterial> {
     const path = `/three/materials/${flavor}/${materialFolder}/`;
 
-    const [baseColor, roughness, metallic, normal] = await Promise.all([
-      this.loadTexture(path + `${materialFolder}_BaseColor.png`),
-      this.loadTexture(path + `${materialFolder}_Roughness.png`),
-      this.loadTexture(path + `${materialFolder}_Metallic.png`),
-      this.loadTexture(path + `${materialFolder}_Normal.png`),
-    ]);
+    const [baseColor, roughness, metallic] =
+      await Promise.all([
+        this.loadTexture(
+          path + `${materialFolder}_BaseColor.png`,
+        ),
+
+        this.loadTexture(
+          path + `${materialFolder}_Roughness.png`,
+        ),
+
+        this.loadTexture(
+          path + `${materialFolder}_Metallic.png`,
+        ),
+      ]);
 
     if (!baseColor) {
-      throw new Error(`Missing BaseColor texture: ${materialFolder}`);
+      throw new Error(
+        `Missing BaseColor texture: ${flavor}/${materialFolder}`,
+      );
     }
+
 
     baseColor.colorSpace = THREE.SRGBColorSpace;
 
@@ -48,25 +67,30 @@ export class TextureManager {
       metallic.colorSpace = THREE.NoColorSpace;
     }
 
-    if (normal) {
-      normal.colorSpace = THREE.NoColorSpace;
-    }
-
     const name = materialFolder.toLowerCase();
-    const isAluminium = name.includes('aluminium') || name.includes('aluminum');
+
+    const isAluminium =
+      name.includes('aluminium') ||
+      name.includes('aluminum');
+
     const isBody = name.includes('body');
 
     const material = new THREE.MeshPhysicalMaterial({
       map: baseColor,
+
       color: new THREE.Color(1, 1, 1),
+
       roughness: 1.0,
       roughnessMap: roughness ?? undefined,
+
       metalness: 1.0,
       metalnessMap: metallic ?? undefined,
-      normalMap: normal ?? undefined,
+
       clearcoat: 0.0,
       clearcoatRoughness: 1.0,
+
       reflectivity: 0.5,
+
       depthWrite: true,
       depthTest: true,
     });
@@ -85,34 +109,28 @@ export class TextureManager {
       material.clearcoatRoughness = 1.0;
     }
 
-    if (normal) {
-      material.normalMap = normal;
-      material.normalScale.set(1.0, 1.0);
-    }
+    console.log('FINAL PBR MATERIAL:', {
+      flavor,
+      materialFolder,
 
-    console.log('FINAL PBR MATERIAL:', materialFolder, {
       type: {
         aluminium: isAluminium,
         body: isBody,
       },
+
       textures: {
         baseColor: !!material.map,
         roughnessMap: !!material.roughnessMap,
         metalnessMap: !!material.metalnessMap,
-        normalMap: !!material.normalMap,
+        normalMap: false,
       },
-      flipY: {
-        baseColor: baseColor.flipY,
-        roughness: roughness?.flipY,
-        metallic: metallic?.flipY,
-        normal: normal?.flipY,
-      },
+
       colorSpaces: {
         baseColor: baseColor.colorSpace,
         roughness: roughness?.colorSpace,
         metallic: metallic?.colorSpace,
-        normal: normal?.colorSpace,
       },
+
       values: {
         roughness: material.roughness,
         metalness: material.metalness,
@@ -124,3 +142,4 @@ export class TextureManager {
     return material;
   }
 }
+
