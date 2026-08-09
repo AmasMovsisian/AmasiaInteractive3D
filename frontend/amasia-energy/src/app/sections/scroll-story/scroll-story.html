@@ -319,10 +319,10 @@
   desktopHorizontal="left"
   desktopVertical="center"
   desktopPivot="center"
-  desktopTextAlign="left"
+  desktopTextAlign="center"
   desktopEnter="bottom"
   desktopLeave="left"
-  [desktopOffsetX]="352"
+  [desktopOffsetX]="256"
   [desktopOffsetY]="0"
   [desktopWidth]="800"
   [desktopScale]="1"
@@ -351,26 +351,28 @@
   [opacity]="1"
   [distance]="250"
 >
-  <h1>Choose your flavor</h1>
-  <br /><br />
+<div class="button_section">
+    <h1>Choose your flavor</h1>
+    <br /><br />
 
-  <h2>Main Flavors</h2>
-  <br />
-  <button>KEYLIME</button>
-  <button>MANGOSTEEN</button>
+    <h2>Main Flavors</h2>
+    <br />
+    <button class="button button_for_Story">KEYLIME</button><br>
+    <button class="button button_for_Story">MANGOSTEEN</button>
 
-  <br /><br /><br />
+    <br /><br /><br />
 
-  <h2>Premium Flavors</h2>
-  <br />
+    <h2>Premium Flavors</h2>
+    <br />
 
-  <button>COCONUT</button>
-  <button>LYCHEE</button><br /><br /><br />
+    <button class="button button_for_Story">COCONUT</button><br>
+    <button class="button button_for_Story">LYCHEE</button><br /><br /><br />
 
-  <h2>SIGNATURE VIP</h2>
-  <br />
+    <h2>SIGNATURE VIP</h2>
+    <br />
 
-  <button>BLACK EDITION</button>
+    <button class="button button_for_Story">BLACK EDITION</button>
+  </div>
 </app-story>
 
 <app-story
@@ -382,7 +384,7 @@
   desktopTextAlign="left"
   desktopEnter="bottom"
   desktopLeave="left"
-  [desktopOffsetX]="0"
+  [desktopOffsetX]="-156"
   [desktopOffsetY]="0"
   [desktopWidth]="800"
   [desktopScale]="1"

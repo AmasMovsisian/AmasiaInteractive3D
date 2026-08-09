@@ -7,6 +7,7 @@
   width: 100%;
 }
 
+
 .nav__container {
   height: 72px;
   display: flex;
@@ -15,11 +16,13 @@
   padding: 64px;
 }
 
+
 a {
   font-weight: 700;
   font-size: 24px;
   font-family: var(--font-body);
 }
+
 
 .logo {
   position: relative;
@@ -30,6 +33,7 @@ a {
   transition: 0.3s ease;
 }
 
+
 .logo h2 {
   margin: 0;
   font-size: 36px;
@@ -37,6 +41,7 @@ a {
   font-weight: 800;
   letter-spacing: 0.22em;
 }
+
 
 .logo::after {
   content: '';
@@ -50,13 +55,16 @@ a {
   transition: 0.3s ease;
 }
 
+
 .logo:hover {
   transform: translateY(-2px);
 }
 
+
 .logo:hover::after {
   transform: scaleX(1);
 }
+
 
 .nav__links {
   display: flex;
@@ -67,6 +75,7 @@ a {
   padding: 0;
 }
 
+
 .nav__links a {
   position: relative;
   color: var(--link);
@@ -76,6 +85,7 @@ a {
   letter-spacing: 0.05em;
   transition: 0.3s ease;
 }
+
 
 .nav__links a::after {
   content: '';
@@ -89,15 +99,18 @@ a {
   transition: 0.3s ease;
 }
 
+
 .nav__links a:hover {
   transform: translateY(-2px);
   color: var(--link-hover);
 }
 
+
 .nav__links a:hover::after {
   transform: scaleX(1);
   background: var(--link-hover);
 }
+
 
 .nav__actions {
   display: flex;
@@ -105,50 +118,19 @@ a {
   gap: 20px;
 }
 
-.nav__button,
+
 .mobile-button {
-  position: relative;
-  font-family: var(--font-heading);
-  font-size: 20px;
-  font-weight: 500;
-  padding: 16px 28px;
-  border-radius: 14px;
-  border: 2px solid transparent;
-  background: var(--button-bg);
-  color: var(--button-text) !important;
-  text-align: center;
-  text-decoration: none;
-  transition:
-    transform 350ms ease,
-    background 350ms ease,
-    color 350ms ease,
-    border-color 350ms ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
+  margin-top: 20px;
+  width: 100%;
+  box-shadow: none;
 }
 
-.nav__button h2 {
-  margin: 0;
-  font-size: 20px;
-  font-family: var(--font-heading);
-  font-weight: 900;
-  letter-spacing: 0.12em;
-}
 
-.nav__button::after,
-.mobile-button::after {
-  display: none;
-}
-
-.nav__button:hover,
 .mobile-button:hover {
   transform: scale(1.05);
-  background: var(--button-hover-bg);
-  color: var(--button-hover-text) !important;
-  border-color: var(--button-hover-border);
+  box-shadow: none;
 }
+
 
 .hamburger {
   display: none;
@@ -163,6 +145,7 @@ a {
   gap: 6px;
 }
 
+
 .hamburger span {
   width: 24px;
   height: 2px;
@@ -170,17 +153,21 @@ a {
   transition: 0.3s ease;
 }
 
+
 .hamburger.active span:nth-child(1) {
   transform: translateY(8px) rotate(45deg);
 }
+
 
 .hamburger.active span:nth-child(2) {
   opacity: 0;
 }
 
+
 .hamburger.active span:nth-child(3) {
   transform: translateY(-8px) rotate(-45deg);
 }
+
 
 .mobile-menu {
   display: none;
@@ -190,17 +177,24 @@ a {
   right: 20px;
   padding: 40px;
   border-radius: 24px;
+
   background: var(--bg-glass);
+
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
+
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
+
   flex-direction: column;
   gap: 28px;
+
   opacity: 0;
   transform: translateY(-20px);
+
   transition: 0.35s ease;
 }
+
 
 .mobile-menu a {
   position: relative;
@@ -212,6 +206,7 @@ a {
   width: fit-content;
   transition: 0.3s ease;
 }
+
 
 .mobile-menu a::after {
   content: '';
@@ -226,32 +221,22 @@ a {
   transition: 0.3s ease;
 }
 
+
 .mobile-menu a:hover {
   transform: translateY(-2px);
 }
+
 
 .mobile-menu a:hover::after {
   transform: scaleX(1);
 }
 
-.mobile-button {
-  margin-top: 20px;
-  width: 100%;
-  font-size: 20px !important;
-  font-weight: 900 !important;
-  letter-spacing: 0.12em;
-  box-shadow: none;
-}
-
-.mobile-button:hover {
-  transform: scale(1.05);
-  box-shadow: none;
-}
 
 .mobile-menu.open {
   opacity: 1;
   transform: translateY(-24px);
 }
+
 
 @media (max-width: 1200px) {
   .nav__container {
@@ -259,19 +244,23 @@ a {
   }
 }
 
+
 @media (max-width: 1048px) {
   .nav__container {
     padding: 40px 32px;
   }
 
+
   .nav__links,
-  .nav__button {
+  .nav__actions .button {
     display: none;
   }
+
 
   .hamburger {
     display: flex;
   }
+
 
   .mobile-menu {
     display: flex;
@@ -279,15 +268,18 @@ a {
   }
 }
 
+
 @media (max-width: 600px) {
   .nav__container {
     padding: 32px 20px;
   }
 
+
   .logo h2 {
     font-size: 28px;
     letter-spacing: 0.14em;
   }
+
 
   .mobile-menu {
     left: 14px;
@@ -296,15 +288,18 @@ a {
   }
 }
 
+
 @media (max-width: 360px) {
   .nav__container {
     padding: 28px 14px;
   }
 
+
   .hamburger {
     width: 34px;
     height: 34px;
   }
+
 
   .hamburger span {
     width: 20px;
