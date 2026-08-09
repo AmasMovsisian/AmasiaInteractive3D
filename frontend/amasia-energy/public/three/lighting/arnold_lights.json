@@ -43,7 +43,7 @@
                     0.0
                 ]
             ],
-            "aiSpread": 1.0,
+            "aiSpread": 10.0,
             "aiRoundness": 0.0,
             "aiSoftEdge": 0.0,
             "aiCastVolumetricShadows": true,
@@ -64,9 +64,9 @@
                 0.0
             ],
             "scale": [
-                50.00000000000001,
-                50.00000000000001,
-                50.00000000000001
+                100.00000000000001,
+                100.00000000000001,
+                100.00000000000001
             ]
         },
         "attributes": {
@@ -78,7 +78,7 @@
                 ]
             ],
             "intensity": 1.0,
-            "exposure": 10.0,
+            "exposure": 12.0,
             "aiSamples": 1,
             "aiNormalize": true,
             "aiDiffuse": 1.0,
@@ -129,7 +129,7 @@
                 ]
             ],
             "intensity": 1.0,
-            "exposure": 15.0,
+            "exposure": 12.0,
             "aiSamples": 1,
             "aiNormalize": true,
             "aiDiffuse": 1.0,
@@ -180,7 +180,7 @@
                 ]
             ],
             "intensity": 1.0,
-            "exposure": 17.0,
+            "exposure": 12.0,
             "aiSamples": 1,
             "aiNormalize": true,
             "aiDiffuse": 1.0,

@@ -11,17 +11,20 @@ export class TextureManager {
     try {
       const texture = await this.loader.loadAsync(path);
       console.log('Texture loaded:', path);
+      texture.flipY = false;
+      texture.generateMipmaps = true;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.anisotropy = 16;
+      texture.needsUpdate = true;
       return texture;
     } catch (error) {
-      console.error('Texture FAILED:', path);
+      console.error('Texture FAILED:', path, error);
       return null;
     }
   }
 
-  async loadPBRMaterial(
-    flavor: string,
-    materialFolder: string,
-  ): Promise<THREE.MeshPhysicalMaterial> {
+  async loadPBRMaterial(flavor: string, materialFolder: string): Promise<THREE.MeshPhysicalMaterial> {
     const path = `/three/materials/${flavor}/${materialFolder}/`;
 
     const [baseColor, roughness, metallic, normal] = await Promise.all([
@@ -35,74 +38,87 @@ export class TextureManager {
       throw new Error(`Missing BaseColor texture: ${materialFolder}`);
     }
 
-    const textures = [baseColor, roughness, metallic, normal];
-
-    textures.forEach((texture) => {
-      if (!texture) return;
-
-      texture.flipY = false;
-      texture.anisotropy = 16;
-      texture.generateMipmaps = true;
-      texture.minFilter = THREE.LinearMipmapLinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.needsUpdate = true;
-    });
-
     baseColor.colorSpace = THREE.SRGBColorSpace;
 
     if (roughness) {
       roughness.colorSpace = THREE.NoColorSpace;
     }
+
     if (metallic) {
       metallic.colorSpace = THREE.NoColorSpace;
     }
+
     if (normal) {
       normal.colorSpace = THREE.NoColorSpace;
     }
 
-    const isAluminium = materialFolder.toLowerCase().includes('aluminium');
-    const isBody = materialFolder.toLowerCase().includes('body');
+    const name = materialFolder.toLowerCase();
+    const isAluminium = name.includes('aluminium') || name.includes('aluminum');
+    const isBody = name.includes('body');
 
     const material = new THREE.MeshPhysicalMaterial({
       map: baseColor,
+      color: new THREE.Color(1, 1, 1),
+      roughness: 1.0,
       roughnessMap: roughness ?? undefined,
+      metalness: 1.0,
       metalnessMap: metallic ?? undefined,
       normalMap: normal ?? undefined,
-      color: new THREE.Color(1, 1, 1),
-      metalness: metallic ? 1.0 : isAluminium ? 0.85 : 0.0,
-      roughness: roughness ? 1.0 : isAluminium ? 0.45 : 0.4,
-      envMapIntensity: isAluminium ? 1.5 : 1.2,
-      clearcoat: isBody ? 1.0 : isAluminium ? 0.35 : 0,
-      clearcoatRoughness: isBody ? 0.08 : isAluminium ? 0.15 : 0,
+      clearcoat: 0.0,
+      clearcoatRoughness: 1.0,
+      reflectivity: 0.5,
       depthWrite: true,
       depthTest: true,
     });
 
     if (isAluminium) {
-      material.metalness = metallic ? 1.0 : 1.0;
-      material.roughness = roughness ? 1.0 : 0.95;
-      material.envMapIntensity = 0.55;
-      material.clearcoat = 0.2;
-      material.clearcoatRoughness = 0.3;
-      material.reflectivity = 0.6;
+      material.metalness = 1.0;
+      material.roughness = 1.0;
+      material.clearcoat = 0.0;
+      material.clearcoatRoughness = 1.0;
     }
 
     if (isBody) {
-      material.metalness = metallic ? 1.0 : 0;
-      material.roughness = roughness ? 1.0 : 0.4;
-      material.envMapIntensity = 1.25;
-      material.clearcoat = 1;
-      material.clearcoatRoughness = 0.08;
-
-      if (normal) {
-        material.normalScale.set(1.0, 1.0);
-      }
+      material.roughness = 1.0;
+      material.metalness = 1.0;
+      material.clearcoat = 0.0;
+      material.clearcoatRoughness = 1.0;
     }
 
-    console.log('FINAL MATERIAL:', materialFolder, {
-      roughnessMap: !!material.roughnessMap,
-      metalnessMap: !!material.metalnessMap,
-      normalMap: !!material.normalMap,
+    if (normal) {
+      material.normalMap = normal;
+      material.normalScale.set(1.0, 1.0);
+    }
+
+    console.log('FINAL PBR MATERIAL:', materialFolder, {
+      type: {
+        aluminium: isAluminium,
+        body: isBody,
+      },
+      textures: {
+        baseColor: !!material.map,
+        roughnessMap: !!material.roughnessMap,
+        metalnessMap: !!material.metalnessMap,
+        normalMap: !!material.normalMap,
+      },
+      flipY: {
+        baseColor: baseColor.flipY,
+        roughness: roughness?.flipY,
+        metallic: metallic?.flipY,
+        normal: normal?.flipY,
+      },
+      colorSpaces: {
+        baseColor: baseColor.colorSpace,
+        roughness: roughness?.colorSpace,
+        metallic: metallic?.colorSpace,
+        normal: normal?.colorSpace,
+      },
+      values: {
+        roughness: material.roughness,
+        metalness: material.metalness,
+        clearcoat: material.clearcoat,
+        clearcoatRoughness: material.clearcoatRoughness,
+      },
     });
 
     return material;
