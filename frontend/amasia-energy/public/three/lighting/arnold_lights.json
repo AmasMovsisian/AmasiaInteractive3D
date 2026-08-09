@@ -1,0 +1,206 @@
+[
+    {
+        "name": "Fill_light",
+        "transform": {
+            "position": [
+                26.068716748437033,
+                39.98188289588163,
+                35.668131658833815
+            ],
+            "rotation": [
+                -44.99999999998972,
+                -308.79999999996176,
+                0.0
+            ],
+            "scale": [
+                50.0,
+                50.00000000000001,
+                50.0
+            ]
+        },
+        "attributes": {
+            "color": [
+                [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            ],
+            "intensity": 1.0,
+            "exposure": 12.0,
+            "aiSamples": 1,
+            "aiNormalize": true,
+            "aiDiffuse": 1.0,
+            "aiSpecular": 1.0,
+            "aiSss": 1.0,
+            "aiIndirect": 1.0,
+            "aiVolume": 1.0,
+            "aiShadowDensity": 1.0,
+            "aiShadowColor": [
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "aiSpread": 1.0,
+            "aiRoundness": 0.0,
+            "aiSoftEdge": 0.0,
+            "aiCastVolumetricShadows": true,
+            "aiResolution": 512
+        }
+    },
+    {
+        "name": "Key_Light",
+        "transform": {
+            "position": [
+                -2.0636759393733364,
+                45.91462385502244,
+                10.6462174939322
+            ],
+            "rotation": [
+                -88.19999999999904,
+                -541.199999999998,
+                0.0
+            ],
+            "scale": [
+                50.00000000000001,
+                50.00000000000001,
+                50.00000000000001
+            ]
+        },
+        "attributes": {
+            "color": [
+                [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            ],
+            "intensity": 1.0,
+            "exposure": 10.0,
+            "aiSamples": 1,
+            "aiNormalize": true,
+            "aiDiffuse": 1.0,
+            "aiSpecular": 1.0,
+            "aiSss": 1.0,
+            "aiIndirect": 1.0,
+            "aiVolume": 1.0,
+            "aiShadowDensity": 1.0,
+            "aiShadowColor": [
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "aiSpread": 1.0,
+            "aiRoundness": 0.0,
+            "aiSoftEdge": 0.0,
+            "aiCastVolumetricShadows": true,
+            "aiResolution": 512
+        }
+    },
+    {
+        "name": "Rim_light",
+        "transform": {
+            "position": [
+                7.954026973354159,
+                20.936559730433903,
+                -132.84375296469568
+            ],
+            "rotation": [
+                -6.600000000000251,
+                175.9999999999986,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        "attributes": {
+            "color": [
+                [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            ],
+            "intensity": 1.0,
+            "exposure": 15.0,
+            "aiSamples": 1,
+            "aiNormalize": true,
+            "aiDiffuse": 1.0,
+            "aiSpecular": 1.0,
+            "aiSss": 1.0,
+            "aiIndirect": 1.0,
+            "aiVolume": 1.0,
+            "aiShadowDensity": 1.0,
+            "aiShadowColor": [
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "aiSpread": 1.0,
+            "aiRoundness": 0.0,
+            "aiSoftEdge": 0.0,
+            "aiCastVolumetricShadows": true,
+            "aiResolution": 512
+        }
+    },
+    {
+        "name": "Top_light",
+        "transform": {
+            "position": [
+                0.5521204475364309,
+                203.3631196432193,
+                9.58475661976612
+            ],
+            "rotation": [
+                -89.40000000000019,
+                4.400000000000044,
+                3.987445341231619e-16
+            ],
+            "scale": [
+                0.49999999999999994,
+                0.5,
+                0.5000000000000001
+            ]
+        },
+        "attributes": {
+            "color": [
+                [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            ],
+            "intensity": 1.0,
+            "exposure": 17.0,
+            "aiSamples": 1,
+            "aiNormalize": true,
+            "aiDiffuse": 1.0,
+            "aiSpecular": 1.0,
+            "aiSss": 1.0,
+            "aiIndirect": 1.0,
+            "aiVolume": 1.0,
+            "aiShadowDensity": 1.0,
+            "aiShadowColor": [
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "aiSpread": 1.0,
+            "aiRoundness": 0.0,
+            "aiSoftEdge": 0.0,
+            "aiCastVolumetricShadows": true,
+            "aiResolution": 512
+        }
+    }
+]

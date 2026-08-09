@@ -23,17 +23,29 @@ body {
     color 0.35s ease;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1
+{
   font-family: var(--font-heading);
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: 0.04em;
   color: inherit;
+  text-shadow:
+    0 12px 7px var(--text-shadow);
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  color: inherit;
+
+  text-shadow:
+    0 8px 5px var(--text-shadow);
 }
 
 p,
