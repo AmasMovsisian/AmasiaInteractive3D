@@ -1,6 +1,6 @@
 <nav class="nav">
   <div class="nav__container">
-    <a href="#" class="logo">
+    <a href="#" class="logo" (click)="closeMenu()">
       <h2>AMASIA</h2>
     </a>
 
@@ -9,10 +9,10 @@
         <a href="#">About</a>
       </li>
       <li>
-        <a href="#">Flavors</a>
+        <a href="#">Pricing</a>
       </li>
       <li>
-        <a href="#">Pricing</a>
+        <a href="#">Flavors</a>
       </li>
       <li>
         <a href="#">Contact</a>
@@ -20,9 +20,30 @@
     </ul>
 
     <div class="nav__actions">
-      <a href="#" class="button">Get Started</a>
+      <button
+        class="theme-switch"
+        type="button"
+        (click)="toggleTheme()"
+        [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'"
+      >
+        <span class="theme-switch__track">
+          <span class="theme-switch__indicator"></span>
+        </span>
+        <span class="theme-switch__label">
+          {{ isDarkMode ? 'Dark' : 'Light' }}
+        </span>
+      </button>
 
-      <button class="hamburger" (click)="toggleMenu()" [class.active]="menuOpen">
+      <a href="#" class="button nav__cta"> Get Started </a>
+
+      <button
+        class="hamburger"
+        type="button"
+        (click)="toggleMenu()"
+        [class.active]="menuOpen"
+        [attr.aria-expanded]="menuOpen"
+        aria-label="Toggle navigation"
+      >
         <span></span>
         <span></span>
         <span></span>
@@ -30,11 +51,49 @@
     </div>
   </div>
 
-  <div class="mobile-menu" [class.open]="menuOpen">
-    <a href="#"> About </a>
-    <a href="#"> Flavors </a>
-    <a href="#"> Pricing </a>
-    <a href="#"> Contact </a>
-    <a href="#" class="button mobile-button"> Get Started </a>
+  <div class="mobile-menu" [class.open]="menuOpen" [attr.aria-hidden]="!menuOpen">
+    <div class="mobile-menu__glow mobile-menu__glow--one"></div>
+    <div class="mobile-menu__glow mobile-menu__glow--two"></div>
+    <div class="mobile-menu__grid"></div>
+
+    <div class="mobile-menu__header">
+      <span class="mobile-menu__eyebrow"> AMASIA </span>
+      <span class="mobile-menu__status"> MENU </span>
+    </div>
+
+    <nav class="mobile-menu__nav">
+      <a href="#" (click)="closeMenu()">
+        <span class="mobile-menu__number"> 01 </span>
+        <span class="mobile-menu__link"> About </span>
+        <span class="mobile-menu__arrow" aria-hidden="true">
+          <span class="mobile-menu__arrow-line"></span>
+        </span>
+      </a>
+      <a href="#" (click)="closeMenu()">
+        <span class="mobile-menu__number"> 02 </span>
+        <span class="mobile-menu__link"> Flavors </span>
+        <span class="mobile-menu__arrow" aria-hidden="true">
+          <span class="mobile-menu__arrow-line"></span>
+        </span>
+      </a>
+      <a href="#" (click)="closeMenu()">
+        <span class="mobile-menu__number"> 03 </span>
+        <span class="mobile-menu__link"> Pricing </span>
+        <span class="mobile-menu__arrow" aria-hidden="true">
+          <span class="mobile-menu__arrow-line"></span>
+        </span>
+      </a>
+      <a href="#" (click)="closeMenu()">
+        <span class="mobile-menu__number"> 04 </span>
+        <span class="mobile-menu__link"> Contact </span>
+        <span class="mobile-menu__arrow" aria-hidden="true">
+          <span class="mobile-menu__arrow-line"></span>
+        </span>
+      </a>
+    </nav>
+
+    <div class="mobile-menu__bottom">
+      <a href="#" class="button mobile-menu__cta" (click)="closeMenu()"> Get Started </a>
+    </div>
   </div>
 </nav>

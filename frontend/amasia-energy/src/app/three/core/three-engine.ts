@@ -35,29 +35,14 @@ export class ThreeEngine {
     this.canvas = canvas;
     this.scene = new THREE.Scene();
 
-    const bgCanvas = document.createElement('canvas');
-    bgCanvas.width = 1;
-    bgCanvas.height = 512;
-    const ctx = bgCanvas.getContext('2d')!;
-    const gradient = ctx.createLinearGradient(0, 0, 0, 512);
-    gradient.addColorStop(0, '#FFFFFF');
-    gradient.addColorStop(0.15, '#F3F3F3');
-    gradient.addColorStop(0.3, '#E2E2E2');
-    gradient.addColorStop(0.5, '#FCFCFC');
-    gradient.addColorStop(0.7, '#E5E5E5');
-    gradient.addColorStop(1, '#F7F7F7');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 1, 512);
-    const bgTexture = new THREE.CanvasTexture(bgCanvas);
-    bgTexture.colorSpace = THREE.SRGBColorSpace;
-    this.scene.background = bgTexture;
+this.renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias: true,
+  alpha: true,
+  powerPreference: 'high-performance',
+});
 
-    this.renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: false,
-      powerPreference: 'high-performance',
-    });
+this.renderer.setClearColor(0x000000, 0);
 
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
