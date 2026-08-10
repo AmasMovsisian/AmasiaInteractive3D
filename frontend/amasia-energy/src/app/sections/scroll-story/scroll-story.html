@@ -268,7 +268,7 @@
   mobileEnter="right"
   mobileLeave="right"
 
-  [mobileOffsetX]="-100"
+  [mobileOffsetX]="-110"
   [mobileOffsetY]="-200"
   [mobileWidth]="520"
   [mobileScale]="0.57"
@@ -313,19 +313,10 @@
 
   <h3>
     Every element is part of a greater balance: intensity without excess, sophistication without
-    restraint, and energy without compromise. A considered experience created for a generation that
-    expects more from the things they choose.
+    restraint, and energy without compromise. 
   </h3>
 
-  <h3>
-    For those who move with purpose, define their own pace and never need to follow the expected.
-    For those who see energy not simply as something to consume, but as something to embody.
-  </h3>
 
-  <h3>
-    AMASIA is not about fitting into the moment. It is about creating your own. A new expression of
-    energy, elevated through design, attitude and unmistakable presence.
-  </h3>
 </app-story>
 
 <app-story
@@ -373,23 +364,54 @@
     <h1>Choose your flavor</h1>
     <br /><br />
 
-    <h2>Main Flavors</h2>
-    <br />
-    <button class="button button_for_Story">KEYLIME</button><br>
-    <button class="button button_for_Story">MANGOSTEEN</button>
 
-    <br /><br /><br />
+<h2>Main Flavors</h2>
+<br />
 
-    <h2>Premium Flavors</h2>
-    <br />
+<button
+  class="button button_for_Story"
+  (click)="selectFlavor('keylime')"
+>
+  KEYLIME
+</button><br>
 
-    <button class="button button_for_Story">COCONUT</button><br>
-    <button class="button button_for_Story">LYCHEE</button><br /><br /><br />
+<button
+  class="button button_for_Story"
+  (click)="selectFlavor('mangosteen')"
+>
+  MANGOSTEEN
+</button>
 
-    <h2>SIGNATURE VIP</h2>
-    <br />
+<br /><br /><br />
 
-    <button class="button button_for_Story">BLACK EDITION</button>
+<h2>Premium Flavors</h2>
+<br />
+
+<button
+  class="button button_for_Story"
+  (click)="selectFlavor('coconut')"
+>
+  COCONUT
+</button><br>
+
+<button
+  class="button button_for_Story"
+  (click)="selectFlavor('lychee')"
+>
+  LYCHEE
+</button><br /><br /><br />
+
+<h2>SIGNATURE VIP</h2>
+<br />
+
+<button
+  class="button button_for_Story"
+  (click)="selectFlavor('black-edition')"
+>
+  BLACK EDITION
+</button>
+
+
   </div>
 </app-story>
 
@@ -436,16 +458,21 @@
   [opacity]="1"
   [distance]="250"
 >
-  <h3>About the flavor</h3>
 
-  <p>
-    Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
-    Omnis accusamus soluta, explicabo
-    numquam<br> maxime esse similique nesciunt 
-    minus dignissimos perspiciatis a aliquam sit facere non
-    quasi<br>  corporis hic ad? Voluptatemvoluptates mollitia molestias ut dolorum obcaecati numquam, a
-    vitae sed alias velit veniam, aut error facilis! Ab vel quam autem.
-  </p>
+
+<div class="flavor_content">
+@for (flavor of flavors; track flavor.id) {
+  @if (flavor.id === selectedFlavor().id) {
+    <div class="flavor_content">
+      <br><br><h2>About the flavor</h2><br>
+
+      <p class="description_text">
+        {{ flavor.description }}
+      <p>
+    </div>
+  }
+}
+</div>
 </app-story>
 
 
@@ -491,7 +518,13 @@
   [opacity]="1"
   [distance]="250"
 >
-  <h1>Price 7,99$</h1>
+@for (flavor of flavors; track flavor.id) {
+  @if (flavor.id === selectedFlavor().id) {
+    <div class="flavor_content">
+      <h1>{{ formatPrice(flavor.price) }}</h1>
+    </div>
+  }
+}
 
 
 

@@ -20,7 +20,7 @@ export class ThreeEngine {
   private arnoldLightLoader!: ArnoldLightLoader;
   private canvas!: HTMLCanvasElement;
   private readonly enableHDRI = true;
-  private readonly hdriStartRotation = THREE.MathUtils.degToRad(80);
+  private readonly hdriStartRotation = THREE.MathUtils.degToRad(180);
   private readonly hdriRotationAmount = THREE.MathUtils.degToRad(360);
   private readonly enableFallbackLight = true;
   private readonly fallbackLightIntensity = 1.5;

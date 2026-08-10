@@ -8,11 +8,12 @@
   color: black;
   pointer-events: none;
 
-
   h1 {
     font-size: 64px;
     margin-bottom: 20px;
   }
+
+
 
   p {
     font-size: 20px;
@@ -20,11 +21,39 @@
   }
 }
 
-.button_section{
+.button_section {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
+.flavor_content {
+  animation: flavorChange 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+
+}
+
+.description_text{
+  font-family: "Exo 2";
+  font-size: 20px;
+}
+
+@media (max-width: 1024px) 
+  { 
+    .description_text 
+    { font-size: 16px; }
+ }
  
+@keyframes flavorChange {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(4px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
