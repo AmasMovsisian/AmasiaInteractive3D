@@ -13,8 +13,6 @@
     margin-bottom: 20px;
   }
 
-
-
   p {
     font-size: 20px;
     line-height: 1.6;
@@ -30,20 +28,23 @@
 
 .flavor_content {
   animation: flavorChange 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-
 }
 
-.description_text{
-  font-family: "Exo 2";
+.description_content {
+  position: fixed;
+}
+
+.description_text {
+  font-family: 'Exo 2';
   font-size: 20px;
 }
 
-@media (max-width: 1024px) 
-  { 
-    .description_text 
-    { font-size: 16px; }
- }
- 
+@media (max-width: 1024px) {
+  .description_text {
+    font-size: 16px;
+  }
+}
+
 @keyframes flavorChange {
   0% {
     opacity: 0;

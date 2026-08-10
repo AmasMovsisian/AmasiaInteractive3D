@@ -449,7 +449,7 @@
   mobileLeave="right"
 
   [mobileOffsetX]="-10"
-  [mobileOffsetY]="40"
+  [mobileOffsetY]="-150"
   [mobileWidth]="180"
   [mobileScale]="0.65"
 
@@ -463,7 +463,7 @@
 <div class="flavor_content">
 @for (flavor of flavors; track flavor.id) {
   @if (flavor.id === selectedFlavor().id) {
-    <div class="flavor_content">
+    <div class="flavor_content description_content">
       <br><br><h2>About the flavor</h2><br>
 
       <p class="description_text">
@@ -526,6 +526,57 @@
   }
 }
 
+</app-story>
 
+
+<app-story
+  [from]="0.9"
+  [to]="1.2"
+  desktopHorizontal="right"
+  desktopVertical="top"
+  desktopPivot="center"
+  desktopTextAlign="left"
+  desktopEnter="bottom"
+  desktopLeave="left"
+
+  [desktopOffsetX]="-156"
+  [desktopOffsetY]="296"
+  [desktopWidth]="800"
+  [desktopScale]="1"
+  tabletHorizontal="center"
+  tabletVertical="bottom"
+  tabletPivot="center"
+  tabletTextAlign="center"
+  tabletEnter="left"
+  tabletLeave="bottom"
+  [tabletOffsetX]="0"
+  [tabletOffsetY]="80"
+  [tabletWidth]="600"
+  [tabletScale]="0.85"
+
+  mobileHorizontal="center"
+  mobileVertical="top"
+  mobilePivot="center"
+  mobileTextAlign="center"
+  mobileEnter="top"
+  mobileLeave="top"
+
+  [mobileOffsetX]="0"
+  [mobileOffsetY]="0"
+  [mobileWidth]="320"
+  [mobileScale]="0.9"
+
+  [fadeIn]="0.3"
+  [fadeOut]="0.3"
+  [opacity]="1"
+  [distance]="250"
+>
+@for (flavor of flavors; track flavor.id) {
+  @if (flavor.id === selectedFlavor().id) {
+    <div class="flavor_content">
+      <h1>{{ flavor.name }}</h1>
+    </div>
+  }
+}
 
 </app-story>

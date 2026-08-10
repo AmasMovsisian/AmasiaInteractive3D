@@ -55,7 +55,7 @@ export class FlavorService {
       category: 'signature',
       price: 13.99,
       description:
-        'The pinnacle of AMASIA luxury.\nA sophisticated fusion of vibrant Yuzu and refined Bergamot creates an unforgettable signature flavor.\nCitrusy, aromatic, and beautifully complex, every sip reveals a remarkable depth and elegance.\nCrafted with an uncompromising attention to detail, BLACK EDITION delivers a truly exclusive experience.\nRare in character and unmistakable in style, this is AMASIA at its most luxurious.',
+        'A sophisticated fusion of vibrant Yuzu and refined Bergamot creates an unforgettable signature flavor.\nCitrusy, aromatic, and beautifully complex, every sip reveals a remarkable depth and elegance.\nCrafted with an uncompromising attention to detail, BLACK EDITION delivers a truly exclusive experience.\nRare in character and unmistakable in style, this is AMASIA at its most luxurious.',
     },
   ];
 
