@@ -128,7 +128,7 @@ export class ThreeEngine {
       return;
     }
     const progress = this.scrollService.progress();
-    const rotation = this.hdriStartRotation + (progress * this.hdriRotationAmount);
+    const rotation = this.hdriStartRotation + progress * this.hdriRotationAmount;
     this.scene.environmentRotation.y = rotation;
   }
 
@@ -136,15 +136,8 @@ export class ThreeEngine {
     const gltf = await this.gltfLoader.load('/three/models/MyHeroAnimation.glb');
     this.scene.add(gltf.scene);
     gltf.scene.traverse((child: THREE.Object3D) => {
-  console.log(
-    'GLB:',
-    child.name,
-    '| type:',
-    child.type,
-    '| parent:',
-    child.parent?.name,
-  );
-});
+      console.log('GLB:', child.name, '| type:', child.type, '| parent:', child.parent?.name);
+    });
     await this.applyGuaranteedTexturesToMeshes(gltf.scene);
     this.setupCamera(gltf);
     this.setupAnimation(gltf);
@@ -235,163 +228,136 @@ export class ThreeEngine {
     this.action.play();
   }
 
-private async applyGuaranteedTexturesToMeshes(
-  object: THREE.Object3D,
-) {
-  const keylimeBodyMaterial =
-    await this.textureManager.loadPBRMaterial(
+  private async applyGuaranteedTexturesToMeshes(object: THREE.Object3D) {
+    const keylimeBodyMaterial = await this.textureManager.loadPBRMaterial(
       'Keylime',
       'Body_Texture_Main',
     );
 
-  const keylimeAluminiumMaterial =
-    await this.textureManager.loadPBRMaterial(
+    const keylimeAluminiumMaterial = await this.textureManager.loadPBRMaterial(
       'Keylime',
       'Top_Bottom_Aluminium',
     );
 
-  const keylimeTabMaterial =
-    await this.textureManager.loadPBRMaterial(
+    const keylimeTabMaterial = await this.textureManager.loadPBRMaterial(
       'Keylime',
       'Opening_Tab_Aluminium',
     );
 
-  const blackBodyMaterial =
-    await this.textureManager.loadPBRMaterial(
+    const blackBodyMaterial = await this.textureManager.loadPBRMaterial(
       'BlackEdition',
       'Body_Texture_Main',
     );
 
-  const blackAluminiumMaterial =
-    await this.textureManager.loadPBRMaterial(
+    const blackAluminiumMaterial = await this.textureManager.loadPBRMaterial(
       'BlackEdition',
       'Top_Bottom_Aluminium',
     );
 
-  const blackTabMaterial =
-    await this.textureManager.loadPBRMaterial(
+    const blackTabMaterial = await this.textureManager.loadPBRMaterial(
       'BlackEdition',
       'Opening_Tab_Aluminium',
     );
 
+    const centerGroup = object.getObjectByName('Can_Center_GRP');
+    const leftGroup = object.getObjectByName('Can_Left_GRP');
+    const rightGroup = object.getObjectByName('Can_Right_GRP');
 
-  const centerGroup = object.getObjectByName('Can_Center_GRP');
-  const leftGroup = object.getObjectByName('Can_Left_GRP');
-  const rightGroup = object.getObjectByName('Can_Right_GRP');
+    console.log('====================================');
+    console.log('MATERIAL GROUPS');
+    console.log('CENTER:', centerGroup);
+    console.log('LEFT:', leftGroup);
+    console.log('RIGHT:', rightGroup);
+    console.log('====================================');
 
-  console.log('====================================');
-  console.log('MATERIAL GROUPS');
-  console.log('CENTER:', centerGroup);
-  console.log('LEFT:', leftGroup);
-  console.log('RIGHT:', rightGroup);
-  console.log('====================================');
+    if (!centerGroup) {
+      console.error('Can_Center_GRP NOT FOUND!');
+    }
 
-  if (!centerGroup) {
-    console.error('Can_Center_GRP NOT FOUND!');
+    if (!leftGroup) {
+      console.error('Can_Left_GRP NOT FOUND!');
+    }
+
+    if (!rightGroup) {
+      console.error('Can_Right_GRP NOT FOUND!');
+    }
+
+    const applyMaterialsToCan = (
+      canGroup: THREE.Object3D,
+      bodyMaterial: THREE.MeshPhysicalMaterial,
+      aluminiumMaterial: THREE.MeshPhysicalMaterial,
+      tabMaterial: THREE.MeshPhysicalMaterial,
+      flavor: string,
+    ) => {
+      console.log(`Applying ${flavor} materials to:`, canGroup.name);
+
+      canGroup.traverse((child: THREE.Object3D) => {
+        if (!(child instanceof THREE.Mesh)) {
+          return;
+        }
+
+        child.castShadow = true;
+        child.receiveShadow = true;
+        child.frustumCulled = false;
+
+        const name = child.name.toLowerCase();
+
+        if (name.includes('body_texture_main')) {
+          child.material = bodyMaterial;
+
+          console.log(`${flavor} BODY:`, child.name);
+
+          return;
+        }
+
+        if (name.includes('top_bottom_aluminium')) {
+          child.material = aluminiumMaterial;
+
+          console.log(`${flavor} ALUMINIUM:`, child.name);
+
+          return;
+        }
+
+        if (name.includes('opening_tab_aluminium')) {
+          child.material = tabMaterial;
+
+          console.log(`${flavor} TAB:`, child.name);
+
+          return;
+        }
+      });
+    };
+
+    if (centerGroup) {
+      applyMaterialsToCan(
+        centerGroup,
+        blackBodyMaterial,
+        blackAluminiumMaterial,
+        blackTabMaterial,
+        'BlackEdition',
+      );
+    }
+
+    if (leftGroup) {
+      applyMaterialsToCan(
+        leftGroup,
+        keylimeBodyMaterial,
+        keylimeAluminiumMaterial,
+        keylimeTabMaterial,
+        'Keylime',
+      );
+    }
+
+    if (rightGroup) {
+      applyMaterialsToCan(
+        rightGroup,
+        keylimeBodyMaterial,
+        keylimeAluminiumMaterial,
+        keylimeTabMaterial,
+        'Keylime',
+      );
+    }
   }
-
-  if (!leftGroup) {
-    console.error('Can_Left_GRP NOT FOUND!');
-  }
-
-  if (!rightGroup) {
-    console.error('Can_Right_GRP NOT FOUND!');
-  }
-
-
-  const applyMaterialsToCan = (
-    canGroup: THREE.Object3D,
-    bodyMaterial: THREE.MeshPhysicalMaterial,
-    aluminiumMaterial: THREE.MeshPhysicalMaterial,
-    tabMaterial: THREE.MeshPhysicalMaterial,
-    flavor: string,
-  ) => {
-    console.log(
-      `Applying ${flavor} materials to:`,
-      canGroup.name,
-    );
-
-    canGroup.traverse((child: THREE.Object3D) => {
-      if (!(child instanceof THREE.Mesh)) {
-        return;
-      }
-
-      child.castShadow = true;
-      child.receiveShadow = true;
-      child.frustumCulled = false;
-
-      const name = child.name.toLowerCase();
-
-
-      if (name.includes('body_texture_main')) {
-        child.material = bodyMaterial;
-
-        console.log(
-          `${flavor} BODY:`,
-          child.name,
-        );
-
-        return;
-      }
-
-
-      if (name.includes('top_bottom_aluminium')) {
-        child.material = aluminiumMaterial;
-
-        console.log(
-          `${flavor} ALUMINIUM:`,
-          child.name,
-        );
-
-        return;
-      }
-
-
-      if (name.includes('opening_tab_aluminium')) {
-        child.material = tabMaterial;
-
-        console.log(
-          `${flavor} TAB:`,
-          child.name,
-        );
-
-        return;
-      }
-    });
-  };
-
-  if (centerGroup) {
-    applyMaterialsToCan(
-      centerGroup,
-      blackBodyMaterial,
-      blackAluminiumMaterial,
-      blackTabMaterial,
-      'BlackEdition',
-    );
-  }
-
-  if (leftGroup) {
-    applyMaterialsToCan(
-      leftGroup,
-      keylimeBodyMaterial,
-      keylimeAluminiumMaterial,
-      keylimeTabMaterial,
-      'Keylime',
-    );
-  }
-
-  if (rightGroup) {
-    applyMaterialsToCan(
-      rightGroup,
-      keylimeBodyMaterial,
-      keylimeAluminiumMaterial,
-      keylimeTabMaterial,
-      'Keylime',
-    );
-  }
-}
-
-
 
   private debugMaterial(mesh: THREE.Mesh, material: THREE.Material) {
     console.log('MATERIAL:', {
@@ -399,11 +365,16 @@ private async applyGuaranteedTexturesToMeshes(
       type: material.type,
     });
 
-    if (!(material instanceof THREE.MeshStandardMaterial || material instanceof THREE.MeshPhysicalMaterial)) {
+    if (
+      !(
+        material instanceof THREE.MeshStandardMaterial ||
+        material instanceof THREE.MeshPhysicalMaterial
+      )
+    ) {
       console.warn(
         `Material von "${mesh.name}" ist ${material.type}. ` +
-        `RectAreaLight funktioniert nur mit ` +
-        `MeshStandardMaterial oder MeshPhysicalMaterial.`,
+          `RectAreaLight funktioniert nur mit ` +
+          `MeshStandardMaterial oder MeshPhysicalMaterial.`,
       );
     }
   }
@@ -424,7 +395,14 @@ private async applyGuaranteedTexturesToMeshes(
     const progress = this.scrollService.progress();
 
     if (this.mixer && this.animationDuration > 0) {
-      const time = progress * this.animationDuration;
+      const epsilon = 0.0001;
+
+      const time = THREE.MathUtils.clamp(
+        progress * (this.animationDuration - epsilon),
+        0,
+        this.animationDuration - epsilon,
+      );
+
       this.mixer.setTime(time);
     }
 
