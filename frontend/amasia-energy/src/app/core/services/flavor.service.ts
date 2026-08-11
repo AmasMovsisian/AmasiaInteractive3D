@@ -67,13 +67,14 @@ export class FlavorService {
     {} as Record<FlavorId, Flavor>,
   );
 
-  readonly selectedFlavorId = signal<FlavorId>('keylime');
+  readonly selectedFlavorId = signal<FlavorId>('black-edition');
 
   readonly selectedFlavor = computed(() => {
     return this.flavorsById[this.selectedFlavorId()];
   });
 
   selectFlavor(flavorId: FlavorId): void {
+    console.log('Flavor selected:', flavorId);
     this.selectedFlavorId.set(flavorId);
   }
 }

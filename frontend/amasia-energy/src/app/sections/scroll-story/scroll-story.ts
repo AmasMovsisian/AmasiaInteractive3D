@@ -1,7 +1,5 @@
 import { Component, inject } from '@angular/core';
-
 import { StoryComponent } from './story/story';
-
 import {
   FlavorId,
   FlavorService,
@@ -18,9 +16,9 @@ import {
 })
 export class ScrollStoryComponent {
   readonly flavorService = inject(FlavorService);
-
   readonly flavors = this.flavorService.flavors;
-  readonly selectedFlavor = this.flavorService.selectedFlavor;
+  readonly selectedFlavor =
+    this.flavorService.selectedFlavor;
 
   selectFlavor(flavorId: FlavorId): void {
     this.flavorService.selectFlavor(flavorId);
@@ -33,4 +31,3 @@ export class ScrollStoryComponent {
     }).format(price);
   }
 }
-

@@ -1,10 +1,24 @@
-import { Injectable } from '@angular/core';
+import { effect, Injectable } from '@angular/core';
+
 import * as THREE from 'three';
+
 import { EXRLoader } from 'three/addons/loaders/EXRLoader.js';
+
 import { GltfLoader } from '../loaders/gltf-loader';
+
 import { TextureManager } from '../materials/texture-manager';
+
 import { ScrollService } from '../../core/services/scroll.service';
+
+import { FlavorId, FlavorService } from '../../core/services/flavor.service';
+
 import { ArnoldLightLoader } from '../lighting/arnold-light-loader';
+
+interface FlavorMaterials {
+  body: THREE.MeshPhysicalMaterial;
+  aluminium: THREE.MeshPhysicalMaterial;
+  tab: THREE.MeshPhysicalMaterial;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -19,31 +33,66 @@ export class ThreeEngine {
   private originalCameraFov = 0;
   private arnoldLightLoader!: ArnoldLightLoader;
   private canvas!: HTMLCanvasElement;
+
   private readonly enableHDRI = true;
   private readonly hdriStartRotation = THREE.MathUtils.degToRad(180);
   private readonly hdriRotationAmount = THREE.MathUtils.degToRad(360);
+
   private readonly enableFallbackLight = true;
   private readonly fallbackLightIntensity = 1.5;
+
+  private flavorMaterials: Partial<Record<FlavorId, FlavorMaterials>> = {};
+  private centerGroup?: THREE.Object3D;
+  private materialsReady = false;
+
+  private centerRotationPivot?: THREE.Group;
+
+  private centerRotationAnimating = false;
+  private centerRotationStartTime = 0;
+  private centerRotationStart = 0;
+  private centerRotationTarget = Math.PI * 2;
+
+  private readonly centerRotationDuration = 0.3;
+
+  private pendingFlavorId?: FlavorId;
+  private pendingFlavorMaterials?: FlavorMaterials;
+  private pendingMaterialApplied = false;
+
+  private currentCenterFlavor?: FlavorId;
 
   constructor(
     private gltfLoader: GltfLoader,
     private textureManager: TextureManager,
     private scrollService: ScrollService,
-  ) {}
+    private flavorService: FlavorService,
+  ) {
+    effect(() => {
+      const flavorId = this.flavorService.selectedFlavorId();
+      console.log('Flavor signal changed:', flavorId);
+      if (!this.materialsReady) {
+        return;
+      }
+      if (flavorId === this.currentCenterFlavor && !this.centerRotationAnimating) {
+        return;
+      }
+      if (this.centerRotationAnimating) {
+        console.log('Flavor click ignored while 360° rotation is running:', flavorId);
+        return;
+      }
+      this.applyFlavorToCenter(flavorId);
+    });
+  }
 
   async init(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.scene = new THREE.Scene();
-
-this.renderer = new THREE.WebGLRenderer({
-  canvas,
-  antialias: true,
-  alpha: true,
-  powerPreference: 'high-performance',
-});
-
-this.renderer.setClearColor(0x000000, 0);
-
+    this.renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance',
+    });
+    this.renderer.setClearColor(0x000000, 0);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.2;
@@ -51,21 +100,16 @@ this.renderer.setClearColor(0x000000, 0);
     this.renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
     window.addEventListener('resize', () => {
       this.resizeCamera();
     });
-
     if (this.enableHDRI) {
       await this.loadHDRILighting();
     }
-
     await this.loadArnoldLights();
-
     if (this.enableFallbackLight) {
       this.createFallbackLight();
     }
-
     await this.loadModel();
     this.animate();
   }
@@ -74,7 +118,6 @@ this.renderer.setClearColor(0x000000, 0);
     const light = new THREE.HemisphereLight(0xffffff, 0x444444, this.fallbackLightIntensity);
     light.name = 'ThreeFallbackHemisphereLight';
     this.scene.add(light);
-
     const frontLight = new THREE.DirectionalLight(0xffffff, 0.25);
     frontLight.name = 'ThreeFallbackFrontLight';
     frontLight.position.set(0, 3, 5);
@@ -126,7 +169,6 @@ this.renderer.setClearColor(0x000000, 0);
     await this.applyGuaranteedTexturesToMeshes(gltf.scene);
     this.setupCamera(gltf);
     this.setupAnimation(gltf);
-
     const box = new THREE.Box3().setFromObject(gltf.scene);
     const size = new THREE.Vector3();
     const center = new THREE.Vector3();
@@ -139,16 +181,37 @@ this.renderer.setClearColor(0x000000, 0);
     console.log('====================================');
   }
 
+  private createCenterRotationPivot(): void {
+    if (!this.centerGroup || !this.centerGroup.parent) {
+      console.warn('Cannot create center rotation pivot.');
+      return;
+    }
+    const originalParent = this.centerGroup.parent;
+    this.scene.updateMatrixWorld(true);
+    const worldPosition = new THREE.Vector3();
+    this.centerGroup.getWorldPosition(worldPosition);
+    const pivot = new THREE.Group();
+    pivot.name = 'Can_Center_FlavorRotation_Pivot';
+    originalParent.add(pivot);
+    pivot.position.copy(originalParent.worldToLocal(worldPosition.clone()));
+    pivot.attach(this.centerGroup);
+    this.centerRotationPivot = pivot;
+    this.centerRotationPivot.rotation.set(0, 0, 0);
+    console.log('====================================');
+    console.log('CENTER ROTATION PIVOT CREATED');
+    console.log('Pivot:', this.centerRotationPivot);
+    console.log('Animated Group:', this.centerGroup);
+    console.log('====================================');
+  }
+
   private setupCamera(gltf: any) {
     let camera: THREE.PerspectiveCamera | undefined;
-
     if (gltf.cameras && gltf.cameras.length > 0) {
       const gltfCamera = gltf.cameras[0];
       if (gltfCamera instanceof THREE.PerspectiveCamera) {
         camera = gltfCamera;
       }
     }
-
     if (!camera) {
       gltf.scene.traverse((object: THREE.Object3D) => {
         if (object instanceof THREE.PerspectiveCamera) {
@@ -156,13 +219,11 @@ this.renderer.setClearColor(0x000000, 0);
         }
       });
     }
-
     if (!camera) {
       camera = new THREE.PerspectiveCamera(22.9, this.canvasAspect(), 0.01, 1000);
       camera.position.set(0, 0, 10);
       camera.lookAt(0, 0, 0);
     }
-
     this.camera = camera;
     this.originalCameraFov = this.camera.fov;
     this.resizeCamera();
@@ -173,10 +234,8 @@ this.renderer.setClearColor(0x000000, 0);
     if (!this.camera) {
       return;
     }
-
     const width = window.innerWidth;
     let multiplier = 1;
-
     if (width <= 390) {
       multiplier = 1.75;
     } else if (width <= 480) {
@@ -190,7 +249,6 @@ this.renderer.setClearColor(0x000000, 0);
     } else {
       multiplier = 1;
     }
-
     this.camera.fov = this.originalCameraFov * multiplier;
     this.camera.aspect = this.canvasAspect();
     this.camera.updateProjectionMatrix();
@@ -202,7 +260,6 @@ this.renderer.setClearColor(0x000000, 0);
       console.warn('Keine Animation gefunden');
       return;
     }
-
     const clip = gltf.animations[0];
     this.animationDuration = clip.duration;
     this.mixer = new THREE.AnimationMixer(gltf.scene);
@@ -211,136 +268,206 @@ this.renderer.setClearColor(0x000000, 0);
     this.action.enabled = true;
     this.action.setEffectiveWeight(1);
     this.action.play();
+    console.log('Animation duration:', this.animationDuration);
   }
 
   private async applyGuaranteedTexturesToMeshes(object: THREE.Object3D) {
-    const keylimeBodyMaterial = await this.textureManager.loadPBRMaterial(
-      'Keylime',
-      'Body_Texture_Main',
-    );
-
-    const keylimeAluminiumMaterial = await this.textureManager.loadPBRMaterial(
-      'Keylime',
-      'Top_Bottom_Aluminium',
-    );
-
-    const keylimeTabMaterial = await this.textureManager.loadPBRMaterial(
-      'Keylime',
-      'Opening_Tab_Aluminium',
-    );
-
-    const blackBodyMaterial = await this.textureManager.loadPBRMaterial(
-      'BlackEdition',
-      'Body_Texture_Main',
-    );
-
-    const blackAluminiumMaterial = await this.textureManager.loadPBRMaterial(
-      'BlackEdition',
-      'Top_Bottom_Aluminium',
-    );
-
-    const blackTabMaterial = await this.textureManager.loadPBRMaterial(
-      'BlackEdition',
-      'Opening_Tab_Aluminium',
-    );
-
     const centerGroup = object.getObjectByName('Can_Center_GRP');
     const leftGroup = object.getObjectByName('Can_Left_GRP');
     const rightGroup = object.getObjectByName('Can_Right_GRP');
-
+    this.centerGroup = centerGroup ?? undefined;
     console.log('====================================');
     console.log('MATERIAL GROUPS');
     console.log('CENTER:', centerGroup);
     console.log('LEFT:', leftGroup);
     console.log('RIGHT:', rightGroup);
     console.log('====================================');
-
     if (!centerGroup) {
       console.error('Can_Center_GRP NOT FOUND!');
     }
-
     if (!leftGroup) {
       console.error('Can_Left_GRP NOT FOUND!');
     }
-
     if (!rightGroup) {
       console.error('Can_Right_GRP NOT FOUND!');
     }
-
-    const applyMaterialsToCan = (
-      canGroup: THREE.Object3D,
-      bodyMaterial: THREE.MeshPhysicalMaterial,
-      aluminiumMaterial: THREE.MeshPhysicalMaterial,
-      tabMaterial: THREE.MeshPhysicalMaterial,
-      flavor: string,
-    ) => {
-      console.log(`Applying ${flavor} materials to:`, canGroup.name);
-
-      canGroup.traverse((child: THREE.Object3D) => {
-        if (!(child instanceof THREE.Mesh)) {
-          return;
-        }
-
-        child.castShadow = true;
-        child.receiveShadow = true;
-        child.frustumCulled = false;
-
-        const name = child.name.toLowerCase();
-
-        if (name.includes('body_texture_main')) {
-          child.material = bodyMaterial;
-
-          console.log(`${flavor} BODY:`, child.name);
-
-          return;
-        }
-
-        if (name.includes('top_bottom_aluminium')) {
-          child.material = aluminiumMaterial;
-
-          console.log(`${flavor} ALUMINIUM:`, child.name);
-
-          return;
-        }
-
-        if (name.includes('opening_tab_aluminium')) {
-          child.material = tabMaterial;
-
-          console.log(`${flavor} TAB:`, child.name);
-
-          return;
-        }
-      });
+    const flavorMaterialConfigs: Record<
+      FlavorId,
+      {
+        folder: string;
+      }
+    > = {
+      keylime: {
+        folder: 'Keylime',
+      },
+      mangosteen: {
+        folder: 'Mangosteen',
+      },
+      coconut: {
+        folder: 'Coconut',
+      },
+      lychee: {
+        folder: 'Lychee',
+      },
+      'black-edition': {
+        folder: 'BlackEdition',
+      },
     };
-
+    for (const flavorId of Object.keys(flavorMaterialConfigs) as FlavorId[]) {
+      const config = flavorMaterialConfigs[flavorId];
+      console.log('====================================');
+      console.log('Loading materials for:', flavorId);
+      try {
+        const [body, aluminium, tab] = await Promise.all([
+          this.textureManager.loadPBRMaterial(config.folder, 'Body_Texture_Main'),
+          this.textureManager.loadPBRMaterial(config.folder, 'Top_Bottom_Aluminium'),
+          this.textureManager.loadPBRMaterial(config.folder, 'Opening_Tab_Aluminium'),
+        ]);
+        this.flavorMaterials[flavorId] = {
+          body,
+          aluminium,
+          tab,
+        };
+        console.log('Materials loaded successfully:', flavorId);
+      } catch (error) {
+        console.error(`Could not load materials for ${flavorId}:`, error);
+      }
+    }
+    const keylimeMaterials = this.flavorMaterials.keylime;
+    if (keylimeMaterials) {
+      if (leftGroup) {
+        this.applyMaterialsToCan(leftGroup, keylimeMaterials, 'keylime');
+      }
+      if (rightGroup) {
+        this.applyMaterialsToCan(rightGroup, keylimeMaterials, 'keylime');
+      }
+    }
+    this.materialsReady = true;
+    const initialFlavor = this.flavorService.selectedFlavorId();
+    const initialMaterials = this.flavorMaterials[initialFlavor];
+    if (initialMaterials && centerGroup) {
+      this.applyMaterialsToCan(centerGroup, initialMaterials, initialFlavor);
+      this.currentCenterFlavor = initialFlavor;
+    }
     if (centerGroup) {
-      applyMaterialsToCan(
-        centerGroup,
-        blackBodyMaterial,
-        blackAluminiumMaterial,
-        blackTabMaterial,
-        'BlackEdition',
-      );
+      this.createCenterRotationPivot();
     }
+  }
 
-    if (leftGroup) {
-      applyMaterialsToCan(
-        leftGroup,
-        keylimeBodyMaterial,
-        keylimeAluminiumMaterial,
-        keylimeTabMaterial,
-        'Keylime',
-      );
+  private applyMaterialsToCan(
+    canGroup: THREE.Object3D,
+    materials: FlavorMaterials,
+    flavor: FlavorId | string,
+  ): void {
+    console.log(`Applying ${flavor} materials to:`, canGroup.name);
+    canGroup.traverse((child: THREE.Object3D) => {
+      if (!(child instanceof THREE.Mesh)) {
+        return;
+      }
+      child.castShadow = true;
+      child.receiveShadow = true;
+      child.frustumCulled = false;
+      const name = child.name.toLowerCase();
+      if (name.includes('body_texture_main')) {
+        child.material = materials.body;
+        return;
+      }
+      if (name.includes('top_bottom_aluminium')) {
+        child.material = materials.aluminium;
+        return;
+      }
+      if (name.includes('opening_tab_aluminium')) {
+        child.material = materials.tab;
+        return;
+      }
+    });
+  }
+
+  private applyFlavorToCenter(flavorId: FlavorId): void {
+    if (!this.centerGroup) {
+      console.warn('Cannot change flavor: Can_Center_GRP not found.');
+      return;
     }
+    if (!this.centerRotationPivot) {
+      console.warn('Cannot rotate center: rotation pivot not found.');
+      return;
+    }
+    const materials = this.flavorMaterials[flavorId];
+    if (!materials) {
+      console.warn(`No materials loaded for flavor: ${flavorId}`);
+      return;
+    }
+    if (flavorId === this.currentCenterFlavor) {
+      return;
+    }
+    if (this.centerRotationAnimating) {
+      console.log('Flavor change blocked because rotation is active.');
+      return;
+    }
+    this.pendingFlavorId = flavorId;
+    this.pendingFlavorMaterials = materials;
+    this.pendingMaterialApplied = false;
+    this.startCenterRotation();
+    console.log('====================================');
+    console.log('STARTING FLAVOR ROTATION:', flavorId);
+    console.log('====================================');
+  }
 
-    if (rightGroup) {
-      applyMaterialsToCan(
-        rightGroup,
-        keylimeBodyMaterial,
-        keylimeAluminiumMaterial,
-        keylimeTabMaterial,
-        'Keylime',
+  private startCenterRotation(): void {
+    if (!this.centerRotationPivot) {
+      return;
+    }
+    this.centerRotationAnimating = true;
+    this.centerRotationStart = this.centerRotationPivot.rotation.y;
+    this.centerRotationTarget = this.centerRotationStart + Math.PI * 2;
+    this.centerRotationStartTime = performance.now();
+  }
+
+  private updateCenterRotation(): void {
+    if (!this.centerRotationAnimating || !this.centerRotationPivot) {
+      return;
+    }
+    const elapsed = performance.now() - this.centerRotationStartTime;
+    const progress = THREE.MathUtils.clamp(elapsed / (this.centerRotationDuration * 1000), 0, 1);
+    if (!this.pendingMaterialApplied && progress >= 0.5) {
+      if (this.pendingFlavorMaterials && this.pendingFlavorId) {
+        this.applyMaterialsToCan(
+          this.centerGroup!,
+          this.pendingFlavorMaterials,
+          this.pendingFlavorId,
+        );
+        this.currentCenterFlavor = this.pendingFlavorId;
+        this.pendingMaterialApplied = true;
+        console.log('Material switched at 180°:', this.pendingFlavorId);
+      }
+    }
+    this.centerRotationPivot.rotation.y = THREE.MathUtils.lerp(
+      this.centerRotationStart,
+      this.centerRotationTarget,
+      progress,
+    );
+    if (progress >= 1) {
+      this.centerRotationPivot.rotation.y = this.centerRotationTarget;
+      this.centerRotationPivot.rotation.y = THREE.MathUtils.euclideanModulo(
+        this.centerRotationPivot.rotation.y,
+        Math.PI * 2,
       );
+      if (!this.pendingMaterialApplied && this.pendingFlavorMaterials && this.pendingFlavorId) {
+        this.applyMaterialsToCan(
+          this.centerGroup!,
+          this.pendingFlavorMaterials,
+          this.pendingFlavorId,
+        );
+        this.currentCenterFlavor = this.pendingFlavorId;
+        this.pendingMaterialApplied = true;
+      }
+      this.pendingFlavorId = undefined;
+      this.pendingFlavorMaterials = undefined;
+      this.centerRotationAnimating = false;
+      console.log('====================================');
+      console.log('360° ROTATION FINISHED');
+      console.log('Next flavor click is now allowed.');
+      console.log('====================================');
     }
   }
 
@@ -349,7 +476,6 @@ this.renderer.setClearColor(0x000000, 0);
       mesh: mesh.name,
       type: material.type,
     });
-
     if (
       !(
         material instanceof THREE.MeshStandardMaterial ||
@@ -376,23 +502,18 @@ this.renderer.setClearColor(0x000000, 0);
 
   private animate = () => {
     requestAnimationFrame(this.animate);
-
     const progress = this.scrollService.progress();
-
     if (this.mixer && this.animationDuration > 0) {
       const epsilon = 0.0001;
-
       const time = THREE.MathUtils.clamp(
         progress * (this.animationDuration - epsilon),
         0,
         this.animationDuration - epsilon,
       );
-
       this.mixer.setTime(time);
     }
-
+    this.updateCenterRotation();
     this.updateHDRIRotation();
-
     if (this.camera) {
       this.renderer.render(this.scene, this.camera);
     }
