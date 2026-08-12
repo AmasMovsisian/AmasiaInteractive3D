@@ -361,58 +361,74 @@
   [distance]="250"
 >
 <div class="button_section">
-    <h1>Choose your flavor</h1>
-    <br /><br />
+  <h1>Choose your flavor</h1>
 
+  <br /><br />
 
-<h2>Main Flavors</h2>
-<br />
+  <h2>Main Flavors</h2>
 
-<button
-  class="button button_for_Story"
-  (click)="selectFlavor('keylime')"
->
-  KEYLIME
-</button><br>
+  <br />
 
-<button
-  class="button button_for_Story"
-  (click)="selectFlavor('mangosteen')"
->
-  MANGOSTEEN
-</button>
+  <button
+    class="button button_for_Story"
+    (click)="selectFlavor('keylime')"
+  >
+    KEYLIME
+  </button>
 
-<br /><br /><br />
+  <br />
 
-<h2>Premium Flavors</h2>
-<br />
+  <button
+    class="button button_for_Story"
+    (click)="selectFlavor('akebi')"
+  >
+    AKEBI
+  </button>
 
-<button
-  class="button button_for_Story"
-  (click)="selectFlavor('coconut')"
->
-  COCONUT
-</button><br>
+  <br /><br /><br />
 
-<button
-  class="button button_for_Story"
-  (click)="selectFlavor('lychee')"
->
-  LYCHEE
-</button><br /><br /><br />
+  <h2>Premium Flavors</h2>
 
-<h2>SIGNATURE VIP</h2>
-<br />
+  <br />
 
-<button
-  class="button button_for_Story"
-  (click)="selectFlavor('black-edition')"
->
-  BLACK EDITION
-</button>
+  <button
+    class="button button_for_Story"
+    (click)="selectFlavor('coconut')"
+  >
+    COCONUT
+  </button>
 
+  <br />
 
-  </div>
+  <button
+    class="button button_for_Story"
+    (click)="selectFlavor('lychee')"
+  >
+    LYCHEE
+  </button>
+
+  <br />
+
+  <button
+    class="button button_for_Story"
+    (click)="selectFlavor('pandan')"
+  >
+    PANDAN
+  </button>
+
+  <br /><br /><br />
+
+  <h2>SIGNATURE VIP</h2>
+
+  <br />
+
+  <button
+    class="button button_for_Story"
+    (click)="selectFlavor('black-edition')"
+  >
+    BLACK EDITION
+  </button>
+</div>
 </app-story>
 
 <app-story

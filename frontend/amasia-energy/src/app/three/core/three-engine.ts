@@ -1,15 +1,10 @@
 import { effect, Injectable } from '@angular/core';
-
 import * as THREE from 'three';
-
 import { EXRLoader } from 'three/addons/loaders/EXRLoader.js';
 
 import { GltfLoader } from '../loaders/gltf-loader';
-
 import { TextureManager } from '../materials/texture-manager';
-
 import { ScrollService } from '../../core/services/scroll.service';
-
 import { FlavorId, FlavorService } from '../../core/services/flavor.service';
 
 import { ArnoldLightLoader } from '../lighting/arnold-light-loader';
@@ -35,8 +30,8 @@ export class ThreeEngine {
   private canvas!: HTMLCanvasElement;
 
   private readonly enableHDRI = true;
-  private readonly hdriStartRotation = THREE.MathUtils.degToRad(180);
-  private readonly hdriRotationAmount = THREE.MathUtils.degToRad(360);
+  private readonly hdriStartRotation = THREE.MathUtils.degToRad(60);
+  private readonly hdriRotationAmount = THREE.MathUtils.degToRad(720);
 
   private readonly enableFallbackLight = true;
   private readonly fallbackLightIntensity = 1.5;
@@ -44,20 +39,15 @@ export class ThreeEngine {
   private flavorMaterials: Partial<Record<FlavorId, FlavorMaterials>> = {};
   private centerGroup?: THREE.Object3D;
   private materialsReady = false;
-
   private centerRotationPivot?: THREE.Group;
-
   private centerRotationAnimating = false;
   private centerRotationStartTime = 0;
   private centerRotationStart = 0;
   private centerRotationTarget = Math.PI * 2;
-
   private readonly centerRotationDuration = 0.3;
-
   private pendingFlavorId?: FlavorId;
   private pendingFlavorMaterials?: FlavorMaterials;
   private pendingMaterialApplied = false;
-
   private currentCenterFlavor?: FlavorId;
 
   constructor(
@@ -300,14 +290,17 @@ export class ThreeEngine {
       keylime: {
         folder: 'Keylime',
       },
-      mangosteen: {
-        folder: 'Mangosteen',
+      akebi: {
+        folder: 'Akebi',
       },
       coconut: {
         folder: 'Coconut',
       },
       lychee: {
         folder: 'Lychee',
+      },
+      pandan: {
+        folder: 'Pandan',
       },
       'black-edition': {
         folder: 'BlackEdition',
@@ -317,6 +310,7 @@ export class ThreeEngine {
       const config = flavorMaterialConfigs[flavorId];
       console.log('====================================');
       console.log('Loading materials for:', flavorId);
+      console.log('Material folder:', config.folder);
       try {
         const [body, aluminium, tab] = await Promise.all([
           this.textureManager.loadPBRMaterial(config.folder, 'Body_Texture_Main'),

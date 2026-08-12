@@ -1,6 +1,6 @@
 import { computed, Injectable, signal } from '@angular/core';
 
-export type FlavorId = 'keylime' | 'mangosteen' | 'coconut' | 'lychee' | 'black-edition';
+export type FlavorId = 'keylime' | 'akebi' | 'coconut' | 'lychee' | 'pandan' | 'black-edition';
 
 export type FlavorCategory = 'main' | 'premium' | 'signature';
 
@@ -23,39 +23,64 @@ export class FlavorService {
       category: 'main',
       price: 7.99,
       description:
-        'A vibrant burst of premium Key Lime with an irresistibly fresh and elegant finish.\nCrisp, bright, and beautifully balanced, every sip feels instantly refreshing.\nA bold AMASIA experience made to awaken your senses.',
+        'Bright, crisp and unmistakably refreshing.\n' +
+        'KEYLIME combines vibrant citrus character with a clean, elegant finish.\n' +
+        'Fresh enough to energize the moment, refined enough to leave a lasting impression.',
     },
+
     {
-      id: 'mangosteen',
-      name: 'MANGOSTEEN',
+      id: 'akebi',
+      name: 'AKEBI',
       category: 'main',
       price: 7.99,
       description:
-        'An exotic taste of pure sophistication.\nDelicate mangosteen sweetness meets a smooth, vibrant fruit character for a truly captivating experience.\nMANGOSTEEN brings an unforgettable touch of luxury to every sip.',
+        'Exotic fruit character meets effortless sophistication.\n' +
+        'AKEBI unfolds with a delicate sweetness and a smooth, subtly complex finish.\n' +
+        'Distinctive yet effortlessly balanced, it brings an unexpected touch of energy to the experience.',
     },
+
     {
       id: 'coconut',
       name: 'COCONUT',
       category: 'premium',
       price: 9.99,
       description:
-        'Smooth.\nCreamy.\nIrresistibly luxurious.\nCOCONUT combines velvety tropical richness with a refined, elegant finish that feels effortlessly premium.\nA sophisticated AMASIA experience made for those who expect more.',
+        'Soft, smooth and naturally indulgent.\n' +
+        'COCONUT balances creamy tropical notes with a clean and sophisticated finish.\n' +
+        'A relaxed expression of luxury, created for moments that deserve something beyond the ordinary.',
     },
+
     {
       id: 'lychee',
       name: 'LYCHEE',
       category: 'premium',
       price: 9.99,
       description:
-        'Delicate, exotic, and undeniably elegant.\nLYCHEE reveals a beautifully juicy sweetness with refined floral notes and a luxurious finish.\nA captivating premium experience that turns every sip into a moment of indulgence.',
+        'Delicate sweetness with an unmistakably exotic character.\n' +
+        'LYCHEE brings together juicy fruit notes and subtle floral elegance in a beautifully balanced profile.\n' +
+        'Light, refined and quietly expressive, it turns every sip into something memorable.',
     },
+
+    {
+      id: 'pandan',
+      name: 'PANDAN',
+      category: 'premium',
+      price: 9.99,
+      description:
+        'Distinctive, aromatic and effortlessly intriguing.\n' +
+        'PANDAN introduces a smooth tropical character with delicate herbal and vanilla-like nuances.\n' +
+        'Unexpected yet beautifully balanced, it creates a sophisticated flavor experience unlike anything ordinary.',
+    },
+
     {
       id: 'black-edition',
       name: 'BLACK EDITION',
       category: 'signature',
       price: 13.99,
       description:
-        'A sophisticated fusion of vibrant Yuzu and refined Bergamot creates an unforgettable signature flavor.\nCitrusy, aromatic, and beautifully complex, every sip reveals a remarkable depth and elegance.\nCrafted with an uncompromising attention to detail, BLACK EDITION delivers a truly exclusive experience.\nRare in character and unmistakable in style, this is AMASIA at its most luxurious.',
+        'Bold citrus meets refined aromatic depth.\n' +
+        'BLACK EDITION combines vibrant Yuzu with elegant Bergamot for a complex and sophisticated profile.\n' +
+        'Intense yet controlled, distinctive yet balanced, it represents AMASIA at its most exclusive.',
     },
   ];
 
@@ -74,7 +99,10 @@ export class FlavorService {
   });
 
   selectFlavor(flavorId: FlavorId): void {
-    console.log('Flavor selected:', flavorId);
+    console.log('Selecting flavor:', flavorId);
+
     this.selectedFlavorId.set(flavorId);
+
+    console.log('Selected flavor:', this.selectedFlavor());
   }
 }

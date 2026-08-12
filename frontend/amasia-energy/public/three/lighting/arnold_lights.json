@@ -27,7 +27,7 @@
                 ]
             ],
             "intensity": 1.0,
-            "exposure": 12.0,
+            "exposure": 8.0,
             "aiSamples": 1,
             "aiNormalize": true,
             "aiDiffuse": 1.0,
@@ -78,7 +78,7 @@
                 ]
             ],
             "intensity": 1.0,
-            "exposure": 12.0,
+            "exposure": 8.0,
             "aiSamples": 1,
             "aiNormalize": true,
             "aiDiffuse": 1.0,
@@ -129,7 +129,7 @@
                 ]
             ],
             "intensity": 1.0,
-            "exposure": 12.0,
+            "exposure": 0.0,
             "aiSamples": 1,
             "aiNormalize": true,
             "aiDiffuse": 1.0,
