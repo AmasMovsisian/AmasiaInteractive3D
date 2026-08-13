@@ -62,6 +62,7 @@
 }
 
 .luxury_intro {
+  position: fixed;
   width: 100%;
   max-width: 700px;
   color: var(--text-primary);
@@ -123,6 +124,7 @@
 }
 
 .luxury_claim {
+  position: fixed;
   max-width: 700px;
   margin: 0 0 22px;
   font-family: var(--font-heading);
@@ -235,45 +237,177 @@
   }
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 601px) and (max-width: 1024px) {
   .story {
-    width: 420px;
+    width: min(420px, calc(100vw - 80px));
+  }
+  .story h1 {
+    font-size: clamp(48px, 6vw, 64px);
+    line-height: 1.05;
+  }
+  .story h2 {
+    font-size: clamp(22px, 3vw, 32px);
+    line-height: 1.1;
+  }
+  .story h3 {
+    font-size: clamp(18px, 2.5vw, 26px);
+  }
+  .story p {
+    font-size: clamp(15px, 1.8vw, 18px);
+    line-height: 1.55;
   }
   .luxury_intro {
+    width: min(600px, calc(100vw - 80px));
     max-width: 600px;
+  }
+  .luxury_eyebrow {
+    font-size: clamp(9px, 1.2vw, 12px);
+    margin-bottom: clamp(16px, 2vw, 22px);
   }
   .luxury_title {
     font-size: clamp(48px, 7vw, 76px);
+    line-height: 0.88;
+  }
+  .luxury_keywords {
+    gap: clamp(8px, 1.5vw, 12px);
+    margin-top: clamp(20px, 3vw, 28px);
+    font-size: clamp(8px, 1.1vw, 11px);
+  }
+  .luxury_line {
+    margin: clamp(22px, 3vw, 32px) 0;
+  }
+  .luxury_claim {
+    width: min(600px, calc(100vw - 80px));
+    max-width: 600px;
+    font-size: clamp(24px, 3vw, 34px);
+    line-height: 1.05;
   }
   .luxury_description {
-    font-size: 16px;
+    width: min(600px, calc(100vw - 80px));
+    max-width: 600px;
+    font-size: clamp(15px, 1.8vw, 18px);
+    line-height: 1.6;
   }
   .description_text {
-    font-size: 16px;
+    font-size: clamp(15px, 1.8vw, 18px);
+    line-height: 1.55;
   }
   .luxury_footer {
-    margin-top: 32px;
+    margin-top: clamp(24px, 3vw, 32px);
+    gap: clamp(12px, 2vw, 20px);
+    font-size: clamp(7px, 0.9vw, 9px);
+  }
+  .button_for_Story {
+    width: min(256px, calc(100vw - 120px));
   }
 }
 
-@media (max-width: 600px) {
+@media (min-width: 481px) and (max-width: 600px) {
   .story {
-    width: 320px;
+    width: min(380px, calc(100vw - 40px));
   }
   .story h1 {
-    font-size: 42px;
+    font-size: clamp(38px, 8vw, 48px);
+  }
+  .story h2 {
+    font-size: clamp(20px, 4.5vw, 26px);
   }
   .story p {
-    font-size: 16px;
+    font-size: 15px;
   }
   .luxury_intro {
-    width: 100%;
-    max-width: 320px;
+    width: min(380px, calc(100vw - 40px));
+    max-width: 380px;
+  }
+  .luxury_title {
+    font-size: clamp(42px, 11vw, 62px);
+  }
+  .luxury_claim {
+    width: min(380px, calc(100vw - 40px));
+    font-size: clamp(21px, 5vw, 26px);
+  }
+  .luxury_description {
+    width: min(380px, calc(100vw - 40px));
+    font-size: clamp(13px, 3.5vw, 15px);
+    line-height: 1.55;
+  }
+  .description_text {
+    font-size: clamp(13px, 3.5vw, 15px);
+  }
+  .button_for_Story {
+    width: min(240px, calc(100vw - 80px));
+  }
+}
+
+@media (min-width: 1014px) and (max-width: 1924px) {
+  h1 {
+    font-size: 26px;
+  }
+  h2 {
+    font-size: 18px;
+  }
+  .hero_bottom_text {
+    scale: 0.85;
+    padding-bottom: 126px;
+  }
+  .hero_left_right_text {
+    margin-left: 32px;
+    margin-right: 32px;
+  }
+  .luxury_intro {
+    scale: 0.85;
+    margin-top: -48px;
+    margin-left: -48px;
+  }
+  .luxury_footer {
+    margin-top: 136px;
+    margin-bottom: 136px;
+  }
+  .button_section {
+    scale: 0.85;
+    margin-left: -106px;
+  }
+  .flavor_content {
+    max-width: 520px;
+    margin-left: 106px;
+    top: -150px;
+    h1 {
+      margin-left: 106px;
+      margin-bottom: 456px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .story {
+    width: calc(100vw - 24px);
+    max-width: 360px;
+  }
+  .story h1 {
+    margin-bottom: clamp(12px, 4vw, 20px);
+    font-size: clamp(30px, 10vw, 42px);
+    line-height: 1.05;
+    letter-spacing: 0.025em;
+  }
+  .story h2 {
+    font-size: clamp(18px, 5.5vw, 24px);
+    line-height: 1.1;
+  }
+  .story h3 {
+    font-size: clamp(16px, 4.5vw, 21px);
+  }
+  .story p {
+    font-size: clamp(14px, 4vw, 16px);
+    line-height: 1.5;
+  }
+  .luxury_intro {
+    width: calc(100vw - 24px);
+    max-width: 360px;
   }
   .luxury_eyebrow {
-    margin-bottom: 16px;
-    font-size: 9px;
-    letter-spacing: 0.28em;
+    margin-bottom: clamp(12px, 4vw, 16px);
+    font-size: clamp(8px, 2.5vw, 10px);
+    letter-spacing: 0.24em;
   }
   .luxury_title {
     font-size: clamp(42px, 13vw, 62px);
@@ -281,38 +415,79 @@
     letter-spacing: -0.04em;
   }
   .luxury_keywords {
-    gap: 8px;
-    margin-top: 20px;
-    font-size: 8px;
-    letter-spacing: 0.16em;
+    gap: clamp(6px, 2vw, 10px);
+    margin-top: clamp(16px, 5vw, 20px);
+    font-size: clamp(7px, 2.2vw, 9px);
+    letter-spacing: 0.14em;
   }
   .luxury_line {
-    margin: 24px 0;
+    margin: clamp(18px, 5vw, 24px) 0;
   }
   .luxury_claim {
-    margin-bottom: 16px;
-    font-size: 23px;
+    width: calc(100vw - 24px);
+    max-width: 360px;
+    margin-bottom: clamp(12px, 4vw, 16px);
+    font-size: clamp(20px, 6vw, 25px);
     line-height: 1.05;
   }
   .luxury_description {
-    font-size: 13px;
+    width: calc(100vw - 24px);
+    max-width: 360px;
+    font-size: clamp(13px, 3.8vw, 15px);
     line-height: 1.55;
+  }
+  .description_text {
+    font-size: clamp(13px, 3.8vw, 15px);
+    line-height: 1.5;
   }
   .luxury_footer {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
-    margin-top: 28px;
-    padding-top: 14px;
-    font-size: 7px;
-    letter-spacing: 0.18em;
+    gap: clamp(6px, 2vw, 8px);
+    margin-top: clamp(20px, 6vw, 28px);
+    padding-top: clamp(10px, 3vw, 14px);
+    font-size: clamp(6px, 1.8vw, 8px);
+    letter-spacing: 0.16em;
   }
-  .description_text {
-    font-size: 14px;
-    line-height: 1.5;
+  .button_section {
+    width: 100%;
   }
   .button_for_Story {
-    width: 220px;
+    width: min(220px, calc(100vw - 80px));
+  }
+}
+
+@media (max-width: 350px) {
+  .story {
+    width: calc(100vw - 20px);
+  }
+  .story h1 {
+    font-size: clamp(28px, 9.5vw, 34px);
+  }
+  .story h2 {
+    font-size: clamp(17px, 5vw, 20px);
+  }
+  .luxury_intro {
+    width: calc(100vw - 20px);
+  }
+  .luxury_title {
+    font-size: clamp(38px, 12vw, 46px);
+  }
+  .luxury_claim {
+    width: calc(100vw - 20px);
+    font-size: clamp(19px, 5.8vw, 22px);
+  }
+  .luxury_description {
+    width: calc(100vw - 20px);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .description_text {
+    font-size: 13px;
+  }
+  .button_for_Story {
+    width: calc(100vw - 70px);
+    max-width: 210px;
   }
 }
 

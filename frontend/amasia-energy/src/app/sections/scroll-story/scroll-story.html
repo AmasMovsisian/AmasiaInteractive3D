@@ -1,55 +1,4 @@
 <app-story
-  [from]="0.9"
-  [to]="1.2"
-  desktopHorizontal="right"
-  desktopVertical="top"
-  desktopPivot="center"
-  desktopTextAlign="left"
-  desktopEnter="bottom"
-  desktopLeave="left"
-  [desktopOffsetX]="-156"
-  [desktopOffsetY]="296"
-  [desktopWidth]="800"
-  [desktopScale]="1"
-
-  tabletHorizontal="center"
-  tabletVertical="bottom"
-  tabletPivot="center"
-  tabletTextAlign="center"
-  tabletEnter="left"
-  tabletLeave="bottom"
-  [tabletOffsetX]="0"
-  [tabletOffsetY]="80"
-  [tabletWidth]="600"
-  [tabletScale]="0.85"
-
-  mobileHorizontal="center"
-  mobileVertical="top"
-  mobilePivot="center"
-  mobileTextAlign="center"
-  mobileEnter="top"
-  mobileLeave="top"
-  [mobileOffsetX]="0"
-  [mobileOffsetY]="0"
-  [mobileWidth]="320"
-  [mobileScale]="0.9"
-
-  [fadeIn]="0.3"
-  [fadeOut]="0.3"
-  [opacity]="1"
-  [distance]="250"
->
-  @for (flavor of flavors; track flavor.id) {
-    @if (flavor.id === selectedFlavor().id) {
-      <div class="flavor_content">
-        <h1>{{ flavor.name }}</h1>
-      </div>
-    }
-  }
-</app-story>
-
-
-<app-story
   [from]="-0.5"
   [to]="0.2"
   desktopHorizontal="right"
@@ -64,13 +13,13 @@
   [desktopScale]="1"
 
   tabletHorizontal="right"
-  tabletVertical="center"
+  tabletVertical="top"
   tabletPivot="center"
-  tabletTextAlign="center"
-  tabletEnter="left"
+  tabletTextAlign="right"
+  tabletEnter="right"
   tabletLeave="right"
-  [tabletOffsetX]="-80"
-  [tabletOffsetY]="0"
+  [tabletOffsetX]="-100"
+  [tabletOffsetY]="-50"
   [tabletWidth]="420"
   [tabletScale]="0.85"
 
@@ -110,13 +59,13 @@
   [desktopScale]="1"
 
   tabletHorizontal="left"
-  tabletVertical="center"
+  tabletVertical="top"
   tabletPivot="center"
-  tabletTextAlign="center"
-  tabletEnter="right"
-  tabletLeave="top"
-  [tabletOffsetX]="80"
-  [tabletOffsetY]="0"
+  tabletTextAlign="left"
+  tabletEnter="left"
+  tabletLeave="left"
+  [tabletOffsetX]="100"
+  [tabletOffsetY]="-50"
   [tabletWidth]="420"
   [tabletScale]="0.85"
 
@@ -162,7 +111,7 @@
   tabletEnter="left"
   tabletLeave="bottom"
   [tabletOffsetX]="0"
-  [tabletOffsetY]="80"
+  [tabletOffsetY]="100"
   [tabletWidth]="600"
   [tabletScale]="0.85"
 
@@ -174,7 +123,7 @@
   mobileLeave="bottom"
   [mobileOffsetX]="0"
   [mobileOffsetY]="75"
-  [mobileWidth]="320"
+  [mobileWidth]="420"
   [mobileScale]="0.7"
 
   [fadeIn]="0.1"
@@ -182,10 +131,13 @@
   [opacity]="1"
   [distance]="250"
 >
+  <div class="hero_bottom_text">
   <h1>THE ULTIMATE FORM OF SELF-RESPECT</h1>
   <br />
+
   <h2>Fuel your ambition</h2>
   <h2>Not your addiction</h2>
+  </div>
 </app-story>
 
 
@@ -203,15 +155,15 @@
   [desktopWidth]="800"
   [desktopScale]="1"
 
-  tabletHorizontal="center"
-  tabletVertical="bottom"
+  tabletHorizontal="right"
+  tabletVertical="top"
   tabletPivot="center"
-  tabletTextAlign="center"
-  tabletEnter="left"
-  tabletLeave="bottom"
-  [tabletOffsetX]="0"
-  [tabletOffsetY]="80"
-  [tabletWidth]="600"
+  tabletTextAlign="right"
+  tabletEnter="right"
+  tabletLeave="right"
+  [tabletOffsetX]="-100"
+  [tabletOffsetY]="0"
+  [tabletWidth]="420"
   [tabletScale]="0.85"
 
   mobileHorizontal="right"
@@ -229,11 +181,13 @@
   [fadeOut]="0.3"
   [opacity]="1"
   [distance]="250"
->
-  <h1>ENERGY WITH PRESENCE</h1>
-  <br />
-  <h2>A refined balance of intensity</h2>
-  <h2>clarity and effortless elegance</h2>
+  
+><div class="hero_left_right_text">
+    <h1>ENERGY WITH PRESENCE</h1>
+    <br />
+    <h2>A refined balance of intensity</h2>
+    <h2>clarity and effortless elegance</h2>
+  </div>
 </app-story>
 
 
@@ -251,15 +205,15 @@
   [desktopWidth]="800"
   [desktopScale]="1"
 
-  tabletHorizontal="center"
+  tabletHorizontal="left"
   tabletVertical="bottom"
   tabletPivot="center"
-  tabletTextAlign="center"
+  tabletTextAlign="left"
   tabletEnter="left"
-  tabletLeave="bottom"
-  [tabletOffsetX]="0"
-  [tabletOffsetY]="80"
-  [tabletWidth]="600"
+  tabletLeave="left"
+  [tabletOffsetX]="100"
+  [tabletOffsetY]="0"
+  [tabletWidth]="420"
   [tabletScale]="0.85"
 
   mobileHorizontal="left"
@@ -277,11 +231,14 @@
   [fadeOut]="0.3"
   [opacity]="1"
   [distance]="250"
+  
 >
+<div class="hero_left_right_text">
   <h1>NOT JUST ENERGY</h1>
   <br />
   <h2>A modern ritual for those</h2>
   <h2>who choose their own rhythm</h2>
+  </div>
 </app-story>
 
 
@@ -289,37 +246,37 @@
   [from]="0.6"
   [to]="0.8"
   desktopHorizontal="center"
-  desktopVertical="bottom"
+  desktopVertical="top"
   desktopPivot="center"
   desktopTextAlign="left"
   desktopEnter="right"
   desktopLeave="bottom"
   [desktopOffsetX]="352"
-  [desktopOffsetY]="-550"
+  [desktopOffsetY]="-25"
   [desktopWidth]="720"
   [desktopScale]="1"
 
   tabletHorizontal="center"
-  tabletVertical="bottom"
+  tabletVertical="top"
   tabletPivot="center"
-  tabletTextAlign="center"
-  tabletEnter="left"
+  tabletTextAlign="left"
+  tabletEnter="right"
   tabletLeave="bottom"
-  [tabletOffsetX]="0"
-  [tabletOffsetY]="80"
-  [tabletWidth]="600"
-  [tabletScale]="0.85"
+  [tabletOffsetX]="100"
+  [tabletOffsetY]="-25"
+  [tabletWidth]="420"
+  [tabletScale]="1"
 
-  mobileHorizontal="right"
-  mobileVertical="bottom"
+  mobileHorizontal="center"
+  mobileVertical="top"
   mobilePivot="center"
   mobileTextAlign="left"
   mobileEnter="right"
-  mobileLeave="right"
-  [mobileOffsetX]="-110"
-  [mobileOffsetY]="-100"
-  [mobileWidth]="520"
-  [mobileScale]="0.57"
+  mobileLeave="left"
+  [mobileOffsetX]="-15"
+  [mobileOffsetY]="-75"
+  [mobileWidth]="600"
+  [mobileScale]="0"
 
   [fadeIn]="0.3"
   [fadeOut]="0.3"
@@ -357,6 +314,127 @@
   </div>
 </app-story>
 
+<app-story
+  [from]="0.6"
+  [to]="0.8"
+  desktopHorizontal="center"
+  desktopVertical="top"
+  desktopPivot="center"
+  desktopTextAlign="left"
+  desktopEnter="right"
+  desktopLeave="bottom"
+  [desktopOffsetX]="352"
+  [desktopOffsetY]="-25"
+  [desktopWidth]="720"
+  [desktopScale]="0"
+
+  tabletHorizontal="center"
+  tabletVertical="bottom"
+  tabletPivot="center"
+  tabletTextAlign="center"
+  tabletEnter="left"
+  tabletLeave="bottom"
+  [tabletOffsetX]="0"
+  [tabletOffsetY]="80"
+  [tabletWidth]="600"
+  [tabletScale]="0"
+
+  mobileHorizontal="center"
+  mobileVertical="top"
+  mobilePivot="center"
+  mobileTextAlign="left"
+  mobileEnter="right"
+  mobileLeave="left"
+  [mobileOffsetX]="-30"
+  [mobileOffsetY]="-60"
+  [mobileWidth]="600"
+  [mobileScale]="0.5"
+
+  [fadeIn]="0.3"
+  [fadeOut]="0.3"
+  [opacity]="1"
+  [distance]="250"
+>
+  <div class="luxury_intro">
+
+    <h1 class="luxury_title">
+      ENERGY
+    </h1>
+    <br>
+
+    <h1 class="luxury_title">
+      DISTINCT
+    </h1>
+    <br>
+
+    <h1 class="luxury_title">
+      CHARACTER
+    </h1>
+  </div>
+</app-story>
+
+
+<app-story
+  [from]="0.6"
+  [to]="0.8"
+  desktopHorizontal="center"
+  desktopVertical="center"
+  desktopPivot="center"
+  desktopTextAlign="left"
+  desktopEnter="right"
+  desktopLeave="bottom"
+  [desktopOffsetX]="352"
+  [desktopOffsetY]="25"
+  [desktopWidth]="720"
+  [desktopScale]="1"
+
+  tabletHorizontal="center"
+  tabletVertical="bottom"
+  tabletPivot="center"
+  tabletTextAlign="left"
+  tabletEnter="right"
+  tabletLeave="bottom"
+  [tabletOffsetX]="100"
+  [tabletOffsetY]="-350"
+  [tabletWidth]="420"
+  [tabletScale]="1"
+
+
+  mobileHorizontal="right"
+  mobileVertical="center"
+  mobilePivot="center"
+  mobileTextAlign="left"
+  mobileEnter="right"
+  mobileLeave="right"
+  [mobileOffsetX]="-120"
+  [mobileOffsetY]="-100"
+  [mobileWidth]="300"
+  [mobileScale]=".8"
+
+  [fadeIn]="0.3"
+  [fadeOut]="0.3"
+  [opacity]="1"
+  [distance]="250"
+>
+  <div class="luxury_intro">
+
+    <br><h2 class="luxury_claim">
+      A different expression
+      of energy
+    </h2><br><br>
+
+<br><p class="luxury_description">
+  AMASIA is crafted for those who value themselves and the moments they choose.
+  Refined taste, distinctive character and effortless sophistication come together
+  in a drink that elevates every occasion.<br><br> It gives you presence without excess,
+  confidence without noise, and a sense of indulgence that feels entirely your own.
+  <br>
+  Because true luxury is not about showing more.<br>It is about expecting more.
+</p>
+
+  </div>
+</app-story>
+
 
 <app-story
   [from]="0.6"
@@ -368,31 +446,32 @@
   desktopEnter="right"
   desktopLeave="bottom"
   [desktopOffsetX]="352"
-  [desktopOffsetY]="-120"
+  [desktopOffsetY]="0"
   [desktopWidth]="720"
   [desktopScale]="1"
 
   tabletHorizontal="center"
   tabletVertical="bottom"
   tabletPivot="center"
-  tabletTextAlign="center"
-  tabletEnter="left"
+  tabletTextAlign="left"
+  tabletEnter="right"
   tabletLeave="bottom"
-  [tabletOffsetX]="0"
-  [tabletOffsetY]="80"
-  [tabletWidth]="600"
-  [tabletScale]="0.85"
+  [tabletOffsetX]="100"
+  [tabletOffsetY]="0"
+  [tabletWidth]="420"
+  [tabletScale]="1"
 
-  mobileHorizontal="right"
+
+  mobileHorizontal="center"
   mobileVertical="bottom"
   mobilePivot="center"
   mobileTextAlign="left"
   mobileEnter="right"
-  mobileLeave="right"
-  [mobileOffsetX]="-110"
-  [mobileOffsetY]="-200"
-  [mobileWidth]="520"
-  [mobileScale]="0.57"
+  mobileLeave="left"
+  [mobileOffsetX]="135"
+  [mobileOffsetY]="25"
+  [mobileWidth]="600"
+  [mobileScale]="1"
 
   [fadeIn]="0.3"
   [fadeOut]="0.3"
@@ -401,26 +480,13 @@
 >
   <div class="luxury_intro">
 
-    <h2 class="luxury_claim">
-      A different expression
-      of energy
-    </h2>
-
-<p class="luxury_description">
-  AMASIA is crafted for those who value themselves and the moments they choose.
-  Refined taste, distinctive character and effortless sophistication come together
-  in a drink that elevates every occasion.<br><br> It gives you presence without excess,
-  confidence without noise, and a sense of indulgence that feels entirely your own.
-  <br>
-  Because true luxury is not about showing more.<br>It is about expecting more.
-</p>
-
     <div class="luxury_footer">
       <span>DESIGNED FOR THE MOMENT</span>
       <span>MADE TO BE REMEMBERED</span>
     </div>
   </div>
 </app-story>
+
 
 
 <app-story
@@ -438,16 +504,16 @@
   [desktopWidth]="800"
   [desktopScale]="1"
 
-  tabletHorizontal="center"
-  tabletVertical="bottom"
+  tabletHorizontal="left"
+  tabletVertical="center"
   tabletPivot="center"
   tabletTextAlign="center"
   tabletEnter="left"
-  tabletLeave="bottom"
-  [tabletOffsetX]="0"
-  [tabletOffsetY]="80"
-  [tabletWidth]="600"
-  [tabletScale]="0.85"
+  tabletLeave="left"
+  [tabletOffsetX]="10"
+  [tabletOffsetY]="40"
+  [tabletWidth]="420"
+  [tabletScale]="0.6"
 
   mobileHorizontal="left"
   mobileVertical="center"
@@ -551,16 +617,16 @@
   [desktopWidth]="800"
   [desktopScale]="1"
 
-  tabletHorizontal="center"
-  tabletVertical="bottom"
+  tabletHorizontal="right"
+  tabletVertical="center"
   tabletPivot="center"
   tabletTextAlign="center"
-  tabletEnter="left"
-  tabletLeave="bottom"
-  [tabletOffsetX]="0"
-  [tabletOffsetY]="80"
-  [tabletWidth]="600"
-  [tabletScale]="0.85"
+  tabletEnter="right"
+  tabletLeave="right"
+  [tabletOffsetX]="-20"
+  [tabletOffsetY]="-250"
+  [tabletWidth]="280"
+  [tabletScale]="0.8"
 
   mobileHorizontal="right"
   mobileVertical="center"
@@ -614,12 +680,12 @@
   tabletVertical="bottom"
   tabletPivot="center"
   tabletTextAlign="center"
-  tabletEnter="left"
+  tabletEnter="bottom"
   tabletLeave="bottom"
   [tabletOffsetX]="0"
-  [tabletOffsetY]="80"
+  [tabletOffsetY]="130"
   [tabletWidth]="600"
-  [tabletScale]="0.85"
+  [tabletScale]="1"
 
   mobileHorizontal="center"
   mobileVertical="bottom"
@@ -662,13 +728,13 @@
   [desktopScale]="1"
 
   tabletHorizontal="center"
-  tabletVertical="bottom"
+  tabletVertical="top"
   tabletPivot="center"
   tabletTextAlign="center"
-  tabletEnter="left"
+  tabletEnter="top"
   tabletLeave="bottom"
   [tabletOffsetX]="0"
-  [tabletOffsetY]="80"
+  [tabletOffsetY]="-50"
   [tabletWidth]="600"
   [tabletScale]="0.85"
 
