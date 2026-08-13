@@ -5,18 +5,167 @@
   transform: translateY(-50%);
   width: 400px;
   z-index: 20;
-  color: black;
+  color: var(--text-primary);
   pointer-events: none;
+  transition:
+    color 0.35s ease,
+    opacity 0.35s ease;
 
   h1 {
+    margin: 0 0 20px;
+    font-family: var(--font-heading);
     font-size: 64px;
-    margin-bottom: 20px;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: 0.04em;
+    color: var(--text-primary);
+    text-shadow: 0 12px 7px var(--text-shadow);
+    transition:
+      color 0.35s ease,
+      text-shadow 0.35s ease;
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0.04em;
+    color: var(--text-primary);
+    text-shadow: 0 8px 5px var(--text-shadow);
+    transition:
+      color 0.35s ease,
+      text-shadow 0.35s ease;
+  }
+
+  h3 {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0.04em;
+    color: var(--text-primary);
+    text-shadow: 0 8px 5px var(--text-shadow);
+    transition:
+      color 0.35s ease,
+      text-shadow 0.35s ease;
   }
 
   p {
+    margin: 0;
+    font-family: var(--font-body);
     font-size: 20px;
     line-height: 1.6;
+    color: var(--text-secondary);
+    transition: color 0.35s ease;
   }
+}
+
+.luxury_intro {
+  width: 100%;
+  max-width: 700px;
+  color: var(--text-primary);
+  transition: color 0.35s ease;
+}
+
+.luxury_eyebrow {
+  margin-bottom: 22px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  line-height: 1;
+  color: var(--text-muted);
+  transition: color 0.35s ease;
+}
+
+.luxury_title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(52px, 5vw, 92px);
+  font-weight: 700;
+  line-height: 0.88;
+  letter-spacing: -0.045em;
+  color: var(--text-primary);
+  text-shadow: 0 12px 7px var(--text-shadow);
+  transition:
+    color 0.35s ease,
+    text-shadow 0.35s ease;
+}
+
+.luxury_keywords {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  transition: color 0.35s ease;
+}
+
+.luxury_keywords span:nth-child(even) {
+  color: var(--text-muted);
+  opacity: 0.55;
+  transition: color 0.35s ease;
+}
+
+.luxury_line {
+  width: 100%;
+  height: 1px;
+  margin: 32px 0;
+  background: var(--border);
+  transition: background-color 0.35s ease;
+}
+
+.luxury_claim {
+  max-width: 700px;
+  margin: 0 0 22px;
+  font-family: var(--font-heading);
+  font-size: clamp(24px, 2vw, 34px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  text-shadow: 0 8px 5px var(--text-shadow);
+  transition:
+    color 0.35s ease,
+    text-shadow 0.35s ease;
+}
+
+.luxury_description {
+  max-width: 700px;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: 0.01em;
+  color: var(--text-secondary);
+  transition: color 0.35s ease;
+}
+
+.luxury_footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-top: 42px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.22em;
+  color: var(--text-muted);
+  transition:
+    color 0.35s ease,
+    border-color 0.35s ease;
 }
 
 .button_section {
@@ -24,25 +173,53 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  color: var(--text-primary);
+  transition: color 0.35s ease;
 }
 
 .flavor_content {
   animation: flavorChange 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  color: var(--text-primary);
+  transition: color 0.35s ease;
 }
 
 .description_content {
   position: fixed;
+  color: var(--text-primary);
+  transition: color 0.35s ease;
 }
 
 .description_text {
-  font-family: 'Exo 2';
-  font-size: 20px;
+  font-family: var(--font-body);
+  font-size: 22px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  transition: color 0.35s ease;
 }
 
-@media (max-width: 1024px) {
-  .description_text {
-    font-size: 16px;
-  }
+.button_section .button {
+  pointer-events: auto;
+  color: var(--button-text) !important;
+  background: var(--button-bg);
+  border-color: var(--button-border);
+  transition:
+    transform 350ms ease,
+    background-color 350ms ease,
+    color 350ms ease,
+    border-color 350ms ease,
+    box-shadow 350ms ease;
+}
+
+.button_section .button:hover {
+  transform: scale(1.05);
+  background: var(--button-hover-bg);
+  color: var(--button-hover-text) !important;
+  border-color: var(--button-hover-border);
+}
+
+.button_for_Story {
+  width: 256px;
 }
 
 @keyframes flavorChange {
@@ -51,10 +228,102 @@
     transform: translateY(18px);
     filter: blur(4px);
   }
-
   100% {
     opacity: 1;
     transform: translateY(0);
     filter: blur(0);
+  }
+}
+
+@media (max-width: 1024px) {
+  .story {
+    width: 420px;
+  }
+  .luxury_intro {
+    max-width: 600px;
+  }
+  .luxury_title {
+    font-size: clamp(48px, 7vw, 76px);
+  }
+  .luxury_description {
+    font-size: 16px;
+  }
+  .description_text {
+    font-size: 16px;
+  }
+  .luxury_footer {
+    margin-top: 32px;
+  }
+}
+
+@media (max-width: 600px) {
+  .story {
+    width: 320px;
+  }
+  .story h1 {
+    font-size: 42px;
+  }
+  .story p {
+    font-size: 16px;
+  }
+  .luxury_intro {
+    width: 100%;
+    max-width: 320px;
+  }
+  .luxury_eyebrow {
+    margin-bottom: 16px;
+    font-size: 9px;
+    letter-spacing: 0.28em;
+  }
+  .luxury_title {
+    font-size: clamp(42px, 13vw, 62px);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+  }
+  .luxury_keywords {
+    gap: 8px;
+    margin-top: 20px;
+    font-size: 8px;
+    letter-spacing: 0.16em;
+  }
+  .luxury_line {
+    margin: 24px 0;
+  }
+  .luxury_claim {
+    margin-bottom: 16px;
+    font-size: 23px;
+    line-height: 1.05;
+  }
+  .luxury_description {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .luxury_footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 28px;
+    padding-top: 14px;
+    font-size: 7px;
+    letter-spacing: 0.18em;
+  }
+  .description_text {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .button_for_Story {
+    width: 220px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .story,
+  .story *,
+  .luxury_intro,
+  .luxury_intro *,
+  .button_section,
+  .button_section * {
+    transition: none !important;
+    animation: none !important;
   }
 }

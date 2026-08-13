@@ -1,4 +1,5 @@
 import { Component, HostBinding, Input, computed, inject } from '@angular/core';
+
 import { ScrollService } from '../../../core/services/scroll.service';
 import { ResponsiveService } from '../../../core/services/responsive.service';
 
@@ -16,12 +17,15 @@ type Align = 'left' | 'center' | 'right';
 export class StoryComponent {
   private scroll = inject(ScrollService);
   private responsive = inject(ResponsiveService);
+
   progress = this.scroll.progress;
 
   @Input() from = 0;
   @Input() to = 1;
+  @Input() interactionStart = 0.95;
   @Input() offsetX = 0;
   @Input() offsetY = 0;
+
   @Input() desktopHorizontal: Position = 'center';
   @Input() desktopVertical: Vertical = 'center';
   @Input() desktopPivot = 'center-box';
@@ -32,6 +36,7 @@ export class StoryComponent {
   @Input() desktopScale = 1;
   @Input() desktopEnter: Direction = 'bottom';
   @Input() desktopLeave: Direction = 'top';
+
   @Input() tabletHorizontal: Position = 'center';
   @Input() tabletVertical: Vertical = 'center';
   @Input() tabletPivot = 'center-box';
@@ -42,6 +47,7 @@ export class StoryComponent {
   @Input() tabletScale = 1;
   @Input() tabletEnter: Direction = 'bottom';
   @Input() tabletLeave: Direction = 'top';
+
   @Input() mobileHorizontal: Position = 'center';
   @Input() mobileVertical: Vertical = 'center';
   @Input() mobilePivot = 'center-box';
@@ -52,6 +58,7 @@ export class StoryComponent {
   @Input() mobileScale = 1;
   @Input() mobileEnter: Direction = 'bottom';
   @Input() mobileLeave: Direction = 'top';
+
   @Input() fadeIn = 0.15;
   @Input() fadeOut = 0.25;
   @Input() opacity = 1;
@@ -86,7 +93,25 @@ export class StoryComponent {
     return undefined;
   }
 
-  animation = computed(() => {
+  readonly localProgress = computed(() => {
+    const p = this.progress();
+    if (this.to <= this.from) {
+      return 0;
+    }
+    const local = (p - this.from) / (this.to - this.from);
+    return Math.max(0, Math.min(1, local));
+  });
+
+  readonly interactionEnabled = computed(() => {
+    return this.localProgress() >= this.interactionStart;
+  });
+
+  @HostBinding('style.pointer-events')
+  get pointerEvents() {
+    return this.interactionEnabled() ? 'auto' : 'none';
+  }
+
+  readonly animation = computed(() => {
     const p = this.progress();
     const enter = this.value('Enter');
     const leave = this.value('Leave');
@@ -195,10 +220,18 @@ export class StoryComponent {
   get transform() {
     const a = this.animation();
     return `
-translate(${this.pivot()}, -50%)
-translate(${a.x}px, ${a.y}px)
-scale(${this.value('Scale') ?? 1})
-`;
+      translate(
+        ${this.pivot()},
+        -50%
+      )
+      translate(
+        ${a.x}px,
+        ${a.y}px
+      )
+      scale(
+        ${this.value('Scale') ?? 1}
+      )
+    `;
   }
 
   @HostBinding('class')
