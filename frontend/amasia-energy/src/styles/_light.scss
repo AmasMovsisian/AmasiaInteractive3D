@@ -28,8 +28,24 @@
 
   --shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
 
-  --text-shadow: rgba(0, 0, 0, 0.2);
+  --text-shadow: rgba(0, 0, 0, 0.15);
 
-  --canvas-bg: #ffffff;
+  --canvas-bg:
+    radial-gradient(
+      ellipse 52% 44% at 50% 32%,
+      #ffffff 0%,
+      #f9fafb 18%,
+      #f2f4f5 38%,
+      #e7e9ec 58%,
+      #dadddf 78%,
+      #cfd4d8 100%
+    ),
+    radial-gradient(
+      ellipse 75% 60% at 50% 105%,
+      rgba(190, 198, 204, 0.95) 0%,
+      rgba(213, 218, 222, 0.72) 38%,
+      rgba(236, 239, 241, 0.22) 70%,
+      transparent 100%
+    ),
+    linear-gradient(135deg, #ffffff 0%, #eaedef 45%, #d5dadd 100%);
 }
-

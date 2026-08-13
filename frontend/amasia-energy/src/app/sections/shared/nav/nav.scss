@@ -27,7 +27,9 @@
   align-items: center;
   color: var(--text-primary);
   text-decoration: none;
-  transition: color 0.35s ease, transform 0.35s ease;
+  transition:
+    color 0.35s ease,
+    transform 0.35s ease;
 }
 
 .logo h2 {
@@ -50,7 +52,9 @@
   background: var(--text-primary);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.35s ease, background-color 0.35s ease;
+  transition:
+    transform 0.35s ease,
+    background-color 0.35s ease;
 }
 
 .logo:hover {
@@ -75,7 +79,10 @@
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-  transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
 }
 
 .nav__links li {
@@ -93,7 +100,9 @@
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.04em;
-  transition: color 0.3s ease, transform 0.3s ease;
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
 }
 
 .nav__links a::after {
@@ -108,7 +117,9 @@
   transform: scaleX(0);
   transform-origin: center;
   opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
 }
 
 .nav__links a:hover {
@@ -145,7 +156,12 @@
   -webkit-backdrop-filter: blur(20px);
   cursor: pointer;
   font-family: var(--font-body);
-  transition: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease, transform 0.25s ease;
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.25s ease;
 }
 
 .theme-switch:hover {
@@ -175,13 +191,21 @@
   display: block;
   border-radius: 50%;
   background: #111;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.45), 0 0 10px rgba(0, 0, 0, 0.25);
-  transition: background-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+  box-shadow:
+    0 0 4px rgba(0, 0, 0, 0.45),
+    0 0 10px rgba(0, 0, 0, 0.25);
+  transition:
+    background-color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s ease;
 }
 
 html[data-theme='dark'] .theme-switch__indicator {
   background: #fff;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.95), 0 0 12px rgba(255, 255, 255, 0.75), 0 0 24px rgba(255, 255, 255, 0.45);
+  box-shadow:
+    0 0 5px rgba(255, 255, 255, 0.95),
+    0 0 12px rgba(255, 255, 255, 0.75),
+    0 0 24px rgba(255, 255, 255, 0.45);
   transform: scale(1.08);
 }
 
@@ -219,7 +243,11 @@ html[data-theme='dark'] .theme-switch__indicator {
   justify-content: center;
   align-items: center;
   gap: 6px;
-  transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, transform 0.25s ease;
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.25s ease;
 }
 
 .hamburger:hover {
@@ -237,7 +265,10 @@ html[data-theme='dark'] .theme-switch__indicator {
   border-radius: 2px;
   background: var(--text-primary);
   transform-origin: center;
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease, background-color 0.35s ease;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.25s ease,
+    background-color 0.35s ease;
 }
 
 .hamburger.active {
@@ -269,13 +300,17 @@ html[data-theme='dark'] .theme-switch__indicator {
   justify-content: space-between;
   padding: 120px 7vw 40px;
   overflow: hidden;
-  background: var(--bg-primary);
+  background: transparent;
   color: var(--text-primary);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transform: scale(1.025);
-  transition: opacity 0.45s ease, visibility 0.45s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.4s ease;
+  transition:
+    opacity 0.45s ease,
+    visibility 0.45s ease,
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.45s ease;
   z-index: 10000;
 }
 
@@ -284,6 +319,7 @@ html[data-theme='dark'] .theme-switch__indicator {
   visibility: visible;
   pointer-events: auto;
   transform: scale(1);
+  background: var(--canvas-bg);
   z-index: 10000;
 }
 
@@ -292,7 +328,9 @@ html[data-theme='dark'] .theme-switch__indicator {
   inset: 0;
   pointer-events: none;
   opacity: 0.15;
-  background-image: linear-gradient(to right, var(--border) 1px, transparent 1px), linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-image:
+    linear-gradient(to right, var(--border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
   background-size: 80px 80px;
   mask-image: linear-gradient(to bottom, transparent, black 15%, black 80%, transparent);
   -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 80%, transparent);
@@ -360,14 +398,19 @@ html[data-theme='dark'] .theme-switch__indicator {
 .mobile-menu__nav a {
   position: relative;
   display: grid;
-  grid-template-columns: 48px 1fr auto;
+  grid-template-columns:
+    48px
+    1fr
+    auto;
   align-items: center;
   width: 100%;
   padding: 20px 0;
   color: var(--text-primary);
   text-decoration: none;
   border-bottom: 1px solid var(--border);
-  transition: color 0.3s ease, padding-left 0.35s ease;
+  transition:
+    color 0.3s ease,
+    padding-left 0.35s ease;
 }
 
 .mobile-menu__nav a:first-child {
@@ -413,7 +456,9 @@ html[data-theme='dark'] .theme-switch__indicator {
   justify-content: center;
   color: var(--text-muted);
   transform: translate(-2px, 2px);
-  transition: color 0.35s ease, transform 0.35s ease;
+  transition:
+    color 0.35s ease,
+    transform 0.35s ease;
 }
 
 .mobile-menu__arrow-line {
@@ -425,7 +470,9 @@ html[data-theme='dark'] .theme-switch__indicator {
   transform: rotate(-45deg);
   transform-origin: center;
   border-radius: 999px;
-  transition: width 0.35s ease, background-color 0.35s ease;
+  transition:
+    width 0.35s ease,
+    background-color 0.35s ease;
 }
 
 .mobile-menu__arrow-line::after,
@@ -494,7 +541,10 @@ html[data-theme='dark'] .theme-switch__indicator {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.3s ease;
 }
 
 .mobile-menu__theme:hover {
@@ -507,12 +557,16 @@ html[data-theme='dark'] .theme-switch__indicator {
   height: 8px;
   border-radius: 50%;
   background: #111;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.45), 0 0 12px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 0 5px rgba(0, 0, 0, 0.45),
+    0 0 12px rgba(0, 0, 0, 0.2);
 }
 
 html[data-theme='dark'] .mobile-menu__theme-dot {
   background: #fff;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.9), 0 0 14px rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 0 6px rgba(255, 255, 255, 0.9),
+    0 0 14px rgba(255, 255, 255, 0.5);
 }
 
 @media (max-width: 1200px) {
@@ -636,7 +690,10 @@ html[data-theme='dark'] .mobile-menu__theme-dot {
     font-size: 31px;
   }
   .mobile-menu__nav a {
-    grid-template-columns: 36px 1fr auto;
+    grid-template-columns:
+      36px
+      1fr
+      auto;
     padding: 17px 0;
   }
   .mobile-menu__bottom {
