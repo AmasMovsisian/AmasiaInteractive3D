@@ -1,18 +1,32 @@
 import { Injectable } from '@angular/core';
 import * as THREE from 'three';
+import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TextureManager {
-  private readonly loader = new THREE.TextureLoader();
+  private readonly ktx2Loader = new KTX2Loader();
+  private renderer?: THREE.WebGLRenderer;
+  private ktx2Initialized = false;
   private readonly textureCache = new Map<string, THREE.Texture>();
   private readonly texturePromises = new Map<string, Promise<THREE.Texture | null>>();
   private readonly materialCache = new Map<string, THREE.MeshPhysicalMaterial>();
-  private renderer?: THREE.WebGLRenderer;
 
   setRenderer(renderer: THREE.WebGLRenderer): void {
     this.renderer = renderer;
+    if (this.ktx2Initialized) {
+      return;
+    }
+    this.ktx2Loader.setTranscoderPath('/three/basis/');
+    this.ktx2Loader.setWorkerLimit(2);
+    this.ktx2Loader.detectSupport(renderer);
+    this.ktx2Initialized = true;
+    console.log('====================================');
+    console.log('KTX2 LOADER INITIALIZED');
+    console.log('Transcoder path: /three/basis/');
+    console.log('Worker limit: 2');
+    console.log('====================================');
   }
 
   private loadTexture(path: string): Promise<THREE.Texture | null> {
@@ -24,18 +38,34 @@ export class TextureManager {
     if (existingPromise) {
       return existingPromise;
     }
-    const promise = this.loader
+    if (!this.ktx2Initialized || !this.renderer) {
+      const error = new Error(
+        'TextureManager: KTX2Loader is not initialized. ' +
+          'Call textureManager.setRenderer(renderer) before loading textures.',
+      );
+      console.error(error);
+      return Promise.reject(error);
+    }
+    console.log('====================================');
+    console.log('LOADING KTX2 TEXTURE');
+    console.log(path);
+    console.log('====================================');
+    const promise = this.ktx2Loader
       .loadAsync(path)
       .then((texture) => {
         this.configureTexture(texture, path);
         this.textureCache.set(path, texture);
         this.texturePromises.delete(path);
-        console.log('Texture loaded:', path);
+        console.log('KTX2 SUCCESS:', path);
         return texture;
       })
       .catch((error) => {
         this.texturePromises.delete(path);
-        console.error('Texture FAILED:', path, error);
+        console.error('====================================');
+        console.error('KTX2 FAILED');
+        console.error('URL:', path);
+        console.error('ERROR:', error);
+        console.error('====================================');
         return null;
       });
     this.texturePromises.set(path, promise);
@@ -44,12 +74,19 @@ export class TextureManager {
 
   private configureTexture(texture: THREE.Texture, path: string): void {
     texture.flipY = false;
-    texture.generateMipmaps = true;
+    texture.generateMipmaps = false;
     texture.minFilter = THREE.LinearMipmapLinearFilter;
     texture.magFilter = THREE.LinearFilter;
-    texture.anisotropy = Math.min(8, this.renderer?.capabilities.getMaxAnisotropy() ?? 8);
+    const maxAnisotropy = this.renderer?.capabilities.getMaxAnisotropy() ?? 1;
+    texture.anisotropy = Math.min(8, maxAnisotropy);
     texture.needsUpdate = true;
-    console.log('Configured texture:', path);
+    console.log('Configured KTX2 texture:', {
+      path,
+      colorSpace: texture.colorSpace,
+      minFilter: texture.minFilter,
+      magFilter: texture.magFilter,
+      anisotropy: texture.anisotropy,
+    });
   }
 
   async loadPBRMaterial(
@@ -62,14 +99,24 @@ export class TextureManager {
       return cachedMaterial;
     }
     const path = `/three/materials/${flavor}/${materialFolder}/`;
-    console.log('Loading PBR material:', flavor, materialFolder);
+    console.log('====================================');
+    console.log('LOADING PBR MATERIAL');
+    console.log('Flavor:', flavor);
+    console.log('Folder:', materialFolder);
+    console.log('====================================');
+    const baseColorPath = path + `${materialFolder}_BaseColor.ktx2`;
+    const roughnessPath = path + `${materialFolder}_Roughness.ktx2`;
+    const metallicPath = path + `${materialFolder}_Metallic.ktx2`;
+    console.log('BaseColor:', baseColorPath);
+    console.log('Roughness:', roughnessPath);
+    console.log('Metallic:', metallicPath);
     const [baseColor, roughness, metallic] = await Promise.all([
-      this.loadTexture(path + `${materialFolder}_BaseColor.png`),
-      this.loadTexture(path + `${materialFolder}_Roughness.png`),
-      this.loadTexture(path + `${materialFolder}_Metallic.png`),
+      this.loadTexture(baseColorPath),
+      this.loadTexture(roughnessPath),
+      this.loadTexture(metallicPath),
     ]);
     if (!baseColor) {
-      throw new Error(`Missing BaseColor texture: ${flavor}/${materialFolder}`);
+      throw new Error(`Missing BaseColor KTX2 texture: ${baseColorPath}`);
     }
     baseColor.colorSpace = THREE.SRGBColorSpace;
     if (roughness) {
@@ -108,41 +155,22 @@ export class TextureManager {
       material.clearcoatRoughness = 1.0;
     }
     if (isBody) {
-      material.roughness = 1.0;
       material.metalness = 1.0;
+      material.roughness = 1.0;
       material.clearcoat = 0.0;
       material.clearcoatRoughness = 1.0;
     }
     this.materialCache.set(materialKey, material);
-    console.log('FINAL PBR MATERIAL:', {
-      flavor,
-      materialFolder,
-      textures: {
-        baseColor: !!material.map,
-        roughnessMap: !!material.roughnessMap,
-        metalnessMap: !!material.metalnessMap,
-        normalMap: false,
-      },
-      colorSpaces: {
-        baseColor: baseColor.colorSpace,
-        roughness: roughness?.colorSpace,
-        metallic: metallic?.colorSpace,
-      },
-      values: {
-        roughness: material.roughness,
-        metalness: material.metalness,
-        clearcoat: material.clearcoat,
-        clearcoatRoughness: material.clearcoatRoughness,
-      },
+    console.log('====================================');
+    console.log('PBR MATERIAL READY');
+    console.log(materialKey);
+    console.log({
+      baseColor: !!material.map,
+      roughness: !!material.roughnessMap,
+      metallic: !!material.metalnessMap,
     });
+    console.log('====================================');
     return material;
-  }
-
-  async loadPBRMaterialsParallel(
-    flavor: string,
-    materialFolder: string[],
-  ): Promise<THREE.MeshPhysicalMaterial[]> {
-    return Promise.all(materialFolder.map((folder) => this.loadPBRMaterial(flavor, folder)));
   }
 
   prepareTextureForGPU(texture: THREE.Texture | null | undefined): void {
@@ -175,7 +203,7 @@ export class TextureManager {
     for (const material of this.materialCache.values()) {
       this.prepareMaterialForGPU(material);
     }
-    console.log('All cached PBR materials prepared for GPU.');
+    console.log('All cached KTX2 materials prepared for GPU.');
   }
 
   getTexture(path: string): THREE.Texture | undefined {
