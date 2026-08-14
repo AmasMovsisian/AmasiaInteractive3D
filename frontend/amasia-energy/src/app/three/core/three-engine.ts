@@ -1,10 +1,15 @@
 import { effect, Injectable } from '@angular/core';
+
 import * as THREE from 'three';
+
 import { EXRLoader } from 'three/addons/loaders/EXRLoader.js';
 
 import { GltfLoader } from '../loaders/gltf-loader';
+
 import { TextureManager } from '../materials/texture-manager';
+
 import { ScrollService } from '../../core/services/scroll.service';
+
 import { FlavorId, FlavorService } from '../../core/services/flavor.service';
 
 import { ArnoldLightLoader } from '../lighting/arnold-light-loader';
@@ -39,12 +44,15 @@ export class ThreeEngine {
   private flavorMaterials: Partial<Record<FlavorId, FlavorMaterials>> = {};
   private centerGroup?: THREE.Object3D;
   private materialsReady = false;
+  private materialsPreloadPromise?: Promise<void>;
+
   private centerRotationPivot?: THREE.Group;
   private centerRotationAnimating = false;
   private centerRotationStartTime = 0;
   private centerRotationStart = 0;
   private centerRotationTarget = Math.PI * 2;
   private readonly centerRotationDuration = 0.3;
+
   private pendingFlavorId?: FlavorId;
   private pendingFlavorMaterials?: FlavorMaterials;
   private pendingMaterialApplied = false;
@@ -60,6 +68,7 @@ export class ThreeEngine {
       const flavorId = this.flavorService.selectedFlavorId();
       console.log('Flavor signal changed:', flavorId);
       if (!this.materialsReady) {
+        console.log('Flavor ignored until materials are ready:', flavorId);
         return;
       }
       if (flavorId === this.currentCenterFlavor && !this.centerRotationAnimating) {
@@ -86,13 +95,18 @@ export class ThreeEngine {
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.2;
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
     this.renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    window.addEventListener('resize', () => {
-      this.resizeCamera();
-    });
+    this.textureManager.setRenderer(this.renderer);
+    window.addEventListener(
+      'resize',
+      () => {
+        this.resizeCamera();
+      },
+      { passive: true },
+    );
     if (this.enableHDRI) {
       await this.loadHDRILighting();
     }
@@ -187,11 +201,7 @@ export class ThreeEngine {
     pivot.attach(this.centerGroup);
     this.centerRotationPivot = pivot;
     this.centerRotationPivot.rotation.set(0, 0, 0);
-    console.log('====================================');
-    console.log('CENTER ROTATION PIVOT CREATED');
-    console.log('Pivot:', this.centerRotationPivot);
-    console.log('Animated Group:', this.centerGroup);
-    console.log('====================================');
+    console.log('CENTER ROTATION PIVOT CREATED', this.centerRotationPivot);
   }
 
   private setupCamera(gltf: any) {
@@ -236,8 +246,6 @@ export class ThreeEngine {
       multiplier = 1.85;
     } else if (width <= 1420) {
       multiplier = 1.5;
-    } else {
-      multiplier = 1;
     }
     this.camera.fov = this.originalCameraFov * multiplier;
     this.camera.aspect = this.canvasAspect();
@@ -306,27 +314,12 @@ export class ThreeEngine {
         folder: 'BlackEdition',
       },
     };
-    for (const flavorId of Object.keys(flavorMaterialConfigs) as FlavorId[]) {
-      const config = flavorMaterialConfigs[flavorId];
-      console.log('====================================');
-      console.log('Loading materials for:', flavorId);
-      console.log('Material folder:', config.folder);
-      try {
-        const [body, aluminium, tab] = await Promise.all([
-          this.textureManager.loadPBRMaterial(config.folder, 'Body_Texture_Main'),
-          this.textureManager.loadPBRMaterial(config.folder, 'Top_Bottom_Aluminium'),
-          this.textureManager.loadPBRMaterial(config.folder, 'Opening_Tab_Aluminium'),
-        ]);
-        this.flavorMaterials[flavorId] = {
-          body,
-          aluminium,
-          tab,
-        };
-        console.log('Materials loaded successfully:', flavorId);
-      } catch (error) {
-        console.error(`Could not load materials for ${flavorId}:`, error);
-      }
+    if (this.materialsPreloadPromise) {
+      await this.materialsPreloadPromise;
+      return;
     }
+    this.materialsPreloadPromise = this.preloadAllFlavorMaterials(flavorMaterialConfigs);
+    await this.materialsPreloadPromise;
     const keylimeMaterials = this.flavorMaterials.keylime;
     if (keylimeMaterials) {
       if (leftGroup) {
@@ -336,7 +329,6 @@ export class ThreeEngine {
         this.applyMaterialsToCan(rightGroup, keylimeMaterials, 'keylime');
       }
     }
-    this.materialsReady = true;
     const initialFlavor = this.flavorService.selectedFlavorId();
     const initialMaterials = this.flavorMaterials[initialFlavor];
     if (initialMaterials && centerGroup) {
@@ -345,6 +337,72 @@ export class ThreeEngine {
     }
     if (centerGroup) {
       this.createCenterRotationPivot();
+    }
+    await this.precompileMaterials();
+    this.materialsReady = true;
+    console.log('====================================');
+    console.log('ALL FLAVOR ASSETS READY');
+    console.log(this.textureManager.getCacheStats());
+    console.log('====================================');
+  }
+
+  private async preloadAllFlavorMaterials(
+    configs: Record<
+      FlavorId,
+      {
+        folder: string;
+      }
+    >,
+  ): Promise<void> {
+    const flavorIds = Object.keys(configs) as FlavorId[];
+    console.log('====================================');
+    console.log('STARTING PARALLEL FLAVOR PRELOAD');
+    console.log(flavorIds);
+    console.log('====================================');
+    const results = await Promise.all(
+      flavorIds.map(async (flavorId) => {
+        const config = configs[flavorId];
+        try {
+          const [body, aluminium, tab] = await Promise.all([
+            this.textureManager.loadPBRMaterial(config.folder, 'Body_Texture_Main'),
+            this.textureManager.loadPBRMaterial(config.folder, 'Top_Bottom_Aluminium'),
+            this.textureManager.loadPBRMaterial(config.folder, 'Opening_Tab_Aluminium'),
+          ]);
+          const materials: FlavorMaterials = {
+            body,
+            aluminium,
+            tab,
+          };
+          this.flavorMaterials[flavorId] = materials;
+          this.textureManager.prepareMaterialForGPU(body);
+          this.textureManager.prepareMaterialForGPU(aluminium);
+          this.textureManager.prepareMaterialForGPU(tab);
+          console.log('Flavor prepared:', flavorId);
+          return true;
+        } catch (error) {
+          console.error(`Could not load materials for ${flavorId}:`, error);
+          return false;
+        }
+      }),
+    );
+    console.log('Flavor preload results:', results);
+    this.textureManager.prepareAllMaterialsForGPU();
+    console.log('ALL TEXTURES UPLOADED TO GPU');
+  }
+
+  private async precompileMaterials(): Promise<void> {
+    if (!this.renderer || !this.scene || !this.camera) {
+      return;
+    }
+    try {
+      if (typeof this.renderer.compileAsync === 'function') {
+        await this.renderer.compileAsync(this.scene, this.camera);
+      } else {
+        this.renderer.compile(this.scene, this.camera);
+      }
+      console.log('Three.js shaders precompiled.');
+    } catch (error) {
+      console.warn('Shader precompile failed:', error);
     }
   }
 
