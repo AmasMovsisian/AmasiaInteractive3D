@@ -43,6 +43,7 @@
 >
   <h1>ENERGY ELEVATED</h1>
   <h2>Performance begins here</h2>
+
 </app-story>
 
 <!-- SECTION 1 RIGHT END -->
@@ -736,75 +737,133 @@
   [opacity]="1"
   [distance]="250"
 >
-  <div class="button_section">
-    <h1>Choose your flavor</h1>
+<div class="button_section">
+   <div class="luxury_eyebrow">
+      AMASIA
+    </div>
+  <h1>DEFINE YOUR TASTE</h1>
+  
 
-    <br /><br />
+  <br /><br />
 
-    <h2>Main Flavors</h2>
+  <h2>Main Flavors</h2>
 
-    <br />
+  <br />
 
-    <button
-      class="button button_for_Story"
-      (click)="selectFlavor('keylime')"
-    >
-      KEYLIME
-    </button>
+  <button
+    class="button button_for_Story"
+    [class.active]="selectedFlavor().id === 'keylime'"
+    data-flavor="keylime"
+    (click)="selectFlavor('keylime')"
+  >
+    <span class="button_letter" style="--i: 0">K</span>
+    <span class="button_letter" style="--i: 1">E</span>
+    <span class="button_letter" style="--i: 2">Y</span>
+    <span class="button_letter" style="--i: 3">L</span>
+    <span class="button_letter" style="--i: 4">I</span>
+    <span class="button_letter" style="--i: 5">M</span>
+    <span class="button_letter" style="--i: 6">E</span>
+  </button>
 
-    <br />
+  <br />
 
-    <button
-      class="button button_for_Story"
-      (click)="selectFlavor('akebi')"
-    >
-      AKEBI
-    </button>
+  <button
+    class="button button_for_Story"
+    [class.active]="selectedFlavor().id === 'akebi'"
+    data-flavor="akebi"
+    (click)="selectFlavor('akebi')"
+  >
+    <span class="button_letter" style="--i: 0">A</span>
+    <span class="button_letter" style="--i: 1">K</span>
+    <span class="button_letter" style="--i: 2">E</span>
+    <span class="button_letter" style="--i: 3">B</span>
+    <span class="button_letter" style="--i: 4">I</span>
+  </button>
 
-    <br /><br /><br />
+  <br /><br /><br />
 
-    <h2>Premium Flavors</h2>
+  <h2>Premium Flavors</h2>
 
-    <br />
+  <br />
 
-    <button
-      class="button button_for_Story"
-      (click)="selectFlavor('coconut')"
-    >
-      COCONUT
-    </button>
+  <button
+    class="button button_for_Story"
+    [class.active]="selectedFlavor().id === 'coconut'"
+    data-flavor="coconut"
+    (click)="selectFlavor('coconut')"
+  >
+    <span class="button_letter" style="--i: 0">C</span>
+    <span class="button_letter" style="--i: 1">O</span>
+    <span class="button_letter" style="--i: 2">C</span>
+    <span class="button_letter" style="--i: 3">O</span>
+    <span class="button_letter" style="--i: 4">N</span>
+    <span class="button_letter" style="--i: 5">U</span>
+    <span class="button_letter" style="--i: 6">T</span>
+  </button>
 
-    <br />
+  <br />
 
-    <button
-      class="button button_for_Story"
-      (click)="selectFlavor('lychee')"
-    >
-      LYCHEE
-    </button>
+  <button
+    class="button button_for_Story"
+    [class.active]="selectedFlavor().id === 'lychee'"
+    data-flavor="lychee"
+    (click)="selectFlavor('lychee')"
+  >
+    <span class="button_letter" style="--i: 0">L</span>
+    <span class="button_letter" style="--i: 1">Y</span>
+    <span class="button_letter" style="--i: 2">C</span>
+    <span class="button_letter" style="--i: 3">H</span>
+    <span class="button_letter" style="--i: 4">E</span>
+    <span class="button_letter" style="--i: 5">E</span>
+  </button>
 
-    <br />
+  <br />
 
-    <button
-      class="button button_for_Story"
-      (click)="selectFlavor('pandan')"
-    >
-      PANDAN
-    </button>
+  <button
+    class="button button_for_Story"
+    [class.active]="selectedFlavor().id === 'pandan'"
+    data-flavor="pandan"
+    (click)="selectFlavor('pandan')"
+  >
+    <span class="button_letter" style="--i: 0">P</span>
+    <span class="button_letter" style="--i: 1">A</span>
+    <span class="button_letter" style="--i: 2">N</span>
+    <span class="button_letter" style="--i: 3">D</span>
+    <span class="button_letter" style="--i: 4">A</span>
+    <span class="button_letter" style="--i: 5">N</span>
+  </button>
 
-    <br /><br /><br />
+  <br /><br /><br />
 
-    <h2>SIGNATURE VIP</h2>
+  <h2>SIGNATURE VIP</h2>
 
-    <br />
+  <br />
 
-    <button
-      class="button button_for_Story"
-      (click)="selectFlavor('black-edition')"
-    >
-      BLACK EDITION
-    </button>
-  </div>
+  <button
+    class="button button_for_Story"
+    [class.active]="selectedFlavor().id === 'black-edition'"
+    data-flavor="black-edition"
+    (click)="selectFlavor('black-edition')"
+  >
+    <span class="button_letter" style="--i: 0">B</span>
+    <span class="button_letter" style="--i: 1">L</span>
+    <span class="button_letter" style="--i: 2">A</span>
+    <span class="button_letter" style="--i: 3">C</span>
+    <span class="button_letter" style="--i: 4">K</span>
+
+    <span class="button_space"></span>
+
+    <span class="button_letter" style="--i: 5">E</span>
+    <span class="button_letter" style="--i: 6">D</span>
+    <span class="button_letter" style="--i: 7">I</span>
+    <span class="button_letter" style="--i: 8">T</span>
+    <span class="button_letter" style="--i: 9">I</span>
+    <span class="button_letter" style="--i: 10">O</span>
+    <span class="button_letter" style="--i: 11">N</span>
+  </button>
+</div>
+
+
 </app-story>
 
 
