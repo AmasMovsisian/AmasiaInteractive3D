@@ -1,4 +1,6 @@
-<app-story
+<!-- SECTION 1 RIGHT START -->
+
+<app-story class="Section_1_Right_Desktop"
   [from]="-0.5"
   [to]="0.2"
   desktopHorizontal="right"
@@ -43,8 +45,12 @@
   <h2>Performance begins here</h2>
 </app-story>
 
+<!-- SECTION 1 RIGHT END -->
 
-<app-story
+
+<!-- SECTION 1 LEFT START -->
+
+<app-story class="Section_1_Left_Desktop"
   [from]="-0.5"
   [to]="0.2"
   desktopHorizontal="left"
@@ -89,6 +95,10 @@
   <h2>Energy without excess</h2>
 </app-story>
 
+<!-- SECTION 1 LEFT END -->
+
+
+<!-- SECTION 1 BOTTOM  START -->
 
 <app-story
   [from]="-0.5"
@@ -140,8 +150,12 @@
   </div>
 </app-story>
 
+<!-- SECTION 1 BOTTOM END -->
 
-<app-story
+
+<!-- SECTION 2 RIGHT START -->
+
+<app-story class="Section_2_Right_Desktop"
   [from]="0.37"
   [to]="0.6"
   desktopHorizontal="right"
@@ -190,8 +204,12 @@
   </div>
 </app-story>
 
+<!-- SECTION 2 RIGHT END -->
 
-<app-story
+
+<!-- SECTION 2 LEFT START -->
+
+<app-story class="Section_2_Left_Desktop"
   [from]="0.37"
   [to]="0.6"
   desktopHorizontal="left"
@@ -241,17 +259,22 @@
   </div>
 </app-story>
 
+<!-- SECTION 2 LEFT END -->
 
-<app-story
+
+<!-- SECTION 3 DESKTOP HD TO 4K START-->
+
+<app-story class="Section_3_Desktop"
   [from]="0.6"
   [to]="0.8"
-  desktopHorizontal="center"
+
+  desktopHorizontal="right"
   desktopVertical="top"
   desktopPivot="center"
   desktopTextAlign="left"
   desktopEnter="right"
   desktopLeave="bottom"
-  [desktopOffsetX]="352"
+  [desktopOffsetX]="-520"
   [desktopOffsetY]="-25"
   [desktopWidth]="720"
   [desktopScale]="1"
@@ -264,8 +287,8 @@
   tabletLeave="bottom"
   [tabletOffsetX]="100"
   [tabletOffsetY]="-25"
-  [tabletWidth]="420"
-  [tabletScale]="1"
+  [tabletWidth]="600"
+  [tabletScale]="0"
 
   mobileHorizontal="center"
   mobileVertical="top"
@@ -273,8 +296,8 @@
   mobileTextAlign="left"
   mobileEnter="right"
   mobileLeave="left"
-  [mobileOffsetX]="-15"
-  [mobileOffsetY]="-75"
+  [mobileOffsetX]="-30"
+  [mobileOffsetY]="-60"
   [mobileWidth]="600"
   [mobileScale]="0"
 
@@ -284,6 +307,8 @@
   [distance]="250"
 >
   <div class="luxury_intro">
+
+    <!-- 1. INTRO -->
     <div class="luxury_eyebrow">
       AMASIA
     </div>
@@ -311,19 +336,196 @@
     </div>
 
     <div class="luxury_line"></div>
+
+
+
+    <!-- 3. CLAIM + DESCRIPTION -->
+    <div class="luxury_intro">
+
+      <br>
+
+      <h2 class="luxury_claim">
+        A different expression
+        of energy
+      </h2>
+
+      <br><br>
+
+      <span class="luxury_description">
+        AMASIA is crafted for those who value themselves and the moments they choose.
+        Refined taste, distinctive character and effortless sophistication come together
+        in a drink that elevates every occasion.
+
+        <br><br>
+
+        It gives you presence without excess,
+        confidence without noise, and a sense of indulgence that feels entirely your own.
+
+        <br>
+
+        Because true luxury is not about showing more.
+        <br>
+        It is about expecting more.
+      </span>
+    <div class="luxury_intro">
+
+      <div class="luxury_footer">
+        <span>DESIGNED FOR THE MOMENT</span>
+        <span>MADE TO BE REMEMBERED</span>
+      </div>
+
+    </div>
+    
+    </div>
+
+
+    <!-- 4. FOOTER -->
+    
+
   </div>
 </app-story>
 
-<app-story
+<!-- SECTION 3 DESKTOP HD TO 4K START-->
+
+
+<!-- SECTION 3 TABLETT START -->
+
+<app-story class="Section_2_tablet"
   [from]="0.6"
   [to]="0.8"
-  desktopHorizontal="center"
+
+  desktopHorizontal="right"
   desktopVertical="top"
   desktopPivot="center"
   desktopTextAlign="left"
   desktopEnter="right"
   desktopLeave="bottom"
-  [desktopOffsetX]="352"
+  [desktopOffsetX]="-520"
+  [desktopOffsetY]="-25"
+  [desktopWidth]="720"
+  [desktopScale]="0"
+
+  tabletHorizontal="center"
+  tabletVertical="top"
+  tabletPivot="center"
+  tabletTextAlign="left"
+  tabletEnter="right"
+  tabletLeave="bottom"
+  [tabletOffsetX]="100"
+  [tabletOffsetY]="-25"
+  [tabletWidth]="600"
+  [tabletScale]="1"
+
+  mobileHorizontal="center"
+  mobileVertical="top"
+  mobilePivot="center"
+  mobileTextAlign="left"
+  mobileEnter="right"
+  mobileLeave="left"
+  [mobileOffsetX]="-30"
+  [mobileOffsetY]="-60"
+  [mobileWidth]="600"
+  [mobileScale]="0"
+
+  [fadeIn]="0.3"
+  [fadeOut]="0.3"
+  [opacity]="1"
+  [distance]="250"
+>
+  <div class="luxury_intro">
+
+    <!-- 1. INTRO -->
+    <div class="luxury_eyebrow">
+      AMASIA
+    </div>
+
+    <h1 class="luxury_title">
+      ENERGY
+    </h1>
+    <br>
+
+    <h1 class="luxury_title">
+      DISTINCT
+    </h1>
+    <br>
+
+    <h1 class="luxury_title">
+      CHARACTER
+    </h1>
+
+    <div class="luxury_keywords">
+      <span>PRECISION</span>
+      <span>•</span>
+      <span>PRESENCE</span>
+      <span>•</span>
+      <span>TASTE</span>
+    </div>
+
+    <div class="luxury_line"></div>
+
+
+
+    <!-- 3. CLAIM + DESCRIPTION -->
+    <div class="luxury_intro">
+
+      <br>
+
+      <h2 class="luxury_claim">
+        A different expression
+        of energy
+      </h2>
+
+      <br><br>
+
+      <span class="luxury_description">
+        AMASIA is crafted for those who value themselves and the moments they choose.
+        Refined taste, distinctive character and effortless sophistication come together
+        in a drink that elevates every occasion.
+
+        <br><br>
+
+        It gives you presence without excess,
+        confidence without noise, and a sense of indulgence that feels entirely your own.
+
+        <br>
+
+        Because true luxury is not about showing more.
+        <br>
+        It is about expecting more.
+      </span>
+    <div class="luxury_intro">
+
+      <div class="luxury_footer">
+        <span>DESIGNED FOR THE MOMENT</span>
+        <span>MADE TO BE REMEMBERED</span>
+      </div>
+
+    </div>
+    
+    </div>
+
+
+    <!-- 4. FOOTER -->
+    
+
+  </div>
+</app-story>
+
+<!-- SECTION 3 TABLETT END -->
+
+
+<!-- SECTION 3 MOBILE START -->
+
+<app-story
+  [from]="0.6"
+  [to]="0.8"
+  desktopHorizontal="right"
+  desktopVertical="top"
+  desktopPivot="center"
+  desktopTextAlign="left"
+  desktopEnter="right"
+  desktopLeave="bottom"
+  [desktopOffsetX]="-150"
   [desktopOffsetY]="-25"
   [desktopWidth]="720"
   [desktopScale]="0"
@@ -377,16 +579,16 @@
 <app-story
   [from]="0.6"
   [to]="0.8"
-  desktopHorizontal="center"
+  desktopHorizontal="right"
   desktopVertical="center"
   desktopPivot="center"
   desktopTextAlign="left"
   desktopEnter="right"
   desktopLeave="bottom"
-  [desktopOffsetX]="352"
-  [desktopOffsetY]="25"
+  [desktopOffsetX]="-150"
+  [desktopOffsetY]="0"
   [desktopWidth]="720"
-  [desktopScale]="1"
+  [desktopScale]="0"
 
   tabletHorizontal="center"
   tabletVertical="bottom"
@@ -397,7 +599,7 @@
   [tabletOffsetX]="100"
   [tabletOffsetY]="-350"
   [tabletWidth]="420"
-  [tabletScale]="1"
+  [tabletScale]="0"
 
 
   mobileHorizontal="right"
@@ -423,32 +625,32 @@
       of energy
     </h2><br><br>
 
-<br><p class="luxury_description">
+<br><span class="luxury_description">
   AMASIA is crafted for those who value themselves and the moments they choose.
   Refined taste, distinctive character and effortless sophistication come together
   in a drink that elevates every occasion.<br><br> It gives you presence without excess,
   confidence without noise, and a sense of indulgence that feels entirely your own.
   <br>
   Because true luxury is not about showing more.<br>It is about expecting more.
-</p>
+</span>
 
   </div>
 </app-story>
 
 
-<app-story
+<app-story 
   [from]="0.6"
   [to]="0.8"
-  desktopHorizontal="center"
+  desktopHorizontal="right"
   desktopVertical="bottom"
   desktopPivot="center"
   desktopTextAlign="left"
   desktopEnter="right"
   desktopLeave="bottom"
-  [desktopOffsetX]="352"
+  [desktopOffsetX]="-150"
   [desktopOffsetY]="0"
   [desktopWidth]="720"
-  [desktopScale]="1"
+  [desktopScale]="0"
 
   tabletHorizontal="center"
   tabletVertical="bottom"
@@ -459,7 +661,7 @@
   [tabletOffsetX]="100"
   [tabletOffsetY]="0"
   [tabletWidth]="420"
-  [tabletScale]="1"
+  [tabletScale]="0"
 
 
   mobileHorizontal="center"
@@ -487,9 +689,12 @@
   </div>
 </app-story>
 
+<!-- SECTION 3 MOBILE END -->
 
 
-<app-story
+<!-- Section 4 Start -->
+
+<app-story class="Section_4_flavor"
   [from]="0.9"
   [to]="1.2"
   [interactionStart]="0.3"
@@ -603,7 +808,7 @@
 </app-story>
 
 
-<app-story
+<app-story class="Section_4_about_flavor"
   [from]="0.9"
   [to]="1.2"
   desktopHorizontal="right"
@@ -662,7 +867,7 @@
 </app-story>
 
 
-<app-story
+<app-story class="Section_4_about_flavor"
   [from]="0.9"
   [to]="1.2"
   desktopHorizontal="right"
@@ -713,7 +918,7 @@
 </app-story>
 
 
-<app-story
+<app-story class="Section_4_about_flavor"
   [from]="0.9"
   [to]="1.2"
   desktopHorizontal="right"
@@ -762,3 +967,5 @@
     }
   }
 </app-story>
+
+<!-- SECTION 4 END -->
