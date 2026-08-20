@@ -203,6 +203,7 @@
   perspective: 900px;
   transform-style: preserve-3d;
   transform: translateZ(0);
+  cursor: pointer;
   transition:
     transform 650ms cubic-bezier(0.22, 1, 0.36, 1),
     background 650ms ease,
@@ -210,6 +211,14 @@
     border-color 650ms ease,
     box-shadow 650ms ease,
     filter 650ms ease;
+}
+.button_section .button:disabled {
+  pointer-events: none;
+  cursor: default;
+}
+.button_section .button:not(:disabled) {
+  pointer-events: auto;
+  cursor: pointer;
 }
 .button_section .button::before {
   content: '';
@@ -267,23 +276,28 @@
   display: inline-block;
   width: 0.35em;
 }
-.button_section .button:hover {
+.button_section .button:not(:disabled):hover {
   transform: translateY(-2px) scale(1.035);
   filter: saturate(1.04);
 }
-.button_section .button:hover::before {
+.button_section .button:not(:disabled):hover::before {
   top: -45%;
   transform: rotate(22deg) scale(1.08);
   border-radius: 42% 58% 55% 45%;
 }
-.button_section .button:hover::after {
+.button_section .button:not(:disabled):hover::after {
   top: -28%;
   opacity: 1;
   transform: rotate(-4deg) scale(1);
 }
-.button_section .button:hover .button_letter {
+.button_section .button:not(:disabled):hover .button_letter {
   animation: luxuryLetterSpin 350ms cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: calc(var(--i) * 70ms);
+}
+.button_section .button:not(:disabled):hover .button_letter {
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.18),
+    0 0 12px rgba(255, 255, 255, 0.06);
 }
 @keyframes luxuryLetterSpin {
   0% {
@@ -302,12 +316,7 @@
     transform: rotateY(360deg) translateZ(0);
   }
 }
-.button_section .button:hover .button_letter {
-  text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.18),
-    0 0 12px rgba(255, 255, 255, 0.06);
-}
-.button_section .button[data-flavor='keylime']:hover,
+.button_section .button[data-flavor='keylime']:not(:disabled):hover,
 .button_section .button[data-flavor='keylime'].active {
   background: linear-gradient(135deg, #4f9f24 0%, #8fbe3f 50%, #6fae2b 100%);
   color: #122006 !important;
@@ -322,7 +331,7 @@
     transparent 75%
   );
 }
-.button_section .button[data-flavor='akebi']:hover,
+.button_section .button[data-flavor='akebi']:not(:disabled):hover,
 .button_section .button[data-flavor='akebi'].active {
   background: linear-gradient(135deg, #865bb4 0%, #aa7bd0 50%, #8d63bb 100%);
   color: #18200b !important;
@@ -337,7 +346,7 @@
     transparent 75%
   );
 }
-.button_section .button[data-flavor='coconut']:hover,
+.button_section .button[data-flavor='coconut']:not(:disabled):hover,
 .button_section .button[data-flavor='coconut'].active {
   background: linear-gradient(135deg, #56a9c7 0%, #78c7df 50%, #5aafca 100%);
   color: #07171d !important;
@@ -352,7 +361,7 @@
     transparent 75%
   );
 }
-.button_section .button[data-flavor='lychee']:hover,
+.button_section .button[data-flavor='lychee']:not(:disabled):hover,
 .button_section .button[data-flavor='lychee'].active {
   background: linear-gradient(135deg, #df919b 0%, #ec8888 50%, #df98ad 100%);
   color: #32151e !important;
@@ -367,7 +376,7 @@
     transparent 75%
   );
 }
-.button_section .button[data-flavor='pandan']:hover,
+.button_section .button[data-flavor='pandan']:not(:disabled):hover,
 .button_section .button[data-flavor='pandan'].active {
   background: linear-gradient(135deg, #6f9958 0%, #8eb978 50%, #709a59 100%);
   color: #101b0d !important;
@@ -382,7 +391,7 @@
     transparent 75%
   );
 }
-.button_section .button[data-flavor='black-edition']:hover,
+.button_section .button[data-flavor='black-edition']:not(:disabled):hover,
 .button_section .button[data-flavor='black-edition'].active {
   background: linear-gradient(
     135deg,
@@ -881,10 +890,12 @@ h2 {
     transition: none !important;
     animation: none !important;
   }
-  .button_section .button:hover {
+  .button_section .button:hover,
+  .button_section .button:not(:disabled):hover {
     transform: none;
   }
-  .button_section .button:hover .button_letter {
+  .button_section .button:hover .button_letter,
+  .button_section .button:not(:disabled):hover .button_letter {
     animation: none !important;
   }
   .button_section .button::before,

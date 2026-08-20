@@ -1,26 +1,29 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { StoryComponent } from './story/story';
-import {
-  FlavorId,
-  FlavorService,
-} from '../../core/services/flavor.service';
+import { FlavorId, FlavorService } from '../../core/services/flavor.service';
+import { ScrollService } from '../../core/services/scroll.service';
 
 @Component({
   selector: 'app-scroll-story',
   standalone: true,
-  imports: [
-    StoryComponent,
-  ],
+  imports: [StoryComponent],
   templateUrl: './scroll-story.html',
   styleUrl: './scroll-story.scss',
 })
 export class ScrollStoryComponent {
   readonly flavorService = inject(FlavorService);
+  readonly scrollService = inject(ScrollService);
   readonly flavors = this.flavorService.flavors;
-  readonly selectedFlavor =
-    this.flavorService.selectedFlavor;
+  readonly selectedFlavor = this.flavorService.selectedFlavor;
+  readonly buttonsActive = computed(() => {
+    const progress = this.scrollService.progress();
+    return progress >= 0.99 && progress <= 1.2;
+  });
 
   selectFlavor(flavorId: FlavorId): void {
+    if (!this.buttonsActive()) {
+      return;
+    }
     this.flavorService.selectFlavor(flavorId);
   }
 

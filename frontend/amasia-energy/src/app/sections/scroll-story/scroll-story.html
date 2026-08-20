@@ -738,11 +738,11 @@
   [distance]="250"
 >
 <div class="button_section">
-   <div class="luxury_eyebrow">
-      AMASIA
-    </div>
+  <div class="luxury_eyebrow">
+    AMASIA
+  </div>
+
   <h1>DEFINE YOUR TASTE</h1>
-  
 
   <br /><br />
 
@@ -753,6 +753,7 @@
   <button
     class="button button_for_Story"
     [class.active]="selectedFlavor().id === 'keylime'"
+    [disabled]="!buttonsActive()"
     data-flavor="keylime"
     (click)="selectFlavor('keylime')"
   >
@@ -770,6 +771,7 @@
   <button
     class="button button_for_Story"
     [class.active]="selectedFlavor().id === 'akebi'"
+    [disabled]="!buttonsActive()"
     data-flavor="akebi"
     (click)="selectFlavor('akebi')"
   >
@@ -789,6 +791,7 @@
   <button
     class="button button_for_Story"
     [class.active]="selectedFlavor().id === 'coconut'"
+    [disabled]="!buttonsActive()"
     data-flavor="coconut"
     (click)="selectFlavor('coconut')"
   >
@@ -806,6 +809,7 @@
   <button
     class="button button_for_Story"
     [class.active]="selectedFlavor().id === 'lychee'"
+    [disabled]="!buttonsActive()"
     data-flavor="lychee"
     (click)="selectFlavor('lychee')"
   >
@@ -822,6 +826,7 @@
   <button
     class="button button_for_Story"
     [class.active]="selectedFlavor().id === 'pandan'"
+    [disabled]="!buttonsActive()"
     data-flavor="pandan"
     (click)="selectFlavor('pandan')"
   >
@@ -842,6 +847,7 @@
   <button
     class="button button_for_Story"
     [class.active]="selectedFlavor().id === 'black-edition'"
+    [disabled]="!buttonsActive()"
     data-flavor="black-edition"
     (click)="selectFlavor('black-edition')"
   >
@@ -862,6 +868,7 @@
     <span class="button_letter" style="--i: 11">N</span>
   </button>
 </div>
+
 
 
 </app-story>
