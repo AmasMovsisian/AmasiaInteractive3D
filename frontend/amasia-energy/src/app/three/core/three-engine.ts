@@ -1,25 +1,16 @@
 import { effect, Injectable } from '@angular/core';
-
 import * as THREE from 'three';
-
 import { EXRLoader } from 'three/addons/loaders/EXRLoader.js';
-
 import { GltfLoader } from '../loaders/gltf-loader';
-
 import { TextureManager } from '../materials/texture-manager';
-
 import { ScrollService } from '../../core/services/scroll.service';
-
 import { FlavorId, FlavorService } from '../../core/services/flavor.service';
-
 import { ArnoldLightLoader } from '../lighting/arnold-light-loader';
-
 interface FlavorMaterials {
   body: THREE.MeshPhysicalMaterial;
   aluminium: THREE.MeshPhysicalMaterial;
   tab: THREE.MeshPhysicalMaterial;
 }
-
 @Injectable({
   providedIn: 'root',
 })
@@ -31,33 +22,31 @@ export class ThreeEngine {
   private action?: THREE.AnimationAction;
   private animationDuration = 0;
   private originalCameraFov = 0;
+  private initialDevicePixelRatio = window.devicePixelRatio || 1;
+  private lastValidFov = 0;
+  private lastValidAspect = 0;
   private arnoldLightLoader!: ArnoldLightLoader;
   private canvas!: HTMLCanvasElement;
-
   private readonly enableHDRI = true;
   private readonly hdriStartRotation = THREE.MathUtils.degToRad(60);
   private readonly hdriRotationAmount = THREE.MathUtils.degToRad(720);
-
   private readonly enableFallbackLight = true;
   private readonly fallbackLightIntensity = 1.5;
-
+  private readonly maxRenderPixelRatio = 4;
   private flavorMaterials: Partial<Record<FlavorId, FlavorMaterials>> = {};
   private centerGroup?: THREE.Object3D;
   private materialsReady = false;
   private materialsPreloadPromise?: Promise<void>;
-
   private centerRotationPivot?: THREE.Group;
   private centerRotationAnimating = false;
   private centerRotationStartTime = 0;
   private centerRotationStart = 0;
   private centerRotationTarget = Math.PI * 2;
   private readonly centerRotationDuration = 0.3;
-
   private pendingFlavorId?: FlavorId;
   private pendingFlavorMaterials?: FlavorMaterials;
   private pendingMaterialApplied = false;
   private currentCenterFlavor?: FlavorId;
-
   constructor(
     private gltfLoader: GltfLoader,
     private textureManager: TextureManager,
@@ -81,9 +70,9 @@ export class ThreeEngine {
       this.applyFlavorToCenter(flavorId);
     });
   }
-
   async init(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
+    this.initialDevicePixelRatio = window.devicePixelRatio || 1;
     this.scene = new THREE.Scene();
     this.renderer = new THREE.WebGLRenderer({
       canvas,
@@ -95,7 +84,7 @@ export class ThreeEngine {
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.2;
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+    this.updateRenderPixelRatio();
     this.renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -117,7 +106,20 @@ export class ThreeEngine {
     await this.loadModel();
     this.animate();
   }
-
+  private updateRenderPixelRatio(): void {
+    if (!this.renderer) {
+      return;
+    }
+    const currentDpr = window.devicePixelRatio || 1;
+    const pixelRatio = THREE.MathUtils.clamp(
+      currentDpr,
+      this.initialDevicePixelRatio,
+      this.maxRenderPixelRatio,
+    );
+    this.renderer.setPixelRatio(pixelRatio);
+    console.log('Render Pixel Ratio:', pixelRatio);
+    console.log('Current Device Pixel Ratio:', currentDpr);
+  }
   private createFallbackLight() {
     const light = new THREE.HemisphereLight(0xffffff, 0x444444, this.fallbackLightIntensity);
     light.name = 'ThreeFallbackHemisphereLight';
@@ -129,7 +131,6 @@ export class ThreeEngine {
     this.scene.add(frontLight);
     this.scene.add(frontLight.target);
   }
-
   private async loadHDRILighting() {
     try {
       const loader = new EXRLoader();
@@ -146,12 +147,10 @@ export class ThreeEngine {
       console.warn('HDRI Fehler:', error);
     }
   }
-
   private async loadArnoldLights() {
     this.arnoldLightLoader = new ArnoldLightLoader(this.scene);
     await this.arnoldLightLoader.load('/three/lighting/arnold_lights.json');
   }
-
   private updateHDRIRotation() {
     if (!this.enableHDRI) {
       return;
@@ -163,7 +162,6 @@ export class ThreeEngine {
     const rotation = this.hdriStartRotation + progress * this.hdriRotationAmount;
     this.scene.environmentRotation.y = rotation;
   }
-
   private async loadModel() {
     const gltf = await this.gltfLoader.load('/three/models/MyHeroAnimation.glb');
     this.scene.add(gltf.scene);
@@ -184,7 +182,6 @@ export class ThreeEngine {
     console.log('MODEL CENTER:', center.toArray());
     console.log('====================================');
   }
-
   private createCenterRotationPivot(): void {
     if (!this.centerGroup || !this.centerGroup.parent) {
       console.warn('Cannot create center rotation pivot.');
@@ -203,7 +200,6 @@ export class ThreeEngine {
     this.centerRotationPivot.rotation.set(0, 0, 0);
     console.log('CENTER ROTATION PIVOT CREATED', this.centerRotationPivot);
   }
-
   private setupCamera(gltf: any) {
     let camera: THREE.PerspectiveCamera | undefined;
     if (gltf.cameras && gltf.cameras.length > 0) {
@@ -229,11 +225,11 @@ export class ThreeEngine {
     this.resizeCamera();
     console.log('AKTIVE GLB KAMERA:', this.camera.name);
   }
-
   private resizeCamera() {
-    if (!this.camera) {
+    if (!this.camera || !this.renderer) {
       return;
     }
+    this.updateRenderPixelRatio();
     const width = window.innerWidth;
     let multiplier = 1;
     if (width <= 390) {
@@ -247,12 +243,25 @@ export class ThreeEngine {
     } else if (width <= 1420) {
       multiplier = 1.5;
     }
+    if (this.isBrowserZoomedTooFar()) {
+      multiplier = 1;
+    }
     this.camera.fov = this.originalCameraFov * multiplier;
     this.camera.aspect = this.canvasAspect();
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight, false);
+    this.lastValidFov = this.camera.fov;
+    this.lastValidAspect = this.camera.aspect;
   }
-
+  private isBrowserZoomedTooFar(): boolean {
+    const screenWidth = window.screen.width;
+    const viewportWidth = window.innerWidth;
+    if (screenWidth <= 0 || viewportWidth <= 0) {
+      return false;
+    }
+    const zoomRatio = viewportWidth / screenWidth;
+    return zoomRatio < 0.75 || zoomRatio > 1.25;
+  }
   private setupAnimation(gltf: any) {
     if (!gltf.animations || gltf.animations.length === 0) {
       console.warn('Keine Animation gefunden');
@@ -268,7 +277,6 @@ export class ThreeEngine {
     this.action.play();
     console.log('Animation duration:', this.animationDuration);
   }
-
   private async applyGuaranteedTexturesToMeshes(object: THREE.Object3D) {
     const centerGroup = object.getObjectByName('Can_Center_GRP');
     const leftGroup = object.getObjectByName('Can_Left_GRP');
@@ -345,7 +353,6 @@ export class ThreeEngine {
     console.log(this.textureManager.getCacheStats());
     console.log('====================================');
   }
-
   private async preloadAllFlavorMaterials(
     configs: Record<
       FlavorId,
@@ -389,7 +396,6 @@ export class ThreeEngine {
     this.textureManager.prepareAllMaterialsForGPU();
     console.log('ALL TEXTURES UPLOADED TO GPU');
   }
-
   private async precompileMaterials(): Promise<void> {
     if (!this.renderer || !this.scene || !this.camera) {
       return;
@@ -405,7 +411,6 @@ export class ThreeEngine {
       console.warn('Shader precompile failed:', error);
     }
   }
-
   private applyMaterialsToCan(
     canGroup: THREE.Object3D,
     materials: FlavorMaterials,
@@ -434,7 +439,6 @@ export class ThreeEngine {
       }
     });
   }
-
   private applyFlavorToCenter(flavorId: FlavorId): void {
     if (!this.centerGroup) {
       console.warn('Cannot change flavor: Can_Center_GRP not found.');
@@ -464,7 +468,6 @@ export class ThreeEngine {
     console.log('STARTING FLAVOR ROTATION:', flavorId);
     console.log('====================================');
   }
-
   private startCenterRotation(): void {
     if (!this.centerRotationPivot) {
       return;
@@ -474,7 +477,6 @@ export class ThreeEngine {
     this.centerRotationTarget = this.centerRotationStart + Math.PI * 2;
     this.centerRotationStartTime = performance.now();
   }
-
   private updateCenterRotation(): void {
     if (!this.centerRotationAnimating || !this.centerRotationPivot) {
       return;
@@ -522,7 +524,6 @@ export class ThreeEngine {
       console.log('====================================');
     }
   }
-
   private debugMaterial(mesh: THREE.Mesh, material: THREE.Material) {
     console.log('MATERIAL:', {
       mesh: mesh.name,
@@ -541,7 +542,6 @@ export class ThreeEngine {
       );
     }
   }
-
   private canvasAspect() {
     const canvas = this.renderer.domElement;
     const width = canvas.clientWidth;
@@ -551,7 +551,6 @@ export class ThreeEngine {
     }
     return width / height;
   }
-
   private animate = () => {
     requestAnimationFrame(this.animate);
     const progress = this.scrollService.progress();
