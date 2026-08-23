@@ -1,4 +1,4 @@
-import { effect, Injectable } from '@angular/core';
+import { effect, Injectable, signal } from '@angular/core';
 import * as THREE from 'three';
 import { EXRLoader } from 'three/addons/loaders/EXRLoader.js';
 import { GltfLoader } from '../loaders/gltf-loader';
@@ -53,6 +53,7 @@ export class ThreeEngine {
   private renderLoopStarted = false;
   private resizeListener?: () => void;
   private heroActive = false;
+  readonly loading = signal(false);
   constructor(
     private gltfLoader: GltfLoader,
     private textureManager: TextureManager,
@@ -91,31 +92,41 @@ export class ThreeEngine {
       console.log('Reusing existing materials.');
       console.log('Reusing existing GLTF.');
       console.log('Reusing existing animation.');
+      this.loading.set(false);
       this.attachRendererToCanvas(canvas);
       this.resizeCamera();
       return;
     }
     if (this.initPromise) {
       console.log('ThreeEngine initialization already running.');
+      this.loading.set(true);
       await this.initPromise;
       this.canvas = canvas;
       this.attachedCanvas = canvas;
       this.heroActive = true;
       this.attachRendererToCanvas(canvas);
       this.resizeCamera();
+      this.loading.set(false);
       return;
     }
+    this.loading.set(true);
     this.initPromise = this.initializeEngine(canvas);
     try {
       await this.initPromise;
+      await new Promise<void>((resolve) => {
+        requestAnimationFrame(() => resolve());
+      });
       this.initialized = true;
       console.log('====================================');
       console.log('THREE ENGINE INITIALIZATION COMPLETE');
+      console.log('HERO 100% READY');
       console.log('====================================');
+      this.loading.set(false);
     } catch (error) {
       console.error('ThreeEngine initialization failed:', error);
       this.initPromise = undefined;
       this.initialized = false;
+      this.loading.set(false);
       throw error;
     }
   }
@@ -133,6 +144,7 @@ export class ThreeEngine {
     this.heroActive = false;
     this.initialized = false;
     this.initPromise = undefined;
+    this.loading.set(false);
     if (this.resizeListener) {
       window.removeEventListener('resize', this.resizeListener);
       this.resizeListener = undefined;
@@ -240,7 +252,9 @@ export class ThreeEngine {
     this.resizeListener = () => {
       this.resizeCamera();
     };
-    window.addEventListener('resize', this.resizeListener, { passive: true });
+    window.addEventListener('resize', this.resizeListener, {
+      passive: true,
+    });
   }
   private updateRenderPixelRatio(): void {
     if (!this.renderer) {
