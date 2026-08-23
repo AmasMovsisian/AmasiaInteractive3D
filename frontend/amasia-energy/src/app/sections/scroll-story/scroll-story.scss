@@ -446,9 +446,34 @@
 h2 {
   font-family: 'Exo 2';
 }
-@media (max-width: 3840px) {
+@media (min-width: 3840px) and (max-width: 5128px) {
+  .Section_1_Right_Desktop,
+  .Section_1_Left_Desktop,
+  .Section_2_Right_Desktop,
+  .Section_2_Left_Desktop,
+  .Section_3_Desktop,
+  .Section_4_flavor {
+    scale: 2;
+    margin-left: 250px;
+  }
   .section_1_bottom_txt {
-    margin-top: -12px;
+    scale: 2;
+    margin-top: 72px;
+    margin-left: 350px;
+  }
+  .Section_2_Right_Desktop,
+  .Section_2_Left_Desktop {
+    scale: 2;
+    margin-left: 400px;
+  }
+  .Section_4_flavor {
+    margin-top: 450px;
+    scale: 2;
+    margin-left: 250px;
+  }
+  .Section_4_about_flavor {
+    scale: 2.2;
+    margin-left: 450px;
   }
 }
 @media (max-width: 2327px) {

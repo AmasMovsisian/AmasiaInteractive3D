@@ -70,6 +70,12 @@ export class ThreeEngine {
       this.applyFlavorToCenter(flavorId);
     });
   }
+  private assetUrl(path: string): string {
+    const cleanPath = path.replace(/^\/+/, '');
+    const baseHref =
+      document.querySelector('base')?.getAttribute('href') || document.baseURI || '/';
+    return new URL(cleanPath, new URL(baseHref, window.location.origin)).toString();
+  }
   async init(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.initialDevicePixelRatio = window.devicePixelRatio || 1;
@@ -134,7 +140,9 @@ export class ThreeEngine {
   private async loadHDRILighting() {
     try {
       const loader = new EXRLoader();
-      const hdri = await loader.loadAsync('/three/hdri/hdri_1.exr');
+      const hdriUrl = this.assetUrl('three/hdri/hdri_1.exr');
+      console.log('Loading HDRI from:', hdriUrl);
+      const hdri = await loader.loadAsync(hdriUrl);
       const pmrem = new THREE.PMREMGenerator(this.renderer);
       const envMap = pmrem.fromEquirectangular(hdri).texture;
       this.scene.environment = envMap;
@@ -149,7 +157,9 @@ export class ThreeEngine {
   }
   private async loadArnoldLights() {
     this.arnoldLightLoader = new ArnoldLightLoader(this.scene);
-    await this.arnoldLightLoader.load('/three/lighting/arnold_lights.json');
+    const arnoldLightsUrl = this.assetUrl('three/lighting/arnold_lights.json');
+    console.log('Loading Arnold lights from:', arnoldLightsUrl);
+    await this.arnoldLightLoader.load(arnoldLightsUrl);
   }
   private updateHDRIRotation() {
     if (!this.enableHDRI) {
@@ -163,7 +173,9 @@ export class ThreeEngine {
     this.scene.environmentRotation.y = rotation;
   }
   private async loadModel() {
-    const gltf = await this.gltfLoader.load('/three/models/MyHeroAnimation.glb');
+    const modelUrl = this.assetUrl('three/models/MyHeroAnimation.glb');
+    console.log('Loading GLB from:', modelUrl);
+    const gltf = await this.gltfLoader.load(modelUrl);
     this.scene.add(gltf.scene);
     gltf.scene.traverse((child: THREE.Object3D) => {
       console.log('GLB:', child.name, '| type:', child.type, '| parent:', child.parent?.name);
@@ -178,6 +190,7 @@ export class ThreeEngine {
     box.getCenter(center);
     console.log('====================================');
     console.log('MODEL DEBUG');
+    console.log('MODEL URL:', modelUrl);
     console.log('BOUNDING BOX SIZE:', size.toArray());
     console.log('MODEL CENTER:', center.toArray());
     console.log('====================================');
