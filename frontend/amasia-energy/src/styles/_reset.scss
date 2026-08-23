@@ -5,6 +5,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 html {
   scroll-behavior: smooth;
   font-size: 16px;
@@ -14,6 +15,7 @@ html {
     background-color 0.35s ease,
     color 0.35s ease;
 }
+
 body {
   min-height: 350vh;
   background: var(--bg-primary);
@@ -25,6 +27,27 @@ body {
     background-color 0.35s ease,
     color 0.35s ease;
 }
+
+html.page-scroll-locked,
+body.page-scroll-locked {
+  overflow: hidden !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: 100% !important;
+  overscroll-behavior: none !important;
+}
+
+body.page-scroll-locked {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 h1 {
   font-family: var(--font-heading);
   font-weight: 700;
@@ -33,6 +56,7 @@ h1 {
   color: var(--text-primary);
   text-shadow: 0 12px 7px var(--text-shadow);
 }
+
 h2,
 h3,
 h4,
@@ -45,6 +69,7 @@ h6 {
   color: var(--text-primary);
   text-shadow: 0 8px 5px var(--text-shadow);
 }
+
 p,
 span,
 a,
@@ -56,23 +81,28 @@ li,
 small {
   font-family: var(--font-body);
 }
+
 a {
   color: var(--link);
   text-decoration: none;
   transition: color 0.35s ease;
 }
+
 a:hover {
   color: var(--link-hover);
 }
+
 button,
 input,
 textarea {
   font: inherit;
 }
+
 ul,
 ol {
   list-style: none;
 }
+
 img,
 svg,
 video,
@@ -80,15 +110,18 @@ canvas {
   display: block;
   max-width: 100%;
 }
+
 .hero-canvas {
   display: block;
   width: 100%;
   height: 100%;
 }
+
 ::selection {
   background: var(--selection-bg);
   color: var(--selection-text);
 }
+
 .button {
   position: relative;
   display: flex;
@@ -113,18 +146,22 @@ canvas {
     color 350ms ease,
     border-color 350ms ease;
 }
+
 .button:hover {
   transform: scale(1.05);
   background: var(--button-hover-bg);
   color: var(--button-hover-text) !important;
   border-color: var(--button-hover-border);
 }
+
 .button::after {
   display: none;
 }
+
 .button_for_Story {
   width: 256px;
 }
+
 html.device-landscape-lock {
   overflow: hidden !important;
   width: 100% !important;
@@ -132,6 +169,7 @@ html.device-landscape-lock {
   overscroll-behavior: none !important;
   scroll-behavior: auto !important;
 }
+
 body.device-landscape-lock {
   position: fixed !important;
   top: 0 !important;
@@ -152,6 +190,7 @@ body.device-landscape-lock {
     background-color 0.35s ease,
     color 0.35s ease;
 }
+
 body.device-landscape-lock .hero {
   background: var(--canvas-bg) !important;
 }

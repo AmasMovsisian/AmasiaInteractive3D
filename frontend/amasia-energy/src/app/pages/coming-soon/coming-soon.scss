@@ -1,0 +1,325 @@
+.coming-soon {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition:
+    background 0.35s ease,
+    color 0.35s ease;
+  app-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+  }
+}
+.cs-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 1440px;
+  box-sizing: border-box;
+  padding: 100px 24px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  text-align: center;
+  overflow: hidden;
+}
+.cs-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.cs-eyebrow {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.cs-title {
+  margin: 18px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--font-heading);
+  font-size: clamp(42px, 8vw, 80px);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  text-shadow: 0 12px 7px var(--text-shadow);
+  span {
+    margin-top: 28px;
+    color: var(--text-secondary);
+    opacity: 0.7;
+  }
+}
+.cs-subtitle {
+  margin: 32px 0 0;
+  max-width: 450px;
+  font-family: var(--font-body);
+  font-size: clamp(15px, 2vw, 18px);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+.cs-form {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.cs-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+.cs-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px 20px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  outline: none;
+  transition:
+    border-color 0.3s ease,
+    background 0.3s ease;
+  &::placeholder {
+    color: var(--text-muted);
+  }
+  &:focus {
+    border-color: var(--button-border);
+  }
+}
+.cs-input--invalid {
+  border-color: #d96b6b;
+  &:focus {
+    border-color: #d96b6b;
+  }
+}
+.cs-input--valid {
+  border-color: #6fae7a;
+  &:focus {
+    border-color: #6fae7a;
+  }
+}
+.cs-error {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 4px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  min-height: 16px;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  color: #d96b6b;
+  text-align: left;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: csErrorIn 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes csErrorIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.cs-btn {
+  width: 100%;
+  border-radius: 14px;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+  }
+  &:disabled {
+    opacity: 0.9;
+    cursor: not-allowed;
+  }
+}
+.cs-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.cs-footer-dot {
+  opacity: 0.5;
+}
+.cs-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.4s ease,
+    visibility 0.4s ease;
+  &.active {
+    opacity: 1;
+    visibility: visible;
+    .cs-modal {
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+.cs-modal {
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+  padding: 48px 32px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transform: translateY(20px) scale(0.95);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cs-modal__eyebrow {
+  margin-bottom: 16px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  color: var(--text-muted);
+}
+.cs-modal__title {
+  margin: 0 0 16px;
+  font-family: var(--font-heading);
+  font-size: clamp(24px, 6vw, 32px);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.cs-modal__text {
+  margin: 0 0 32px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.cs-modal__close {
+  width: 100%;
+  border-radius: 14px;
+}
+@media (max-width: 600px) {
+  .cs-container {
+    padding: 110px 16px 30px;
+    gap: 28px;
+  }
+  .cs-title {
+    font-size: clamp(38px, 11vw, 60px);
+    span {
+      margin-top: 22px;
+    }
+  }
+  .cs-subtitle {
+    margin-top: 26px;
+    font-size: 14px;
+  }
+  .cs-footer {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+@media (max-width: 480px) {
+  .cs-container {
+    padding: 100px 16px 24px;
+    gap: 24px;
+  }
+  .cs-input {
+    padding: 14px 16px;
+    font-size: 15px;
+  }
+  .cs-title {
+    font-size: 38px;
+  }
+  .cs-subtitle {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .cs-modal {
+    padding: 40px 24px;
+  }
+}
+@media (max-width: 320px) {
+  .cs-container {
+    padding: 90px 14px 20px;
+    gap: 20px;
+  }
+  .cs-title {
+    font-size: 32px;
+    span {
+      margin-top: 18px;
+    }
+  }
+  .cs-subtitle {
+    margin-top: 20px;
+    font-size: 12px;
+  }
+  .cs-footer {
+    font-size: 8px;
+    letter-spacing: 0.15em;
+  }
+  .cs-input {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+}
+.coming-soon-page {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+}

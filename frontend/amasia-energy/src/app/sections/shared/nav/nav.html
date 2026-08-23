@@ -1,6 +1,6 @@
 <nav class="nav max-width">
   <div class="nav__container">
-    <a href="#" class="logo" (click)="closeMenu()">
+    <a routerLink="/" class="logo" (click)="closeMenu()">
       <h2>AMASIA</h2>
     </a>
 
@@ -8,12 +8,15 @@
       <li>
         <a href="#">About</a>
       </li>
+
       <li>
         <a href="#">Pricing</a>
       </li>
+
       <li>
         <a href="#">Flavors</a>
       </li>
+
       <li>
         <a href="#">Contact</a>
       </li>
@@ -29,12 +32,13 @@
         <span class="theme-switch__track">
           <span class="theme-switch__indicator"></span>
         </span>
+
         <span class="theme-switch__label">
           {{ isDarkMode ? 'Dark' : 'Light' }}
         </span>
       </button>
 
-      <a href="#" class="button nav__cta"> Get Started </a>
+      <a routerLink="/coming-soon" class="button nav__cta"> REQUEST ACCESS </a>
 
       <button
         class="hamburger"
@@ -58,34 +62,46 @@
 
     <div class="mobile-menu__header">
       <span class="mobile-menu__eyebrow"> AMASIA </span>
+
       <span class="mobile-menu__status"> MENU </span>
     </div>
 
     <nav class="mobile-menu__nav">
       <a href="#" (click)="closeMenu()">
         <span class="mobile-menu__number"> 01 </span>
+
         <span class="mobile-menu__link"> About </span>
+
         <span class="mobile-menu__arrow" aria-hidden="true">
           <span class="mobile-menu__arrow-line"></span>
         </span>
       </a>
+
       <a href="#" (click)="closeMenu()">
         <span class="mobile-menu__number"> 02 </span>
+
         <span class="mobile-menu__link"> Flavors </span>
+
         <span class="mobile-menu__arrow" aria-hidden="true">
           <span class="mobile-menu__arrow-line"></span>
         </span>
       </a>
+
       <a href="#" (click)="closeMenu()">
         <span class="mobile-menu__number"> 03 </span>
+
         <span class="mobile-menu__link"> Pricing </span>
+
         <span class="mobile-menu__arrow" aria-hidden="true">
           <span class="mobile-menu__arrow-line"></span>
         </span>
       </a>
+
       <a href="#" (click)="closeMenu()">
         <span class="mobile-menu__number"> 04 </span>
+
         <span class="mobile-menu__link"> Contact </span>
+
         <span class="mobile-menu__arrow" aria-hidden="true">
           <span class="mobile-menu__arrow-line"></span>
         </span>
@@ -93,7 +109,9 @@
     </nav>
 
     <div class="mobile-menu__bottom">
-      <a href="#" class="button mobile-menu__cta" (click)="closeMenu()"> Get Started </a>
+      <a routerLink="/coming-soon" class="button mobile-menu__cta" (click)="closeMenu()">
+        REQUEST ACCESS
+      </a>
     </div>
   </div>
 </nav>
