@@ -11,6 +11,7 @@ export class TextureManager {
   private readonly textureCache = new Map<string, THREE.Texture>();
   private readonly texturePromises = new Map<string, Promise<THREE.Texture | null>>();
   private readonly materialCache = new Map<string, THREE.MeshPhysicalMaterial>();
+  private readonly materialPromises = new Map<string, Promise<THREE.MeshPhysicalMaterial>>();
   setRenderer(renderer: THREE.WebGLRenderer): void {
     this.renderer = renderer;
     if (this.ktx2Initialized) {
@@ -34,10 +35,13 @@ export class TextureManager {
   private loadTexture(path: string): Promise<THREE.Texture | null> {
     const cachedTexture = this.textureCache.get(path);
     if (cachedTexture) {
+      console.log('KTX2 CACHE HIT:', path);
+      this.prepareTextureForGPU(cachedTexture);
       return Promise.resolve(cachedTexture);
     }
     const existingPromise = this.texturePromises.get(path);
     if (existingPromise) {
+      console.log('KTX2 LOAD ALREADY RUNNING:', path);
       return existingPromise;
     }
     if (!this.ktx2Initialized || !this.renderer) {
@@ -59,12 +63,11 @@ export class TextureManager {
       .then((texture) => {
         this.configureTexture(texture, textureUrl);
         this.textureCache.set(path, texture);
-        this.texturePromises.delete(path);
         console.log('KTX2 SUCCESS:', textureUrl);
+        console.log('KTX2 CACHE SIZE:', this.textureCache.size);
         return texture;
       })
       .catch((error) => {
-        this.texturePromises.delete(path);
         console.error('====================================');
         console.error('KTX2 FAILED');
         console.error('Asset path:', path);
@@ -72,6 +75,9 @@ export class TextureManager {
         console.error('ERROR:', error);
         console.error('====================================');
         return null;
+      })
+      .finally(() => {
+        this.texturePromises.delete(path);
       });
     this.texturePromises.set(path, promise);
     return promise;
@@ -99,21 +105,39 @@ export class TextureManager {
     const materialKey = `${flavor}/${materialFolder}`;
     const cachedMaterial = this.materialCache.get(materialKey);
     if (cachedMaterial) {
+      console.log('MATERIAL CACHE HIT:', materialKey);
+      this.prepareMaterialForGPU(cachedMaterial);
       return cachedMaterial;
     }
+    const existingPromise = this.materialPromises.get(materialKey);
+    if (existingPromise) {
+      console.log('MATERIAL CREATION ALREADY RUNNING:', materialKey);
+      return existingPromise;
+    }
+    const promise = this.createPBRMaterial(flavor, materialFolder, materialKey);
+    this.materialPromises.set(materialKey, promise);
+    try {
+      return await promise;
+    } finally {
+      this.materialPromises.delete(materialKey);
+    }
+  }
+  private async createPBRMaterial(
+    flavor: string,
+    materialFolder: string,
+    materialKey: string,
+  ): Promise<THREE.MeshPhysicalMaterial> {
     const path = `three/materials/${flavor}/${materialFolder}/`;
     console.log('====================================');
     console.log('LOADING PBR MATERIAL');
     console.log('Flavor:', flavor);
     console.log('Folder:', materialFolder);
+    console.log('Material key:', materialKey);
     console.log('Base path:', this.assetUrl(path));
     console.log('====================================');
     const baseColorPath = path + `${materialFolder}_BaseColor.ktx2`;
     const roughnessPath = path + `${materialFolder}_Roughness.ktx2`;
     const metallicPath = path + `${materialFolder}_Metallic.ktx2`;
-    console.log('BaseColor:', this.assetUrl(baseColorPath));
-    console.log('Roughness:', this.assetUrl(roughnessPath));
-    console.log('Metallic:', this.assetUrl(metallicPath));
     const [baseColor, roughness, metallic] = await Promise.all([
       this.loadTexture(baseColorPath),
       this.loadTexture(roughnessPath),
@@ -165,6 +189,7 @@ export class TextureManager {
       material.clearcoatRoughness = 1.0;
     }
     this.materialCache.set(materialKey, material);
+    this.prepareMaterialForGPU(material);
     console.log('====================================');
     console.log('PBR MATERIAL READY');
     console.log(materialKey);
@@ -173,6 +198,7 @@ export class TextureManager {
       roughness: !!material.roughnessMap,
       metallic: !!material.metalnessMap,
     });
+    console.log('Material cache size:', this.materialCache.size);
     console.log('====================================');
     return material;
   }
@@ -217,6 +243,7 @@ export class TextureManager {
       textures: this.textureCache.size,
       pendingTextureRequests: this.texturePromises.size,
       materials: this.materialCache.size,
+      pendingMaterialRequests: this.materialPromises.size,
     };
   }
 }

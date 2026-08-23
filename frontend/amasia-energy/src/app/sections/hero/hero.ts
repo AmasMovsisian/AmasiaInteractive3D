@@ -1,8 +1,14 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
 import { ThreeEngine } from '../../three/core/three-engine';
 import { Nav } from '../shared/nav/nav';
 import { ScrollStoryComponent } from '../scroll-story/scroll-story';
-
 @Component({
   selector: 'app-hero',
   standalone: true,
@@ -10,17 +16,19 @@ import { ScrollStoryComponent } from '../scroll-story/scroll-story';
   templateUrl: './hero.html',
   styleUrl: './hero.scss',
 })
-export class HeroComponent implements AfterViewInit {
-  @ViewChild('canvas')
+export class HeroComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('canvas', {
+    static: true,
+  })
   canvas!: ElementRef<HTMLCanvasElement>;
-
   constructor(private threeEngine: ThreeEngine) {}
-
   ngAfterViewInit(): void {
-    this.threeEngine.init(this.canvas.nativeElement);
+    void this.threeEngine.init(this.canvas.nativeElement);
     this.updateLandscapeMode();
   }
-
+  ngOnDestroy(): void {
+    this.threeEngine.detach();
+  }
   @HostListener('window:resize')
   @HostListener('window:orientationchange')
   updateLandscapeMode(): void {

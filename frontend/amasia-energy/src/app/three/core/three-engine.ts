@@ -47,6 +47,12 @@ export class ThreeEngine {
   private pendingFlavorMaterials?: FlavorMaterials;
   private pendingMaterialApplied = false;
   private currentCenterFlavor?: FlavorId;
+  private initialized = false;
+  private initPromise?: Promise<void>;
+  private attachedCanvas?: HTMLCanvasElement;
+  private renderLoopStarted = false;
+  private resizeListener?: () => void;
+  private heroActive = false;
   constructor(
     private gltfLoader: GltfLoader,
     private textureManager: TextureManager,
@@ -70,14 +76,105 @@ export class ThreeEngine {
       this.applyFlavorToCenter(flavorId);
     });
   }
-  private assetUrl(path: string): string {
-    const cleanPath = path.replace(/^\/+/, '');
-    const baseHref =
-      document.querySelector('base')?.getAttribute('href') || document.baseURI || '/';
-    return new URL(cleanPath, new URL(baseHref, window.location.origin)).toString();
-  }
-  async init(canvas: HTMLCanvasElement) {
+  async init(canvas: HTMLCanvasElement): Promise<void> {
+    console.log('====================================');
+    console.log('THREE ENGINE INIT');
+    console.log('Already initialized:', this.initialized);
+    console.log('====================================');
     this.canvas = canvas;
+    this.attachedCanvas = canvas;
+    this.heroActive = true;
+    if (this.initialized) {
+      console.log('ThreeEngine already initialized.');
+      console.log('Reusing existing Three.js scene.');
+      console.log('Reusing existing renderer.');
+      console.log('Reusing existing materials.');
+      console.log('Reusing existing GLTF.');
+      console.log('Reusing existing animation.');
+      this.attachRendererToCanvas(canvas);
+      this.resizeCamera();
+      return;
+    }
+    if (this.initPromise) {
+      console.log('ThreeEngine initialization already running.');
+      await this.initPromise;
+      this.canvas = canvas;
+      this.attachedCanvas = canvas;
+      this.heroActive = true;
+      this.attachRendererToCanvas(canvas);
+      this.resizeCamera();
+      return;
+    }
+    this.initPromise = this.initializeEngine(canvas);
+    try {
+      await this.initPromise;
+      this.initialized = true;
+      console.log('====================================');
+      console.log('THREE ENGINE INITIALIZATION COMPLETE');
+      console.log('====================================');
+    } catch (error) {
+      console.error('ThreeEngine initialization failed:', error);
+      this.initPromise = undefined;
+      this.initialized = false;
+      throw error;
+    }
+  }
+  detach(): void {
+    console.log('====================================');
+    console.log('THREE ENGINE DETACH');
+    console.log('Keeping scene/materials/textures in memory.');
+    console.log('====================================');
+    this.heroActive = false;
+  }
+  dispose(): void {
+    console.log('====================================');
+    console.log('THREE ENGINE FULL DISPOSE');
+    console.log('====================================');
+    this.heroActive = false;
+    this.initialized = false;
+    this.initPromise = undefined;
+    if (this.resizeListener) {
+      window.removeEventListener('resize', this.resizeListener);
+      this.resizeListener = undefined;
+    }
+    if (this.mixer) {
+      this.mixer.stopAllAction();
+      this.mixer.uncacheRoot(this.scene);
+      this.mixer = undefined;
+    }
+    if (this.scene) {
+      this.scene.traverse((object) => {
+        if (!(object instanceof THREE.Mesh)) {
+          return;
+        }
+        object.geometry?.dispose();
+        const materials = Array.isArray(object.material) ? object.material : [object.material];
+        for (const material of materials) {
+          material.dispose();
+        }
+      });
+    }
+    if (this.scene?.environment) {
+      this.scene.environment.dispose();
+    }
+    this.flavorMaterials = {};
+    this.materialsReady = false;
+    this.materialsPreloadPromise = undefined;
+    this.centerGroup = undefined;
+    this.centerRotationPivot = undefined;
+    if (this.renderer) {
+      this.renderer.dispose();
+      this.renderer.forceContextLoss();
+    }
+    this.renderer = undefined!;
+    this.scene = undefined!;
+    this.camera = undefined!;
+    this.canvas = undefined!;
+    this.attachedCanvas = undefined!;
+  }
+  private async initializeEngine(canvas: HTMLCanvasElement): Promise<void> {
+    this.canvas = canvas;
+    this.attachedCanvas = canvas;
     this.initialDevicePixelRatio = window.devicePixelRatio || 1;
     this.scene = new THREE.Scene();
     this.renderer = new THREE.WebGLRenderer({
@@ -95,13 +192,7 @@ export class ThreeEngine {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.textureManager.setRenderer(this.renderer);
-    window.addEventListener(
-      'resize',
-      () => {
-        this.resizeCamera();
-      },
-      { passive: true },
-    );
+    this.setupResizeListener();
     if (this.enableHDRI) {
       await this.loadHDRILighting();
     }
@@ -110,7 +201,46 @@ export class ThreeEngine {
       this.createFallbackLight();
     }
     await this.loadModel();
-    this.animate();
+    this.startRenderLoop();
+  }
+  private attachRendererToCanvas(canvas: HTMLCanvasElement): void {
+    if (!this.renderer) {
+      return;
+    }
+    this.canvas = canvas;
+    this.attachedCanvas = canvas;
+    if (canvas !== this.renderer.domElement) {
+      this.replaceAngularCanvasWithPersistentCanvas(canvas);
+    }
+    this.resizeCamera();
+  }
+  private replaceAngularCanvasWithPersistentCanvas(angularCanvas: HTMLCanvasElement): void {
+    const persistentCanvas = this.renderer.domElement;
+    if (angularCanvas === persistentCanvas) {
+      return;
+    }
+    const parent = angularCanvas.parentElement;
+    if (!parent) {
+      console.warn('Cannot reattach persistent Three.js canvas: no parent element.');
+      return;
+    }
+    persistentCanvas.className = angularCanvas.className;
+    persistentCanvas.style.cssText = angularCanvas.style.cssText;
+    persistentCanvas.style.width = '100%';
+    persistentCanvas.style.height = '100%';
+    parent.replaceChild(persistentCanvas, angularCanvas);
+    this.canvas = persistentCanvas;
+    this.attachedCanvas = persistentCanvas;
+    console.log('Persistent Three.js canvas reattached.');
+  }
+  private setupResizeListener(): void {
+    if (this.resizeListener) {
+      return;
+    }
+    this.resizeListener = () => {
+      this.resizeCamera();
+    };
+    window.addEventListener('resize', this.resizeListener, { passive: true });
   }
   private updateRenderPixelRatio(): void {
     if (!this.renderer) {
@@ -136,6 +266,12 @@ export class ThreeEngine {
     frontLight.target.position.set(0, 0, 0);
     this.scene.add(frontLight);
     this.scene.add(frontLight.target);
+  }
+  private assetUrl(path: string): string {
+    const cleanPath = path.replace(/^\/+/, '');
+    const baseHref =
+      document.querySelector('base')?.getAttribute('href') || document.baseURI || '/';
+    return new URL(cleanPath, new URL(baseHref, window.location.origin)).toString();
   }
   private async loadHDRILighting() {
     try {
@@ -239,7 +375,7 @@ export class ThreeEngine {
     console.log('AKTIVE GLB KAMERA:', this.camera.name);
   }
   private resizeCamera() {
-    if (!this.camera || !this.renderer) {
+    if (!this.camera || !this.renderer || !this.canvas) {
       return;
     }
     this.updateRenderPixelRatio();
@@ -556,13 +692,23 @@ export class ThreeEngine {
     }
   }
   private canvasAspect() {
-    const canvas = this.renderer.domElement;
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
+    if (!this.canvas) {
+      return 1;
+    }
+    const width = this.canvas.clientWidth;
+    const height = this.canvas.clientHeight;
     if (height <= 0) {
       return 1;
     }
     return width / height;
+  }
+  private startRenderLoop(): void {
+    if (this.renderLoopStarted) {
+      return;
+    }
+    this.renderLoopStarted = true;
+    console.log('Starting persistent Three.js render loop.');
+    requestAnimationFrame(this.animate);
   }
   private animate = () => {
     requestAnimationFrame(this.animate);
@@ -578,7 +724,7 @@ export class ThreeEngine {
     }
     this.updateCenterRotation();
     this.updateHDRIRotation();
-    if (this.camera) {
+    if (this.renderer && this.scene && this.camera) {
       this.renderer.render(this.scene, this.camera);
     }
   };
