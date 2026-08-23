@@ -1,20 +1,30 @@
 .hero {
   position: relative;
   width: 100%;
-  height: 500vh;
+  min-height: 500vh;
   overflow: hidden;
   background: var(--canvas-bg);
   color: var(--text-primary);
+  isolation: isolate;
   transition:
     background 0.35s ease,
     color 0.35s ease;
+}
+.hero::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--canvas-bg);
 }
 .hero-canvas {
   position: fixed;
   inset: 0;
   width: 100%;
   height: 100vh;
-  height: 100dvh;
   z-index: 0;
   pointer-events: none;
   display: block;
@@ -34,6 +44,9 @@ h1 {
 }
 @media (max-width: 1024px) and (orientation: landscape) {
   .hero {
+    background: var(--bg-primary);
+  }
+  .hero::before {
     background: var(--bg-primary);
   }
   .portrait-only-overlay {
@@ -75,24 +88,18 @@ h1 {
     margin: 0 0 42px;
     color: var(--text-primary);
     text-decoration: none;
-    transition:
-      color 0.35s ease;
+    transition: color 0.35s ease;
   }
   .portrait-only-logo h2 {
     margin: 0;
     font-family: var(--font-heading);
     font-size: clamp(28px, 3vw, 42px);
     font-weight: 800;
-    letter-spacing: clamp(
-      0.14em,
-      0.208vw,
-      0.22em
-    );
+    letter-spacing: clamp(0.14em, 0.208vw, 0.22em);
     color: var(--text-primary);
     line-height: 1;
     text-align: center;
-    text-shadow:
-      0 8px 5px var(--text-shadow);
+    text-shadow: 0 8px 5px var(--text-shadow);
     transition:
       color 0.35s ease,
       text-shadow 0.35s ease;
@@ -120,8 +127,7 @@ h1 {
     letter-spacing: 0.12em;
     text-align: center;
     color: var(--text-primary);
-    text-shadow:
-      0 6px 4px var(--text-shadow);
+    text-shadow: 0 6px 4px var(--text-shadow);
     transition:
       color 0.35s ease,
       text-shadow 0.35s ease;
@@ -136,8 +142,7 @@ h1 {
     line-height: 1.6;
     letter-spacing: 0.025em;
     text-align: center;
-    transition:
-      color 0.35s ease;
+    transition: color 0.35s ease;
   }
 }
 .hero-loading {
@@ -156,23 +161,21 @@ h1 {
   color: var(--text-primary);
   pointer-events: all;
   isolation: isolate;
+  opacity: 1;
+  visibility: visible;
+  transform: translateZ(0);
   transition:
     background-color 0.35s ease,
-    color 0.35s ease;
-  animation:
-    hero-loading-fade-in 0.3s ease-out both;
+    color 0.35s ease,
+    visibility 0s linear 0s;
+  animation: hero-loading-fade-in 0.3s ease-out both;
 }
 .hero-loading::before {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    radial-gradient(
-      circle at 50% 45%,
-      var(--bg-surface) 0%,
-      transparent 42%
-    );
+  background: radial-gradient(circle at 50% 45%, var(--bg-surface) 0%, transparent 42%);
   opacity: 0.55;
   transition:
     background 0.35s ease,
@@ -187,6 +190,7 @@ h1 {
   align-items: center;
   text-align: center;
   padding: 32px 24px;
+  transform: translateZ(0);
 }
 .hero-loading-brand {
   margin: 0;
@@ -197,8 +201,7 @@ h1 {
   line-height: 1;
   letter-spacing: 0.22em;
   text-indent: 0.22em;
-  text-shadow:
-    0 8px 5px var(--text-shadow);
+  text-shadow: 0 8px 5px var(--text-shadow);
   transition:
     color 0.35s ease,
     text-shadow 0.35s ease;
@@ -228,8 +231,7 @@ h1 {
   line-height: 1;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  transition:
-    color 0.35s ease;
+  transition: color 0.35s ease;
 }
 .hero-loading-dots {
   display: inline-flex;
@@ -244,10 +246,8 @@ h1 {
   border-radius: 50%;
   background: var(--text-primary);
   opacity: 0.25;
-  animation:
-    hero-loading-dot 1.2s ease-in-out infinite;
-  transition:
-    background-color 0.35s ease;
+  animation: hero-loading-dot 1.2s ease-in-out infinite;
+  transition: background-color 0.35s ease;
 }
 .hero-loading-dots i:nth-child(1) {
   animation-delay: 0s;
@@ -265,8 +265,7 @@ h1 {
   margin-top: 28px;
   overflow: hidden;
   background: var(--border);
-  transition:
-    background-color 0.35s ease;
+  transition: background-color 0.35s ease;
 }
 .hero-loading-line span {
   position: absolute;
@@ -276,13 +275,8 @@ h1 {
   height: 100%;
   background: var(--text-primary);
   opacity: 0.8;
-  animation:
-    hero-loading-progress
-    1.5s
-    cubic-bezier(0.4, 0, 0.2, 1)
-    infinite;
-  transition:
-    background-color 0.35s ease;
+  animation: hero-loading-progress 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transition: background-color 0.35s ease;
 }
 .hero-loading-status {
   margin-top: 18px;
@@ -293,8 +287,17 @@ h1 {
   line-height: 1;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  transition:
-    color 0.35s ease;
+  transition: color 0.35s ease;
+}
+.hero-loading-leave {
+  pointer-events: none;
+  animation: hero-loading-fade-out 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.hero-loading-leave::before {
+  animation: hero-loading-fade-out 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.hero-loading-leave .hero-loading-content {
+  animation: hero-loading-content-out 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 @keyframes hero-loading-progress {
   0% {
@@ -327,12 +330,34 @@ h1 {
     opacity: 1;
   }
 }
+@keyframes hero-loading-fade-out {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  70% {
+    opacity: 0.35;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes hero-loading-content-out {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, -10px, 0) scale(0.985);
+  }
+}
 @media (max-width: 600px) {
   .hero-loading-content {
     width: 90vw;
-    padding:
-      24px
-      18px;
+    padding: 24px 18px;
   }
   .hero-loading-brand {
     font-size: clamp(24px, 8vw, 32px);
@@ -360,5 +385,17 @@ h1 {
     left: 0;
     width: 100%;
     opacity: 0.35;
+  }
+  .hero-loading-leave {
+    animation: hero-loading-fade-out 0.35s ease forwards;
+  }
+  .hero-loading-leave .hero-loading-content {
+    animation: none;
+    opacity: 0;
+  }
+}
+@media (max-width: 1024px) {
+  .hero {
+    overscroll-behavior-y: none;
   }
 }

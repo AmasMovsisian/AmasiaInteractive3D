@@ -11,24 +11,44 @@
       <p class="portrait-only-message">Please switch to portrait mode or reduce your zoom level.</p>
     </div>
   </div>
-  @if (loading()) {
-    <div class="hero-loading" role="status" aria-live="polite" aria-label="AMASIA is preparing">
-      <div class="hero-loading-content">
-        <div class="hero-loading-brand">AMASIA</div>
-        <div class="hero-loading-divider"></div>
-        <div class="hero-loading-message">
-          <span>PREPARING EXPERIENCE</span>
-          <span class="hero-loading-dots" aria-hidden="true">
-            <i></i>
-            <i></i>
-            <i></i>
-          </span>
-        </div>
-        <div class="hero-loading-line">
-          <span></span>
-        </div>
-        <div class="hero-loading-status">PLEASE WAIT</div>
+ @if (loading()) {
+  <div
+    class="hero-loading"
+    role="status"
+    aria-live="polite"
+    aria-label="AMASIA is preparing"
+    animate.leave="hero-loading-leave"
+  >
+
+    <div class="hero-loading-content">
+
+      <div class="hero-loading-brand">
+        AMASIA
       </div>
+
+      <div class="hero-loading-divider"></div>
+
+      <div class="hero-loading-message">
+        <span>PREPARING EXPERIENCE</span>
+
+        <span class="hero-loading-dots" aria-hidden="true">
+          <i></i>
+          <i></i>
+          <i></i>
+        </span>
+      </div>
+
+      <div class="hero-loading-line">
+        <span></span>
+      </div>
+
+      <div class="hero-loading-status">
+        PLEASE WAIT
+      </div>
+
     </div>
-  }
+
+  </div>
+}
+
 </section>
