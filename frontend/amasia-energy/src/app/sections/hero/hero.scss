@@ -10,7 +10,6 @@
     background 0.35s ease,
     color 0.35s ease;
 }
-
 .hero::before {
   content: '';
   position: fixed;
@@ -21,7 +20,6 @@
   pointer-events: none;
   background: var(--canvas-bg);
 }
-
 .hero-canvas {
   position: fixed;
   inset: 0;
@@ -31,7 +29,6 @@
   pointer-events: none;
   display: block;
 }
-
 .nav {
   position: fixed;
   top: 0;
@@ -39,812 +36,411 @@
   width: 100%;
   z-index: 1000;
 }
-
 h1 {
   box-shadow: 0 0 5px var(--shadow);
 }
-
-
-/* =========================================================
-   NAVIGATION BUTTON RESET
-   ========================================================= */
-
-/*
- * Die Desktop-Navigation verwendet jetzt Buttons statt
- * <a href="#">, damit wir innerhalb der Hero-Seite
- * gezielt zu bestimmten Animations-Frames scrollen können.
- *
- * Diese Regeln verhindern, dass der Button das bisherige
- * Nav-Design verändert.
- */
-
 .nav__links button {
   appearance: none;
   -webkit-appearance: none;
-
   border: 0;
   outline: 0;
-
   padding: 0;
   margin: 0;
-
   background: transparent;
-
   color: inherit;
-
   font: inherit;
   font-family: inherit;
   font-size: inherit;
   font-weight: inherit;
   line-height: inherit;
-
   letter-spacing: inherit;
   text-transform: inherit;
-
   cursor: pointer;
 }
-
-
-/*
- * Mobile Navigation verwendet ebenfalls Buttons.
- */
-
 .mobile-menu__item {
   appearance: none;
   -webkit-appearance: none;
-
   border: 0;
   outline: 0;
-
   width: 100%;
-
   padding: 0;
   margin: 0;
-
   background: transparent;
-
   color: inherit;
-
   font: inherit;
   font-family: inherit;
   font-size: inherit;
   font-weight: inherit;
   line-height: inherit;
-
   text-align: left;
-
   cursor: pointer;
-
   display: flex;
   align-items: center;
 }
-
-
-/*
- * Kein Browser-Fokus-Rahmen, der das bestehende Design
- * unerwartet verändert.
- *
- * Keyboard-Fokus bleibt trotzdem sichtbar.
- */
-
 .nav__links button:focus-visible,
 .mobile-menu__item:focus-visible {
   outline: 1px solid currentColor;
   outline-offset: 6px;
 }
-
-
-/*
- * Hover soll vollständig von deinem bestehenden Nav-SCSS
- * übernommen werden können.
- *
- * Falls du bereits .nav__links a:hover definiert hast,
- * kannst du dort zusätzlich button:hover verwenden.
- */
-
 .nav__links button:hover {
   color: inherit;
 }
-
-
-/* =========================================================
-   PORTRAIT / LANDSCAPE OVERLAY
-   ========================================================= */
-
 .portrait-only-overlay {
   display: none;
 }
-
 @media (max-width: 1024px) and (orientation: landscape) {
   .hero {
     background: var(--bg-primary);
   }
-
   .hero::before {
     background: var(--bg-primary);
   }
-
   .portrait-only-overlay {
     position: fixed;
     inset: 0;
-
     width: 100vw;
     height: 100vh;
-
     width: 100dvw;
     height: 100dvh;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     z-index: 2147483647;
-
     box-sizing: border-box;
-
     overflow: hidden;
-
     pointer-events: all;
-
     background: var(--bg-primary);
     color: var(--text-primary);
-
     transition:
       background-color 0.35s ease,
       color 0.35s ease;
   }
-
   .portrait-only-content {
     width: 100%;
-
     display: flex;
     flex-direction: column;
-
     align-items: center;
     justify-content: center;
-
     text-align: center;
-
     padding: 24px;
-
     box-sizing: border-box;
-
     color: var(--text-primary);
   }
-
   .portrait-only-logo {
     position: relative;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     margin: 0 0 42px;
-
     color: var(--text-primary);
-
     text-decoration: none;
-
-    transition:
-      color 0.35s ease;
+    transition: color 0.35s ease;
   }
-
   .portrait-only-logo h2 {
     margin: 0;
-
     font-family: var(--font-heading);
-
-    font-size: clamp(
-      28px,
-      3vw,
-      42px
-    );
-
+    font-size: clamp(28px, 3vw, 42px);
     font-weight: 800;
-
-    letter-spacing: clamp(
-      0.14em,
-      0.208vw,
-      0.22em
-    );
-
+    letter-spacing: clamp(0.14em, 0.208vw, 0.22em);
     color: var(--text-primary);
-
     line-height: 1;
-
     text-align: center;
-
-    text-shadow:
-      0 8px 5px var(--text-shadow);
-
+    text-shadow: 0 8px 5px var(--text-shadow);
     transition:
       color 0.35s ease,
       text-shadow 0.35s ease;
   }
-
   .portrait-only-logo::after {
     content: '';
-
     position: absolute;
-
     left: 0;
     bottom: -12px;
-
     width: 100%;
     height: 1px;
-
     background: var(--text-primary);
-
     opacity: 0.8;
-
     transition:
       background-color 0.35s ease,
       opacity 0.35s ease;
   }
-
   .portrait-only-content h3 {
     margin: 0 0 18px;
-
     max-width: 620px;
-
     font-family: var(--font-heading);
-
-    font-size: clamp(
-      15px,
-      1.7vw,
-      22px
-    );
-
+    font-size: clamp(15px, 1.7vw, 22px);
     font-weight: 600;
-
     line-height: 1.3;
-
     letter-spacing: 0.12em;
-
     text-align: center;
-
     color: var(--text-primary);
-
-    text-shadow:
-      0 6px 4px var(--text-shadow);
-
+    text-shadow: 0 6px 4px var(--text-shadow);
     transition:
       color 0.35s ease,
       text-shadow 0.35s ease;
   }
-
   .portrait-only-message {
     margin: 0;
-
     max-width: 420px;
-
     color: var(--text-secondary);
-
     font-family: var(--font-body);
-
-    font-size: clamp(
-      13px,
-      1.5vw,
-      17px
-    );
-
+    font-size: clamp(13px, 1.5vw, 17px);
     font-weight: 400;
-
     line-height: 1.6;
-
     letter-spacing: 0.025em;
-
     text-align: center;
-
-    transition:
-      color 0.35s ease;
+    transition: color 0.35s ease;
   }
 }
-
-
-/* =========================================================
-   HERO LOADING
-   ========================================================= */
-
 .hero-loading {
   position: fixed;
-
   inset: 0;
-
   width: 100vw;
   height: 100vh;
-
   width: 100dvw;
   height: 100dvh;
-
   z-index: 2147483646;
-
   display: flex;
-
   align-items: center;
   justify-content: center;
-
   overflow: hidden;
-
-  background: var(--bg-primary);
+  background: var(--canvas-bg);
   color: var(--text-primary);
-
   pointer-events: all;
-
   isolation: isolate;
-
   opacity: 1;
   visibility: visible;
-
   transform: translateZ(0);
-
   transition:
     background-color 0.35s ease,
     color 0.35s ease,
     visibility 0s linear 0s;
-
-  animation:
-    hero-loading-fade-in
-    0.3s ease-out both;
+  animation: hero-loading-fade-in 0.3s ease-out both;
 }
-
 .hero-loading::before {
   content: '';
-
   position: absolute;
-
   inset: 0;
-
   pointer-events: none;
-
-  background:
-    radial-gradient(
-      circle at 50% 45%,
-      var(--bg-surface) 0%,
-      transparent 42%
-    );
-
+  background: radial-gradient(circle at 50% 45%, var(--bg-surface) 0%, transparent 42%);
   opacity: 0.55;
-
   transition:
     background 0.35s ease,
     opacity 0.35s ease;
 }
-
 .hero-loading-content {
   position: relative;
-
   z-index: 1;
-
-  width: min(
-    90vw,
-    520px
-  );
-
+  width: min(90vw, 520px);
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   text-align: center;
-
   padding: 32px 24px;
-
   transform: translateZ(0);
 }
-
 .hero-loading-brand {
   margin: 0;
-
   color: var(--text-primary);
-
   font-family: var(--font-heading);
-
-  font-size: clamp(
-    26px,
-    3vw,
-    42px
-  );
-
+  font-size: clamp(26px, 3vw, 42px);
   font-weight: 700;
-
   line-height: 1;
-
   letter-spacing: 0.22em;
-
   text-indent: 0.22em;
-
-  text-shadow:
-    0 8px 5px var(--text-shadow);
-
+  text-shadow: 0 8px 5px var(--text-shadow);
   transition:
     color 0.35s ease,
     text-shadow 0.35s ease;
 }
-
 .hero-loading-divider {
   width: 100%;
-
   max-width: 280px;
-
   height: 1px;
-
   margin-top: 22px;
   margin-bottom: 22px;
-
   background: var(--text-primary);
-
   opacity: 0.16;
-
   transition:
     background-color 0.35s ease,
     opacity 0.35s ease;
 }
-
 .hero-loading-message {
   display: flex;
-
   align-items: center;
   justify-content: center;
-
   gap: 10px;
-
   min-height: 18px;
-
   color: var(--text-secondary);
-
   font-family: var(--font-body);
-
   font-size: 11px;
-
   font-weight: 500;
-
   line-height: 1;
-
   letter-spacing: 0.18em;
-
   text-transform: uppercase;
-
-  transition:
-    color 0.35s ease;
+  transition: color 0.35s ease;
 }
-
 .hero-loading-dots {
   display: inline-flex;
-
   align-items: center;
-
   gap: 4px;
-
   height: 10px;
 }
-
 .hero-loading-dots i {
   display: block;
-
   width: 3px;
   height: 3px;
-
   border-radius: 50%;
-
   background: var(--text-primary);
-
   opacity: 0.25;
-
-  animation:
-    hero-loading-dot
-    1.2s ease-in-out infinite;
-
-  transition:
-    background-color 0.35s ease;
+  animation: hero-loading-dot 1.2s ease-in-out infinite;
+  transition: background-color 0.35s ease;
 }
-
 .hero-loading-dots i:nth-child(1) {
   animation-delay: 0s;
 }
-
 .hero-loading-dots i:nth-child(2) {
   animation-delay: 0.15s;
 }
-
 .hero-loading-dots i:nth-child(3) {
   animation-delay: 0.3s;
 }
-
 .hero-loading-line {
   position: relative;
-
-  width: min(
-    280px,
-    70vw
-  );
-
+  width: min(280px, 70vw);
   height: 1px;
-
   margin-top: 28px;
-
   overflow: hidden;
-
   background: var(--border);
-
-  transition:
-    background-color 0.35s ease;
+  transition: background-color 0.35s ease;
 }
-
 .hero-loading-line span {
   position: absolute;
-
   top: 0;
   left: -40%;
-
   width: 40%;
   height: 100%;
-
   background: var(--text-primary);
-
   opacity: 0.8;
-
-  animation:
-    hero-loading-progress
-    1.5s
-    cubic-bezier(
-      0.4,
-      0,
-      0.2,
-      1
-    )
-    infinite;
-
-  transition:
-    background-color 0.35s ease;
+  animation: hero-loading-progress 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transition: background-color 0.35s ease;
 }
-
 .hero-loading-status {
   margin-top: 18px;
-
   color: var(--text-muted);
-
   font-family: var(--font-body);
-
   font-size: 9px;
-
   font-weight: 500;
-
   line-height: 1;
-
   letter-spacing: 0.24em;
-
   text-transform: uppercase;
-
-  transition:
-    color 0.35s ease;
+  transition: color 0.35s ease;
 }
-
-
-/* =========================================================
-   LOADING EXIT
-   ========================================================= */
-
 .hero-loading-leave {
   pointer-events: none;
-
-  animation:
-    hero-loading-fade-out
-    0.8s
-    cubic-bezier(
-      0.22,
-      1,
-      0.36,
-      1
-    )
-    forwards;
+  animation: hero-loading-fade-out 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-
 .hero-loading-leave::before {
-  animation:
-    hero-loading-fade-out
-    0.8s
-    cubic-bezier(
-      0.22,
-      1,
-      0.36,
-      1
-    )
-    forwards;
+  animation: hero-loading-fade-out 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-
-.hero-loading-leave
-.hero-loading-content {
-  animation:
-    hero-loading-content-out
-    0.65s
-    cubic-bezier(
-      0.22,
-      1,
-      0.36,
-      1
-    )
-    forwards;
+.hero-loading-leave .hero-loading-content {
+  animation: hero-loading-content-out 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-
-
-/* =========================================================
-   LOADING ANIMATIONS
-   ========================================================= */
-
 @keyframes hero-loading-progress {
   0% {
     transform: translateX(0);
   }
-
   50% {
     transform: translateX(250%);
   }
-
   100% {
     transform: translateX(350%);
   }
 }
-
 @keyframes hero-loading-dot {
   0%,
   60%,
   100% {
     opacity: 0.2;
-
-    transform:
-      translateY(0);
+    transform: translateY(0);
   }
-
   30% {
     opacity: 1;
-
-    transform:
-      translateY(-1px);
+    transform: translateY(-1px);
   }
 }
-
 @keyframes hero-loading-fade-in {
   from {
     opacity: 0;
   }
-
   to {
     opacity: 1;
   }
 }
-
 @keyframes hero-loading-fade-out {
   0% {
     opacity: 1;
     visibility: visible;
   }
-
   70% {
     opacity: 0.35;
     visibility: visible;
   }
-
   100% {
     opacity: 0;
     visibility: hidden;
   }
 }
-
 @keyframes hero-loading-content-out {
   0% {
     opacity: 1;
-
-    transform:
-      translate3d(
-        0,
-        0,
-        0
-      )
-      scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
-
   100% {
     opacity: 0;
-
-    transform:
-      translate3d(
-        0,
-        -10px,
-        0
-      )
-      scale(0.985);
+    transform: translate3d(0, -10px, 0) scale(0.985);
   }
 }
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
 @media (max-width: 600px) {
-
   .hero-loading-content {
     width: 90vw;
-
     padding: 24px 18px;
   }
-
   .hero-loading-brand {
-    font-size: clamp(
-      24px,
-      8vw,
-      32px
-    );
-
+    font-size: clamp(24px, 8vw, 32px);
     letter-spacing: 0.18em;
   }
-
   .hero-loading-message {
     font-size: 9px;
-
     letter-spacing: 0.14em;
   }
-
   .hero-loading-line {
-    width: min(
-      240px,
-      72vw
-    );
+    width: min(240px, 72vw);
   }
-
   .hero-loading-status {
     font-size: 8px;
-
     letter-spacing: 0.18em;
   }
 }
-
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
-
 @media (prefers-reduced-motion: reduce) {
-
   .hero-loading,
   .hero-loading-dots i,
   .hero-loading-line span {
     animation: none;
   }
-
   .hero-loading-line span {
     left: 0;
-
     width: 100%;
-
     opacity: 0.35;
   }
-
   .hero-loading-leave {
-    animation:
-      hero-loading-fade-out
-      0.35s
-      ease
-      forwards;
+    animation: hero-loading-fade-out 0.35s ease forwards;
   }
-
-  .hero-loading-leave
-  .hero-loading-content {
+  .hero-loading-leave .hero-loading-content {
     animation: none;
-
     opacity: 0;
   }
 }
-
-
-/* =========================================================
-   HERO SCROLL BEHAVIOR
-   ========================================================= */
-
 @media (max-width: 1024px) {
-
   .hero {
     overscroll-behavior-y: none;
   }

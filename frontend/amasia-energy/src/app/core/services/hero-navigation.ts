@@ -1,6 +1,7 @@
 export const HERO_TOTAL_FRAMES = 192;
 
 export const HERO_NAVIGATION = {
+  home: 0,
   about: 134,
   pricing: 192,
   flavors: 192,

@@ -23,6 +23,24 @@ export class Nav {
   ) {
     this.loadTheme();
   }
+  goToStart(event?: Event): void {
+    event?.preventDefault();
+    this.closeMenu();
+    const frame = HERO_NAVIGATION.home;
+    const currentUrl = this.router.url.split('?')[0].split('#')[0];
+    const isHeroPage = currentUrl === '/' || currentUrl === '';
+    if (isHeroPage) {
+      this.scrollService.scrollToFrame(frame, HERO_TOTAL_FRAMES, 'smooth');
+      return;
+    }
+    this.router.navigate(['/']).then(() => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          this.scrollService.scrollToFrame(frame, HERO_TOTAL_FRAMES, 'smooth');
+        });
+      });
+    });
+  }
   async scrollToSection(section: HeroNavigationSection, event?: Event): Promise<void> {
     event?.preventDefault();
     this.closeMenu();
