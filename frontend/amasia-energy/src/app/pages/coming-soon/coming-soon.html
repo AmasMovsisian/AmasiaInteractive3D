@@ -27,6 +27,8 @@
             ngModel
             required
             email
+            autocomplete="email"
+            spellcheck="false"
             class="cs-input"
             #emailInput="ngModel"
             [class.cs-input--invalid]="
@@ -45,7 +47,7 @@
             </div>
           }
         </div>
-        <br />
+
         <button type="submit" class="button cs-btn" [disabled]="emailForm.invalid">
           REQUEST ACCESS
         </button>

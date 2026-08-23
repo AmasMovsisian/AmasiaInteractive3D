@@ -6,19 +6,19 @@
 
     <ul class="nav__links">
       <li>
-        <a href="#">About</a>
+        <a href="#about" (click)="scrollToSection('about')"> About </a>
       </li>
 
       <li>
-        <a href="#">Pricing</a>
+        <a href="#pricing" (click)="scrollToSection('pricing')"> Pricing </a>
       </li>
 
       <li>
-        <a href="#">Flavors</a>
+        <a href="#flavors" (click)="scrollToSection('flavors')"> Flavors </a>
       </li>
 
       <li>
-        <a href="#">Contact</a>
+        <a href="#contact" (click)="scrollToSection('contact')"> Contact </a>
       </li>
     </ul>
 
@@ -57,7 +57,9 @@
 
   <div class="mobile-menu" [class.open]="menuOpen" [attr.aria-hidden]="!menuOpen">
     <div class="mobile-menu__glow mobile-menu__glow--one"></div>
+
     <div class="mobile-menu__glow mobile-menu__glow--two"></div>
+
     <div class="mobile-menu__grid"></div>
 
     <div class="mobile-menu__header">
@@ -67,7 +69,7 @@
     </div>
 
     <nav class="mobile-menu__nav">
-      <a href="#" (click)="closeMenu()">
+      <a href="#about" (click)="scrollToSection('about')">
         <span class="mobile-menu__number"> 01 </span>
 
         <span class="mobile-menu__link"> About </span>
@@ -77,7 +79,7 @@
         </span>
       </a>
 
-      <a href="#" (click)="closeMenu()">
+      <a href="#flavors" (click)="scrollToSection('flavors')">
         <span class="mobile-menu__number"> 02 </span>
 
         <span class="mobile-menu__link"> Flavors </span>
@@ -87,7 +89,7 @@
         </span>
       </a>
 
-      <a href="#" (click)="closeMenu()">
+      <a href="#pricing" (click)="scrollToSection('pricing')">
         <span class="mobile-menu__number"> 03 </span>
 
         <span class="mobile-menu__link"> Pricing </span>
@@ -97,7 +99,7 @@
         </span>
       </a>
 
-      <a href="#" (click)="closeMenu()">
+      <a href="#contact" (click)="scrollToSection('contact')">
         <span class="mobile-menu__number"> 04 </span>
 
         <span class="mobile-menu__link"> Contact </span>

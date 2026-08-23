@@ -1,54 +1,90 @@
 <section class="hero">
-  <canvas #canvas class="hero-canvas"></canvas>
-  <app-nav class="nav"></app-nav>
-  <app-scroll-story></app-scroll-story>
-  <div class="portrait-only-overlay">
+
+  <!-- NAVIGATION -->
+  <app-nav></app-nav>
+
+
+  <!-- THREE.JS CANVAS -->
+  <canvas
+    #canvas
+    class="hero-canvas"
+  ></canvas>
+
+
+  <!-- LANDSCAPE OVERLAY -->
+  <div
+    class="portrait-only-overlay"
+    aria-hidden="true"
+  >
     <div class="portrait-only-content">
-      <a class="portrait-only-logo" aria-label="AMASIA">
+
+      <a
+        routerLink="/"
+        class="portrait-only-logo"
+      >
         <h2>AMASIA</h2>
       </a>
-      <h3>DESIGNED TO BE EXPERIENCED IN PORTRAIT</h3>
-      <p class="portrait-only-message">Please switch to portrait mode or reduce your zoom level.</p>
-    </div>
-  </div>
- @if (loading()) {
-  <div
-    class="hero-loading"
-    role="status"
-    aria-live="polite"
-    aria-label="AMASIA is preparing"
-    animate.leave="hero-loading-leave"
-  >
 
-    <div class="hero-loading-content">
+      <h3>
+        PLEASE ROTATE YOUR DEVICE
+      </h3>
 
-      <div class="hero-loading-brand">
-        AMASIA
-      </div>
-
-      <div class="hero-loading-divider"></div>
-
-      <div class="hero-loading-message">
-        <span>PREPARING EXPERIENCE</span>
-
-        <span class="hero-loading-dots" aria-hidden="true">
-          <i></i>
-          <i></i>
-          <i></i>
-        </span>
-      </div>
-
-      <div class="hero-loading-line">
-        <span></span>
-      </div>
-
-      <div class="hero-loading-status">
-        PLEASE WAIT
-      </div>
+      <p class="portrait-only-message">
+        This experience is designed for portrait orientation.
+        Please rotate your device to continue.
+      </p>
 
     </div>
-
   </div>
-}
+
+
+  <!-- LOADING SCREEN -->
+  @if (loading()) {
+    <div class="hero-loading">
+
+      <div class="hero-loading-content">
+
+        <h1 class="hero-loading-brand">
+          AMASIA
+        </h1>
+
+        <div class="hero-loading-divider"></div>
+
+        <div class="hero-loading-message">
+
+          <span>
+            INITIALIZING EXPERIENCE
+          </span>
+
+          <span
+            class="hero-loading-dots"
+            aria-hidden="true"
+          >
+            <i></i>
+            <i></i>
+            <i></i>
+          </span>
+
+        </div>
+
+        <div
+          class="hero-loading-line"
+          aria-hidden="true"
+        >
+          <span></span>
+        </div>
+
+        <div class="hero-loading-status">
+          LOADING 3D EXPERIENCE
+        </div>
+
+      </div>
+
+    </div>
+  }
+
+
+  <!-- SCROLL STORY -->
+  <app-scroll-story></app-scroll-story>
 
 </section>
