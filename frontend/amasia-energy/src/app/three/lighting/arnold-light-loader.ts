@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
-import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
 
 export interface ArnoldLightData {
   name: string;
@@ -34,7 +33,6 @@ export class ArnoldLightLoader {
   private lights: THREE.Light[] = [];
   private readonly mayaToThree = 0.01;
   private readonly debugDirectionalLight = false;
-  private readonly showLightHelpers = true;
   private readonly arnoldToThreeIntensity = 0.25;
   private readonly useMayaRotation = true;
 
@@ -44,22 +42,19 @@ export class ArnoldLightLoader {
 
   async load(jsonPath: string): Promise<THREE.Light[]> {
     const response = await fetch(jsonPath);
+
     if (!response.ok) {
-      throw new Error(`Arnold Light JSON konnte nicht geladen werden: ${jsonPath}`);
+      throw new Error(`Failed to load Arnold Light JSON: ${jsonPath}`);
     }
 
     const data = (await response.json()) as ArnoldLightData[];
+
     if (!Array.isArray(data)) {
-      throw new Error('Arnold Light JSON muss ein Array enthalten.');
+      throw new Error('Arnold Light JSON must contain an array.');
     }
 
     this.removeExistingLights();
     this.lights = [];
-
-    console.log('====================================');
-    console.log('LOADING ARNOLD LIGHTS');
-    console.log('LIGHT COUNT:', data.length);
-    console.log('====================================');
 
     for (const lightData of data) {
       const light = this.createLight(lightData);
@@ -67,15 +62,12 @@ export class ArnoldLightLoader {
       this.lights.push(light);
     }
 
-    console.log('====================================');
-    console.log('ARNOLD LIGHTS LOADED:', this.lights.length);
-    console.log('====================================');
-
     return this.lights;
   }
 
   private removeExistingLights() {
     const lightsToRemove: THREE.Light[] = [];
+
     this.scene.traverse((object: THREE.Object3D) => {
       if (object instanceof THREE.Light) {
         lightsToRemove.push(object);
@@ -98,15 +90,6 @@ export class ArnoldLightLoader {
     const arnoldValue = intensity * Math.pow(2, exposure);
     const threeIntensity = arnoldValue * this.arnoldToThreeIntensity;
 
-    console.log('------------------------------------');
-    console.log('ARNOLD LIGHT POWER');
-    console.log('NAME:', data.name);
-    console.log('ARNOLD INTENSITY:', intensity);
-    console.log('ARNOLD EXPOSURE:', exposure);
-    console.log('ARNOLD 2^EXPOSURE:', arnoldValue);
-    console.log('THREE INTENSITY:', threeIntensity);
-    console.log('------------------------------------');
-
     return threeIntensity;
   }
 
@@ -114,6 +97,7 @@ export class ArnoldLightLoader {
     if (this.debugDirectionalLight) {
       return this.createDirectionalLight(data);
     }
+
     return this.createRectAreaLight(data);
   }
 
@@ -141,24 +125,6 @@ export class ArnoldLightLoader {
     } else {
       light.lookAt(0, 0, 0);
     }
-
-    console.log('====================================');
-    console.log('ARNOLD AREA LIGHT');
-    console.log('NAME:', data.name);
-    console.log('MAYA POSITION:', data.transform.position);
-    console.log('THREE POSITION:', light.position.toArray());
-    console.log('MAYA ROTATION:', data.transform.rotation);
-    console.log('THREE ROTATION DEG:', [
-      THREE.MathUtils.radToDeg(light.rotation.x),
-      THREE.MathUtils.radToDeg(light.rotation.y),
-      THREE.MathUtils.radToDeg(light.rotation.z),
-    ]);
-    console.log('MAYA SCALE:', data.transform.scale);
-    console.log('THREE SIZE:', { width, height });
-    console.log('ARNOLD INTENSITY:', data.attributes.intensity);
-    console.log('ARNOLD EXPOSURE:', data.attributes.exposure);
-    console.log('THREE INTENSITY:', intensity);
-    console.log('====================================');
 
     return light;
   }
@@ -190,14 +156,6 @@ export class ArnoldLightLoader {
     light.shadow.camera.bottom = -10;
     light.shadow.bias = -0.0001;
     light.shadow.normalBias = 0.02;
-
-    console.log('====================================');
-    console.log('DEBUG DIRECTIONAL LIGHT');
-    console.log('NAME:', data.name);
-    console.log('POSITION:', light.position.toArray());
-    console.log('TARGET:', light.target.position.toArray());
-    console.log('INTENSITY:', intensity);
-    console.log('====================================');
 
     return light;
   }

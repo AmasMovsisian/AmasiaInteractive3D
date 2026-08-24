@@ -6,11 +6,13 @@ import { TextureManager } from '../materials/texture-manager';
 import { ScrollService } from '../../core/services/scroll.service';
 import { FlavorId, FlavorService } from '../../core/services/flavor.service';
 import { ArnoldLightLoader } from '../lighting/arnold-light-loader';
+
 interface FlavorMaterials {
   body: THREE.MeshPhysicalMaterial;
   aluminium: THREE.MeshPhysicalMaterial;
   tab: THREE.MeshPhysicalMaterial;
 }
+
 @Injectable({
   providedIn: 'root',
 })
@@ -54,6 +56,7 @@ export class ThreeEngine {
   private resizeListener?: () => void;
   private heroActive = false;
   readonly loading = signal(false);
+
   constructor(
     private gltfLoader: GltfLoader,
     private textureManager: TextureManager,
@@ -62,43 +65,32 @@ export class ThreeEngine {
   ) {
     effect(() => {
       const flavorId = this.flavorService.selectedFlavorId();
-      console.log('Flavor signal changed:', flavorId);
       if (!this.materialsReady) {
-        console.log('Flavor ignored until materials are ready:', flavorId);
         return;
       }
       if (flavorId === this.currentCenterFlavor && !this.centerRotationAnimating) {
         return;
       }
       if (this.centerRotationAnimating) {
-        console.log('Flavor click ignored while 360° rotation is running:', flavorId);
         return;
       }
       this.applyFlavorToCenter(flavorId);
     });
   }
+
   async init(canvas: HTMLCanvasElement): Promise<void> {
-    console.log('====================================');
-    console.log('THREE ENGINE INIT');
-    console.log('Already initialized:', this.initialized);
-    console.log('====================================');
     this.canvas = canvas;
     this.attachedCanvas = canvas;
     this.heroActive = true;
+
     if (this.initialized) {
-      console.log('ThreeEngine already initialized.');
-      console.log('Reusing existing Three.js scene.');
-      console.log('Reusing existing renderer.');
-      console.log('Reusing existing materials.');
-      console.log('Reusing existing GLTF.');
-      console.log('Reusing existing animation.');
       this.loading.set(false);
       this.attachRendererToCanvas(canvas);
       this.resizeCamera();
       return;
     }
+
     if (this.initPromise) {
-      console.log('ThreeEngine initialization already running.');
       this.loading.set(true);
       await this.initPromise;
       this.canvas = canvas;
@@ -109,268 +101,295 @@ export class ThreeEngine {
       this.loading.set(false);
       return;
     }
+
     this.loading.set(true);
     this.initPromise = this.initializeEngine(canvas);
+
     try {
       await this.initPromise;
       await new Promise<void>((resolve) => {
         requestAnimationFrame(() => resolve());
       });
       this.initialized = true;
-      console.log('====================================');
-      console.log('THREE ENGINE INITIALIZATION COMPLETE');
-      console.log('HERO 100% READY');
-      console.log('====================================');
       this.loading.set(false);
     } catch (error) {
-      console.error('ThreeEngine initialization failed:', error);
       this.initPromise = undefined;
       this.initialized = false;
       this.loading.set(false);
       throw error;
     }
   }
+
   detach(): void {
-    console.log('====================================');
-    console.log('THREE ENGINE DETACH');
-    console.log('Keeping scene/materials/textures in memory.');
-    console.log('====================================');
     this.heroActive = false;
   }
+
   dispose(): void {
-    console.log('====================================');
-    console.log('THREE ENGINE FULL DISPOSE');
-    console.log('====================================');
     this.heroActive = false;
     this.initialized = false;
     this.initPromise = undefined;
     this.loading.set(false);
+
     if (this.resizeListener) {
       window.removeEventListener('resize', this.resizeListener);
       this.resizeListener = undefined;
     }
+
     if (this.mixer) {
       this.mixer.stopAllAction();
       this.mixer.uncacheRoot(this.scene);
       this.mixer = undefined;
     }
+
     if (this.scene) {
       this.scene.traverse((object) => {
         if (!(object instanceof THREE.Mesh)) {
           return;
         }
+
         object.geometry?.dispose();
         const materials = Array.isArray(object.material) ? object.material : [object.material];
+
         for (const material of materials) {
           material.dispose();
         }
       });
     }
+
     if (this.scene?.environment) {
       this.scene.environment.dispose();
     }
+
     this.flavorMaterials = {};
     this.materialsReady = false;
     this.materialsPreloadPromise = undefined;
     this.centerGroup = undefined;
     this.centerRotationPivot = undefined;
+
     if (this.renderer) {
       this.renderer.dispose();
       this.renderer.forceContextLoss();
     }
+
     this.renderer = undefined!;
     this.scene = undefined!;
     this.camera = undefined!;
     this.canvas = undefined!;
     this.attachedCanvas = undefined!;
   }
+
   private async initializeEngine(canvas: HTMLCanvasElement): Promise<void> {
     this.canvas = canvas;
     this.attachedCanvas = canvas;
     this.initialDevicePixelRatio = window.devicePixelRatio || 1;
     this.scene = new THREE.Scene();
+
     this.renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: true,
       alpha: true,
       powerPreference: 'high-performance',
     });
+
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.2;
+
     this.updateRenderPixelRatio();
     this.renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
     this.textureManager.setRenderer(this.renderer);
     this.setupResizeListener();
+
     if (this.enableHDRI) {
       await this.loadHDRILighting();
     }
+
     await this.loadArnoldLights();
+
     if (this.enableFallbackLight) {
       this.createFallbackLight();
     }
+
     await this.loadModel();
     this.startRenderLoop();
   }
+
   private attachRendererToCanvas(canvas: HTMLCanvasElement): void {
     if (!this.renderer) {
       return;
     }
+
     this.canvas = canvas;
     this.attachedCanvas = canvas;
+
     if (canvas !== this.renderer.domElement) {
       this.replaceAngularCanvasWithPersistentCanvas(canvas);
     }
+
     this.resizeCamera();
   }
+
   private replaceAngularCanvasWithPersistentCanvas(angularCanvas: HTMLCanvasElement): void {
     const persistentCanvas = this.renderer.domElement;
+
     if (angularCanvas === persistentCanvas) {
       return;
     }
+
     const parent = angularCanvas.parentElement;
+
     if (!parent) {
-      console.warn('Cannot reattach persistent Three.js canvas: no parent element.');
       return;
     }
+
     persistentCanvas.className = angularCanvas.className;
     persistentCanvas.style.cssText = angularCanvas.style.cssText;
     persistentCanvas.style.width = '100%';
     persistentCanvas.style.height = '100%';
+
     parent.replaceChild(persistentCanvas, angularCanvas);
     this.canvas = persistentCanvas;
     this.attachedCanvas = persistentCanvas;
-    console.log('Persistent Three.js canvas reattached.');
   }
+
   private setupResizeListener(): void {
     if (this.resizeListener) {
       return;
     }
+
     this.resizeListener = () => {
       this.resizeCamera();
     };
+
     window.addEventListener('resize', this.resizeListener, {
       passive: true,
     });
   }
+
   private updateRenderPixelRatio(): void {
     if (!this.renderer) {
       return;
     }
+
     const currentDpr = window.devicePixelRatio || 1;
     const pixelRatio = THREE.MathUtils.clamp(
       currentDpr,
       this.initialDevicePixelRatio,
       this.maxRenderPixelRatio,
     );
+
     this.renderer.setPixelRatio(pixelRatio);
-    console.log('Render Pixel Ratio:', pixelRatio);
-    console.log('Current Device Pixel Ratio:', currentDpr);
   }
+
   private createFallbackLight() {
     const light = new THREE.HemisphereLight(0xffffff, 0x444444, this.fallbackLightIntensity);
     light.name = 'ThreeFallbackHemisphereLight';
     this.scene.add(light);
+
     const frontLight = new THREE.DirectionalLight(0xffffff, 0.25);
     frontLight.name = 'ThreeFallbackFrontLight';
     frontLight.position.set(0, 3, 5);
     frontLight.target.position.set(0, 0, 0);
+
     this.scene.add(frontLight);
     this.scene.add(frontLight.target);
   }
+
   private assetUrl(path: string): string {
     const cleanPath = path.replace(/^\/+/, '');
     const baseHref =
       document.querySelector('base')?.getAttribute('href') || document.baseURI || '/';
+
     return new URL(cleanPath, new URL(baseHref, window.location.origin)).toString();
   }
+
   private async loadHDRILighting() {
     try {
       const loader = new EXRLoader();
       const hdriUrl = this.assetUrl('three/hdri/hdri_1.exr');
-      console.log('Loading HDRI from:', hdriUrl);
       const hdri = await loader.loadAsync(hdriUrl);
+
       const pmrem = new THREE.PMREMGenerator(this.renderer);
       const envMap = pmrem.fromEquirectangular(hdri).texture;
+
       this.scene.environment = envMap;
       this.scene.environmentRotation = new THREE.Euler(0, this.hdriStartRotation, 0);
       this.scene.environmentIntensity = 2;
+
       hdri.dispose();
       pmrem.dispose();
-      console.log('HDRI loaded successfully');
-    } catch (error) {
-      console.warn('HDRI Fehler:', error);
-    }
+    } catch (error) {}
   }
+
   private async loadArnoldLights() {
     this.arnoldLightLoader = new ArnoldLightLoader(this.scene);
     const arnoldLightsUrl = this.assetUrl('three/lighting/arnold_lights.json');
-    console.log('Loading Arnold lights from:', arnoldLightsUrl);
     await this.arnoldLightLoader.load(arnoldLightsUrl);
   }
+
   private updateHDRIRotation() {
     if (!this.enableHDRI) {
       return;
     }
+
     if (!this.scene.environmentRotation) {
       return;
     }
+
     const progress = this.scrollService.progress();
     const rotation = this.hdriStartRotation + progress * this.hdriRotationAmount;
     this.scene.environmentRotation.y = rotation;
   }
+
   private async loadModel() {
     const modelUrl = this.assetUrl('three/models/MyHeroAnimation.glb');
-    console.log('Loading GLB from:', modelUrl);
     const gltf = await this.gltfLoader.load(modelUrl);
+
     this.scene.add(gltf.scene);
-    gltf.scene.traverse((child: THREE.Object3D) => {
-      console.log('GLB:', child.name, '| type:', child.type, '| parent:', child.parent?.name);
-    });
+
     await this.applyGuaranteedTexturesToMeshes(gltf.scene);
     this.setupCamera(gltf);
     this.setupAnimation(gltf);
-    const box = new THREE.Box3().setFromObject(gltf.scene);
-    const size = new THREE.Vector3();
-    const center = new THREE.Vector3();
-    box.getSize(size);
-    box.getCenter(center);
-    console.log('====================================');
-    console.log('MODEL DEBUG');
-    console.log('MODEL URL:', modelUrl);
-    console.log('BOUNDING BOX SIZE:', size.toArray());
-    console.log('MODEL CENTER:', center.toArray());
-    console.log('====================================');
   }
+
   private createCenterRotationPivot(): void {
     if (!this.centerGroup || !this.centerGroup.parent) {
-      console.warn('Cannot create center rotation pivot.');
       return;
     }
+
     const originalParent = this.centerGroup.parent;
+
     this.scene.updateMatrixWorld(true);
+
     const worldPosition = new THREE.Vector3();
     this.centerGroup.getWorldPosition(worldPosition);
+
     const pivot = new THREE.Group();
     pivot.name = 'Can_Center_FlavorRotation_Pivot';
+
     originalParent.add(pivot);
     pivot.position.copy(originalParent.worldToLocal(worldPosition.clone()));
     pivot.attach(this.centerGroup);
+
     this.centerRotationPivot = pivot;
     this.centerRotationPivot.rotation.set(0, 0, 0);
-    console.log('CENTER ROTATION PIVOT CREATED', this.centerRotationPivot);
   }
+
   private setupCamera(gltf: any) {
     let camera: THREE.PerspectiveCamera | undefined;
+
     if (gltf.cameras && gltf.cameras.length > 0) {
       const gltfCamera = gltf.cameras[0];
+
       if (gltfCamera instanceof THREE.PerspectiveCamera) {
         camera = gltfCamera;
       }
     }
+
     if (!camera) {
       gltf.scene.traverse((object: THREE.Object3D) => {
         if (object instanceof THREE.PerspectiveCamera) {
@@ -378,23 +397,28 @@ export class ThreeEngine {
         }
       });
     }
+
     if (!camera) {
       camera = new THREE.PerspectiveCamera(22.9, this.canvasAspect(), 0.01, 1000);
       camera.position.set(0, 0, 10);
       camera.lookAt(0, 0, 0);
     }
+
     this.camera = camera;
     this.originalCameraFov = this.camera.fov;
     this.resizeCamera();
-    console.log('AKTIVE GLB KAMERA:', this.camera.name);
   }
+
   private resizeCamera() {
     if (!this.camera || !this.renderer || !this.canvas) {
       return;
     }
+
     this.updateRenderPixelRatio();
+
     const width = window.innerWidth;
     let multiplier = 1;
+
     if (width <= 390) {
       multiplier = 1.75;
     } else if (width <= 480) {
@@ -406,60 +430,57 @@ export class ThreeEngine {
     } else if (width <= 1420) {
       multiplier = 1.5;
     }
+
     if (this.isBrowserZoomedTooFar()) {
       multiplier = 1;
     }
+
     this.camera.fov = this.originalCameraFov * multiplier;
     this.camera.aspect = this.canvasAspect();
     this.camera.updateProjectionMatrix();
+
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight, false);
+
     this.lastValidFov = this.camera.fov;
     this.lastValidAspect = this.camera.aspect;
   }
+
   private isBrowserZoomedTooFar(): boolean {
     const screenWidth = window.screen.width;
     const viewportWidth = window.innerWidth;
+
     if (screenWidth <= 0 || viewportWidth <= 0) {
       return false;
     }
+
     const zoomRatio = viewportWidth / screenWidth;
     return zoomRatio < 0.75 || zoomRatio > 1.25;
   }
+
   private setupAnimation(gltf: any) {
     if (!gltf.animations || gltf.animations.length === 0) {
-      console.warn('Keine Animation gefunden');
       return;
     }
+
     const clip = gltf.animations[0];
     this.animationDuration = clip.duration;
+
     this.mixer = new THREE.AnimationMixer(gltf.scene);
     this.action = this.mixer.clipAction(clip);
+
     this.action.reset();
     this.action.enabled = true;
     this.action.setEffectiveWeight(1);
     this.action.play();
-    console.log('Animation duration:', this.animationDuration);
   }
+
   private async applyGuaranteedTexturesToMeshes(object: THREE.Object3D) {
     const centerGroup = object.getObjectByName('Can_Center_GRP');
     const leftGroup = object.getObjectByName('Can_Left_GRP');
     const rightGroup = object.getObjectByName('Can_Right_GRP');
+
     this.centerGroup = centerGroup ?? undefined;
-    console.log('====================================');
-    console.log('MATERIAL GROUPS');
-    console.log('CENTER:', centerGroup);
-    console.log('LEFT:', leftGroup);
-    console.log('RIGHT:', rightGroup);
-    console.log('====================================');
-    if (!centerGroup) {
-      console.error('Can_Center_GRP NOT FOUND!');
-    }
-    if (!leftGroup) {
-      console.error('Can_Left_GRP NOT FOUND!');
-    }
-    if (!rightGroup) {
-      console.error('Can_Right_GRP NOT FOUND!');
-    }
+
     const flavorMaterialConfigs: Record<
       FlavorId,
       {
@@ -485,37 +506,43 @@ export class ThreeEngine {
         folder: 'BlackEdition',
       },
     };
+
     if (this.materialsPreloadPromise) {
       await this.materialsPreloadPromise;
       return;
     }
+
     this.materialsPreloadPromise = this.preloadAllFlavorMaterials(flavorMaterialConfigs);
     await this.materialsPreloadPromise;
+
     const keylimeMaterials = this.flavorMaterials.keylime;
+
     if (keylimeMaterials) {
       if (leftGroup) {
         this.applyMaterialsToCan(leftGroup, keylimeMaterials, 'keylime');
       }
+
       if (rightGroup) {
         this.applyMaterialsToCan(rightGroup, keylimeMaterials, 'keylime');
       }
     }
+
     const initialFlavor = this.flavorService.selectedFlavorId();
     const initialMaterials = this.flavorMaterials[initialFlavor];
+
     if (initialMaterials && centerGroup) {
       this.applyMaterialsToCan(centerGroup, initialMaterials, initialFlavor);
       this.currentCenterFlavor = initialFlavor;
     }
+
     if (centerGroup) {
       this.createCenterRotationPivot();
     }
+
     await this.precompileMaterials();
     this.materialsReady = true;
-    console.log('====================================');
-    console.log('ALL FLAVOR ASSETS READY');
-    console.log(this.textureManager.getCacheStats());
-    console.log('====================================');
   }
+
   private async preloadAllFlavorMaterials(
     configs: Record<
       FlavorId,
@@ -525,127 +552,136 @@ export class ThreeEngine {
     >,
   ): Promise<void> {
     const flavorIds = Object.keys(configs) as FlavorId[];
-    console.log('====================================');
-    console.log('STARTING PARALLEL FLAVOR PRELOAD');
-    console.log(flavorIds);
-    console.log('====================================');
-    const results = await Promise.all(
+
+    await Promise.all(
       flavorIds.map(async (flavorId) => {
         const config = configs[flavorId];
+
         try {
           const [body, aluminium, tab] = await Promise.all([
             this.textureManager.loadPBRMaterial(config.folder, 'Body_Texture_Main'),
             this.textureManager.loadPBRMaterial(config.folder, 'Top_Bottom_Aluminium'),
             this.textureManager.loadPBRMaterial(config.folder, 'Opening_Tab_Aluminium'),
           ]);
+
           const materials: FlavorMaterials = {
             body,
             aluminium,
             tab,
           };
+
           this.flavorMaterials[flavorId] = materials;
+
           this.textureManager.prepareMaterialForGPU(body);
           this.textureManager.prepareMaterialForGPU(aluminium);
           this.textureManager.prepareMaterialForGPU(tab);
-          console.log('Flavor prepared:', flavorId);
+
           return true;
         } catch (error) {
-          console.error(`Could not load materials for ${flavorId}:`, error);
           return false;
         }
       }),
     );
-    console.log('Flavor preload results:', results);
+
     this.textureManager.prepareAllMaterialsForGPU();
-    console.log('ALL TEXTURES UPLOADED TO GPU');
   }
+
   private async precompileMaterials(): Promise<void> {
     if (!this.renderer || !this.scene || !this.camera) {
       return;
     }
+
     try {
       if (typeof this.renderer.compileAsync === 'function') {
         await this.renderer.compileAsync(this.scene, this.camera);
       } else {
         this.renderer.compile(this.scene, this.camera);
       }
-      console.log('Three.js shaders precompiled.');
-    } catch (error) {
-      console.warn('Shader precompile failed:', error);
-    }
+    } catch (error) {}
   }
+
   private applyMaterialsToCan(
     canGroup: THREE.Object3D,
     materials: FlavorMaterials,
     flavor: FlavorId | string,
   ): void {
-    console.log(`Applying ${flavor} materials to:`, canGroup.name);
     canGroup.traverse((child: THREE.Object3D) => {
       if (!(child instanceof THREE.Mesh)) {
         return;
       }
+
       child.castShadow = true;
       child.receiveShadow = true;
       child.frustumCulled = false;
+
       const name = child.name.toLowerCase();
+
       if (name.includes('body_texture_main')) {
         child.material = materials.body;
         return;
       }
+
       if (name.includes('top_bottom_aluminium')) {
         child.material = materials.aluminium;
         return;
       }
+
       if (name.includes('opening_tab_aluminium')) {
         child.material = materials.tab;
         return;
       }
     });
   }
+
   private applyFlavorToCenter(flavorId: FlavorId): void {
     if (!this.centerGroup) {
-      console.warn('Cannot change flavor: Can_Center_GRP not found.');
       return;
     }
+
     if (!this.centerRotationPivot) {
-      console.warn('Cannot rotate center: rotation pivot not found.');
       return;
     }
+
     const materials = this.flavorMaterials[flavorId];
+
     if (!materials) {
-      console.warn(`No materials loaded for flavor: ${flavorId}`);
       return;
     }
+
     if (flavorId === this.currentCenterFlavor) {
       return;
     }
+
     if (this.centerRotationAnimating) {
-      console.log('Flavor change blocked because rotation is active.');
       return;
     }
+
     this.pendingFlavorId = flavorId;
     this.pendingFlavorMaterials = materials;
     this.pendingMaterialApplied = false;
+
     this.startCenterRotation();
-    console.log('====================================');
-    console.log('STARTING FLAVOR ROTATION:', flavorId);
-    console.log('====================================');
   }
+
   private startCenterRotation(): void {
     if (!this.centerRotationPivot) {
       return;
     }
+
     this.centerRotationAnimating = true;
     this.centerRotationStart = this.centerRotationPivot.rotation.y;
     this.centerRotationTarget = this.centerRotationStart + Math.PI * 2;
     this.centerRotationStartTime = performance.now();
   }
+
   private updateCenterRotation(): void {
     if (!this.centerRotationAnimating || !this.centerRotationPivot) {
       return;
     }
+
     const elapsed = performance.now() - this.centerRotationStartTime;
     const progress = THREE.MathUtils.clamp(elapsed / (this.centerRotationDuration * 1000), 0, 1);
+
     if (!this.pendingMaterialApplied && progress >= 0.5) {
       if (this.pendingFlavorMaterials && this.pendingFlavorId) {
         this.applyMaterialsToCan(
@@ -653,80 +689,72 @@ export class ThreeEngine {
           this.pendingFlavorMaterials,
           this.pendingFlavorId,
         );
+
         this.currentCenterFlavor = this.pendingFlavorId;
         this.pendingMaterialApplied = true;
-        console.log('Material switched at 180°:', this.pendingFlavorId);
       }
     }
+
     this.centerRotationPivot.rotation.y = THREE.MathUtils.lerp(
       this.centerRotationStart,
       this.centerRotationTarget,
       progress,
     );
+
     if (progress >= 1) {
       this.centerRotationPivot.rotation.y = this.centerRotationTarget;
+
       this.centerRotationPivot.rotation.y = THREE.MathUtils.euclideanModulo(
         this.centerRotationPivot.rotation.y,
         Math.PI * 2,
       );
+
       if (!this.pendingMaterialApplied && this.pendingFlavorMaterials && this.pendingFlavorId) {
         this.applyMaterialsToCan(
           this.centerGroup!,
           this.pendingFlavorMaterials,
           this.pendingFlavorId,
         );
+
         this.currentCenterFlavor = this.pendingFlavorId;
         this.pendingMaterialApplied = true;
       }
+
       this.pendingFlavorId = undefined;
       this.pendingFlavorMaterials = undefined;
       this.centerRotationAnimating = false;
-      console.log('====================================');
-      console.log('360° ROTATION FINISHED');
-      console.log('Next flavor click is now allowed.');
-      console.log('====================================');
     }
   }
-  private debugMaterial(mesh: THREE.Mesh, material: THREE.Material) {
-    console.log('MATERIAL:', {
-      mesh: mesh.name,
-      type: material.type,
-    });
-    if (
-      !(
-        material instanceof THREE.MeshStandardMaterial ||
-        material instanceof THREE.MeshPhysicalMaterial
-      )
-    ) {
-      console.warn(
-        `Material von "${mesh.name}" ist ${material.type}. ` +
-          `RectAreaLight funktioniert nur mit ` +
-          `MeshStandardMaterial oder MeshPhysicalMaterial.`,
-      );
-    }
-  }
+
   private canvasAspect() {
     if (!this.canvas) {
       return 1;
     }
+
     const width = this.canvas.clientWidth;
     const height = this.canvas.clientHeight;
+
     if (height <= 0) {
       return 1;
     }
+
     return width / height;
   }
+
   private startRenderLoop(): void {
     if (this.renderLoopStarted) {
       return;
     }
+
     this.renderLoopStarted = true;
-    console.log('Starting persistent Three.js render loop.');
     requestAnimationFrame(this.animate);
   }
+
   private animate = () => {
     requestAnimationFrame(this.animate);
+
     const progress = this.scrollService.progress();
+
     if (this.mixer && this.animationDuration > 0) {
       const epsilon = 0.0001;
       const time = THREE.MathUtils.clamp(
@@ -734,10 +762,13 @@ export class ThreeEngine {
         0,
         this.animationDuration - epsilon,
       );
+
       this.mixer.setTime(time);
     }
+
     this.updateCenterRotation();
     this.updateHDRIRotation();
+
     if (this.renderer && this.scene && this.camera) {
       this.renderer.render(this.scene, this.camera);
     }
