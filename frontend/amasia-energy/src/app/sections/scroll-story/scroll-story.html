@@ -135,7 +135,7 @@
   mobileEnter="bottom"
   mobileLeave="bottom"
   [mobileOffsetX]="0"
-  [mobileOffsetY]="75"
+  [mobileOffsetY]="62"
   [mobileWidth]="420"
   [mobileScale]="0.7"
 
@@ -976,10 +976,10 @@
   [opacity]="1"
   [distance]="250"
 >
-  @for (flavor of flavors; track flavor.id) {
+      @for (flavor of flavors; track flavor.id) {
     @if (flavor.id === selectedFlavor().id) {
       <div class="flavor_content">
-        <h1>{{ formatPrice(flavor.price) }}</h1>
+        <h1>{{ flavor.name }}</h1>
       </div>
     }
   }
@@ -1027,13 +1027,15 @@
   [opacity]="1"
   [distance]="250"
 >
+
   @for (flavor of flavors; track flavor.id) {
     @if (flavor.id === selectedFlavor().id) {
       <div class="flavor_content">
-        <h1>{{ flavor.name }}</h1>
+        <h1>{{ formatPrice(flavor.price) }}</h1>
       </div>
     }
   }
+
 </app-story>
 
 <!-- SECTION 4 END -->

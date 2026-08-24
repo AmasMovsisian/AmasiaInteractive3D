@@ -194,9 +194,16 @@
   gap: 0.035em;
   width: 256px;
   min-height: 52px;
-  color: var(--button-text) !important;
-  background: var(--button-bg);
-  border-color: var(--button-border);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.14));
+  color: var(--text-primary) !important;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(18px) saturate(125%);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.48),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
   font-family: var(--font-body);
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -212,6 +219,18 @@
     border-color 650ms ease,
     box-shadow 650ms ease,
     filter 650ms ease;
+}
+.dark .button_section .button,
+[data-theme='dark'] .button_section .button,
+body.dark .button_section .button {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08));
+  color: #080808 !important;
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.28),
+    0 2px 8px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
 }
 .button_section .button:disabled {
   pointer-events: none;
@@ -230,7 +249,13 @@
   left: -32%;
   top: 115%;
   border-radius: 46%;
-  background: rgba(255, 255, 255, 0.16);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.12) 38%,
+    rgba(255, 255, 255, 0.04) 60%,
+    transparent 76%
+  );
   filter: blur(1px);
   transform: rotate(0deg) scale(1);
   transition:
@@ -249,9 +274,10 @@
   border-radius: 48% 52% 45% 55%;
   background: radial-gradient(
     ellipse at center,
-    rgba(255, 255, 255, 0.14) 0%,
-    rgba(255, 255, 255, 0.05) 35%,
-    transparent 68%
+    rgba(255, 255, 255, 0.24) 0%,
+    rgba(255, 255, 255, 0.09) 30%,
+    rgba(255, 255, 255, 0.03) 48%,
+    transparent 70%
   );
   opacity: 0;
   transform: rotate(-8deg) scale(0.8);
@@ -265,10 +291,11 @@
   position: relative;
   z-index: 5;
   display: inline-block;
+  color: inherit;
   transform-style: preserve-3d;
   backface-visibility: hidden;
   will-change: transform;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.12);
   transition:
     color 350ms ease,
     text-shadow 350ms ease;
@@ -278,8 +305,13 @@
   width: 0.35em;
 }
 .button_section .button:not(:disabled):hover {
-  transform: translateY(-2px) scale(1.035);
-  filter: saturate(1.04);
+  transform: translateY(-3px) scale(1.035);
+  filter: saturate(1.08);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.16),
+    0 4px 10px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1);
 }
 .button_section .button:not(:disabled):hover::before {
   top: -45%;
@@ -297,14 +329,18 @@
 }
 .button_section .button:not(:disabled):hover .button_letter {
   text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.18),
-    0 0 12px rgba(255, 255, 255, 0.06);
+    0 1px 0 rgba(255, 255, 255, 0.24),
+    0 0 12px rgba(255, 255, 255, 0.1);
 }
 .button_section .button[data-flavor='keylime']:not(:disabled):hover,
 .button_section .button[data-flavor='keylime'].active {
   background: linear-gradient(135deg, #4f9f24 0%, #8fbe3f 50%, #6fae2b 100%);
   color: #122006 !important;
-  border-color: #9dcc45;
+  border-color: #a8d65a;
+  box-shadow:
+    0 12px 32px rgba(85, 145, 35, 0.24),
+    0 3px 8px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 .button_section .button[data-flavor='keylime']::before {
   background: radial-gradient(
@@ -318,8 +354,12 @@
 .button_section .button[data-flavor='akebi']:not(:disabled):hover,
 .button_section .button[data-flavor='akebi'].active {
   background: linear-gradient(135deg, #865bb4 0%, #aa7bd0 50%, #8d63bb 100%);
-  color: #18200b !important;
-  border-color: #c9a4e6;
+  color: #180d21 !important;
+  border-color: #d4b5ed;
+  box-shadow:
+    0 12px 32px rgba(132, 91, 180, 0.24),
+    0 3px 8px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.46);
 }
 .button_section .button[data-flavor='akebi']::before {
   background: radial-gradient(
@@ -334,7 +374,11 @@
 .button_section .button[data-flavor='coconut'].active {
   background: linear-gradient(135deg, #56a9c7 0%, #78c7df 50%, #5aafca 100%);
   color: #07171d !important;
-  border-color: #a2e0f1;
+  border-color: #a9e5f5;
+  box-shadow:
+    0 12px 32px rgba(65, 160, 195, 0.24),
+    0 3px 8px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.48);
 }
 .button_section .button[data-flavor='coconut']::before {
   background: radial-gradient(
@@ -349,7 +393,11 @@
 .button_section .button[data-flavor='lychee'].active {
   background: linear-gradient(135deg, #df919b 0%, #ec8888 50%, #df98ad 100%);
   color: #32151e !important;
-  border-color: #f7d2dc;
+  border-color: #f8d5de;
+  box-shadow:
+    0 12px 32px rgba(220, 135, 150, 0.24),
+    0 3px 8px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 .button_section .button[data-flavor='lychee']::before {
   background: radial-gradient(
@@ -364,7 +412,11 @@
 .button_section .button[data-flavor='pandan'].active {
   background: linear-gradient(135deg, #6f9958 0%, #8eb978 50%, #709a59 100%);
   color: #101b0d !important;
-  border-color: #b0d294;
+  border-color: #b9d99d;
+  box-shadow:
+    0 12px 32px rgba(105, 150, 82, 0.24),
+    0 3px 8px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.46);
 }
 .button_section .button[data-flavor='pandan']::before {
   background: radial-gradient(
@@ -375,35 +427,72 @@
     transparent 75%
   );
 }
-.button_section .button[data-flavor='black-edition']:not(:disabled):hover,
-.button_section .button[data-flavor='black-edition'].active {
+.button_section .button[data-flavor='black-edition'] {
   background: linear-gradient(
     135deg,
-    #9e7735 0%,
-    #c7a452 25%,
-    #f0d58b 50%,
-    #c5a04e 75%,
-    #96702f 100%
+    #8f6728 0%,
+    #b38a3d 20%,
+    #d0af60 40%,
+    #e3c778 50%,
+    #c7a452 65%,
+    #a67c32 82%,
+    #805d24 100%
   );
+  background-size: 180% 100%;
+  background-position: 0% 50%;
   color: #17130b !important;
-  border-color: #f4dc9b;
+  border-color: rgba(232, 203, 132, 0.82);
   box-shadow:
-    0 0 8px rgba(210, 174, 91, 0.1),
-    0 10px 32px rgba(170, 125, 45, 0.28);
+    0 10px 28px rgba(125, 87, 28, 0.22),
+    0 3px 8px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 239, 185, 0.65),
+    inset 0 -1px 0 rgba(110, 75, 24, 0.18);
   text-shadow: none;
+  animation: none;
 }
 .button_section .button[data-flavor='black-edition']::before {
   background: radial-gradient(
     ellipse at center,
-    rgba(255, 241, 188, 0.42) 0%,
-    rgba(238, 205, 124, 0.22) 35%,
-    rgba(180, 137, 57, 0.11) 60%,
+    rgba(255, 244, 192, 0.44) 0%,
+    rgba(238, 205, 124, 0.24) 35%,
+    rgba(180, 137, 57, 0.12) 60%,
     transparent 76%
   );
 }
+.button_section .button[data-flavor='black-edition']:not(:disabled):hover {
+  background: linear-gradient(
+    115deg,
+    #8d672c 0%,
+    #b99346 16%,
+    #e0c16f 34%,
+    #fff0b0 50%,
+    #d4b05c 66%,
+    #a97d32 84%,
+    #805c24 100%
+  );
+  background-size: 220% 100%;
+  background-position: 100% 50%;
+  color: #17130b !important;
+  border-color: #f5dda0;
+  box-shadow:
+    0 14px 38px rgba(170, 125, 45, 0.3),
+    0 4px 10px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 rgba(255, 244, 198, 0.82),
+    inset 0 -1px 0 rgba(105, 70, 20, 0.15);
+}
 .button_section .button[data-flavor='black-edition'].active {
-  background-size: 200% 100%;
+  background-size: 220% 100%;
   animation: blackEditionShimmer 4s ease-in-out infinite;
+}
+.button_section .button[data-flavor='black-edition'] .button_letter {
+  color: #17130b !important;
+  text-shadow: 0 1px 0 rgba(255, 241, 188, 0.28);
+}
+.button_section .button[data-flavor='black-edition']:not(:disabled):hover .button_letter {
+  color: #120f08 !important;
+  text-shadow:
+    0 1px 0 rgba(255, 244, 200, 0.42),
+    0 0 10px rgba(255, 235, 160, 0.12);
 }
 @keyframes luxuryLetterSpin {
   0% {
@@ -674,7 +763,7 @@ h2 {
     scale: 0.68;
   }
   .section_1_bottom_txt {
-    margin-top: 0px;
+    margin-top: 0;
   }
 }
 @media (max-width: 844px) {
