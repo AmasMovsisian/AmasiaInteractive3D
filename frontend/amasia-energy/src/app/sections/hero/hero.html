@@ -1,6 +1,8 @@
 <section class="hero">
   <app-nav></app-nav>
-  <canvas #canvas class="hero-canvas"></canvas>
+  <div class="hero-canvas-viewport">
+    <canvas #canvas class="hero-canvas"></canvas>
+  </div>
   <div class="portrait-only-overlay" aria-hidden="true">
     <div class="portrait-only-content">
       <a routerLink="/" class="portrait-only-logo">
@@ -32,5 +34,6 @@
       </div>
     </div>
   }
-  <app-scroll-story></app-scroll-story>
 </section>
+<app-scroll-story></app-scroll-story>
+<app-new-flavors></app-new-flavors>

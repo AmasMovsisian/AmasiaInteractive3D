@@ -1,58 +1,62 @@
 :root {
   --font-body: 'Exo 2', sans-serif;
   --font-heading: 'Orbitron', sans-serif;
-
   --bg-primary: #ffffff;
   --bg-secondary: #f7f7f7;
   --bg-surface: #fcfcfc;
-
   --bg-glass: rgba(255, 255, 255, 0.55);
-
   --text-primary: #111111;
   --text-secondary: #383838;
   --text-muted: #383838;
   --text-inverse: #ffffff;
-
   --link: #111111;
   --link-hover: #000000;
-
   --button-bg: #111111;
   --button-text: #ffffff;
   --button-border: #111111;
-
   --button-hover-bg: transparent;
   --button-hover-text: #111111;
   --button-hover-border: #111111;
-
   --border: rgba(0, 0, 0, 0.08);
-
   --shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-
   --text-shadow: rgba(0, 0, 0, 0.15);
-
---canvas-bg:
-  radial-gradient(
-    ellipse 52% 44% at 50% 32%,
-    #ffffff 0%,
-    #fbfcfd 18%,
-    #f6f8f9 38%,
-    #eceef1 58%,
-    #e3e6e9 78%,
-    #d9dee2 100%
-  ),
-  radial-gradient(
-    ellipse 75% 60% at 50% 105%,
-    rgba(202, 209, 215, 0.95) 0%,
-    rgba(222, 227, 231, 0.72) 38%,
-    rgba(241, 243, 245, 0.22) 70%,
-    transparent 100%
-  ),
-  linear-gradient(
-    135deg,
-    #ffffff 0%,
-    #f0f2f4 45%,
-    #e0e4e7 100%
-  );
-
-
+  --nav-shadow-start: rgba(0, 0, 0, 0.3);
+  --nav-shadow-mid: rgba(0, 0, 0, 0.15);
+  --nav-shadow-end: rgba(0, 0, 0, 0.05);
+  --canvas-bg:
+    radial-gradient(
+      ellipse 52% 44% at 50% 32%,
+      #ffffff 0%,
+      #fbfcfd 18%,
+      #f6f8f9 38%,
+      #eceef1 58%,
+      #e3e6e9 78%,
+      #d9dee2 100%
+    ),
+    radial-gradient(
+      ellipse 75% 60% at 50% 105%,
+      rgba(202, 209, 215, 0.95) 0%,
+      rgba(222, 227, 231, 0.72) 38%,
+      rgba(241, 243, 245, 0.22) 70%,
+      transparent 100%
+    ),
+    linear-gradient(135deg, #ffffff 0%, #f0f2f4 45%, #e0e4e7 100%);
+  --canvas-bg-2:
+    radial-gradient(
+      ellipse 52% 44% at 50% 68%,
+      #ffffff 0%,
+      #fbfcfd 18%,
+      #f6f8f9 38%,
+      #eceef1 58%,
+      #e3e6e9 78%,
+      #d9dee2 100%
+    ),
+    radial-gradient(
+      ellipse 75% 60% at 50% -5%,
+      rgba(202, 209, 215, 0.95) 0%,
+      rgba(222, 227, 231, 0.72) 38%,
+      rgba(241, 243, 245, 0.22) 70%,
+      transparent 100%
+    ),
+    linear-gradient(135deg, #d9dee2 0%, #f0f2f4 45%, #ffffff 100%);
 }

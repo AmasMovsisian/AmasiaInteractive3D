@@ -1,8 +1,7 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { StoryComponent } from './story/story';
 import { FlavorId, FlavorService } from '../../core/services/flavor.service';
 import { ScrollService } from '../../core/services/scroll.service';
-
 @Component({
   selector: 'app-scroll-story',
   standalone: true,
@@ -15,18 +14,13 @@ export class ScrollStoryComponent {
   readonly scrollService = inject(ScrollService);
   readonly flavors = this.flavorService.flavors;
   readonly selectedFlavor = this.flavorService.selectedFlavor;
-  readonly buttonsActive = computed(() => {
-    const progress = this.scrollService.progress();
-    return progress >= 0.99 && progress <= 1.2;
-  });
-
+  readonly buttonsActive = this.scrollService.buttonsActive;
   selectFlavor(flavorId: FlavorId): void {
     if (!this.buttonsActive()) {
       return;
     }
     this.flavorService.selectFlavor(flavorId);
   }
-
   formatPrice(price: number): string {
     return new Intl.NumberFormat('de-DE', {
       style: 'currency',

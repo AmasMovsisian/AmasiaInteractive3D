@@ -99,10 +99,6 @@ export class FlavorService {
   });
 
   selectFlavor(flavorId: FlavorId): void {
-    console.log('Selecting flavor:', flavorId);
-
     this.selectedFlavorId.set(flavorId);
-
-    console.log('Selected flavor:', this.selectedFlavor());
   }
 }

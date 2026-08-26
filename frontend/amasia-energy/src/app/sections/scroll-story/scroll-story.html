@@ -695,18 +695,22 @@
 <!-- SECTION 3 MOBILE END -->
 
 
-<!-- Section 4 Start -->
+<!-- ========================================================= -->
+<!-- SECTION 4 START                                           -->
+<!-- ========================================================= -->
 
-<app-story class="Section_4_flavor"
-  [from]="0.9"
-  [to]="1.2"
+<app-story
+  class="Section_4_flavor"
+  [from]="0.8"
+  [to]="1"
   [interactionStart]="0.3"
+
   desktopHorizontal="left"
   desktopVertical="center"
   desktopPivot="center"
   desktopTextAlign="center"
   desktopEnter="bottom"
-  desktopLeave="left"
+  desktopLeave="top"
   [desktopOffsetX]="256"
   [desktopOffsetY]="0"
   [desktopWidth]="800"
@@ -734,157 +738,184 @@
   [mobileWidth]="320"
   [mobileScale]="0.4"
 
-  [fadeIn]="0.3"
+  [fadeIn]="0.5"
   [fadeOut]="0.3"
   [opacity]="1"
   [distance]="250"
 >
-<div class="button_section">
-  <div class="luxury_eyebrow">
-    AMASIA
+  <div class="button_section">
+
+    <div class="luxury_eyebrow">
+      AMASIA
+    </div>
+
+    <h1>DEFINE YOUR TASTE</h1>
+
+    <br /><br />
+
+    <h2>Main Flavors</h2>
+
+    <br />
+
+    <!-- ===================================================== -->
+    <!-- KEYLIME                                                -->
+    <!-- ===================================================== -->
+
+    <button
+      class="button button_for_Story"
+      [class.active]="selectedFlavor().id === 'keylime'"
+      [disabled]="!buttonsActive()"
+      data-flavor="keylime"
+      (click)="selectFlavor('keylime')"
+    >
+      <span class="button_letter" style="--i: 0">K</span>
+      <span class="button_letter" style="--i: 1">E</span>
+      <span class="button_letter" style="--i: 2">Y</span>
+      <span class="button_letter" style="--i: 3">L</span>
+      <span class="button_letter" style="--i: 4">I</span>
+      <span class="button_letter" style="--i: 5">M</span>
+      <span class="button_letter" style="--i: 6">E</span>
+    </button>
+
+    <br />
+
+    <!-- ===================================================== -->
+    <!-- AKEBI                                                   -->
+    <!-- ===================================================== -->
+
+    <button
+      class="button button_for_Story"
+      [class.active]="selectedFlavor().id === 'akebi'"
+      [disabled]="!buttonsActive()"
+      data-flavor="akebi"
+      (click)="selectFlavor('akebi')"
+    >
+      <span class="button_letter" style="--i: 0">A</span>
+      <span class="button_letter" style="--i: 1">K</span>
+      <span class="button_letter" style="--i: 2">E</span>
+      <span class="button_letter" style="--i: 3">B</span>
+      <span class="button_letter" style="--i: 4">I</span>
+    </button>
+
+    <br /><br /><br />
+
+    <!-- ===================================================== -->
+    <!-- PREMIUM FLAVORS                                        -->
+    <!-- ===================================================== -->
+
+    <h2>Premium Flavors</h2>
+
+    <br />
+
+    <!-- COCONUT -->
+
+    <button
+      class="button button_for_Story"
+      [class.active]="selectedFlavor().id === 'coconut'"
+      [disabled]="!buttonsActive()"
+      data-flavor="coconut"
+      (click)="selectFlavor('coconut')"
+    >
+      <span class="button_letter" style="--i: 0">C</span>
+      <span class="button_letter" style="--i: 1">O</span>
+      <span class="button_letter" style="--i: 2">C</span>
+      <span class="button_letter" style="--i: 3">O</span>
+      <span class="button_letter" style="--i: 4">N</span>
+      <span class="button_letter" style="--i: 5">U</span>
+      <span class="button_letter" style="--i: 6">T</span>
+    </button>
+
+    <br />
+
+    <!-- LYCHEE -->
+
+    <button
+      class="button button_for_Story"
+      [class.active]="selectedFlavor().id === 'lychee'"
+      [disabled]="!buttonsActive()"
+      data-flavor="lychee"
+      (click)="selectFlavor('lychee')"
+    >
+      <span class="button_letter" style="--i: 0">L</span>
+      <span class="button_letter" style="--i: 1">Y</span>
+      <span class="button_letter" style="--i: 2">C</span>
+      <span class="button_letter" style="--i: 3">H</span>
+      <span class="button_letter" style="--i: 4">E</span>
+      <span class="button_letter" style="--i: 5">E</span>
+    </button>
+
+    <br />
+
+    <!-- PANDAN -->
+
+    <button
+      class="button button_for_Story"
+      [class.active]="selectedFlavor().id === 'pandan'"
+      [disabled]="!buttonsActive()"
+      data-flavor="pandan"
+      (click)="selectFlavor('pandan')"
+    >
+      <span class="button_letter" style="--i: 0">P</span>
+      <span class="button_letter" style="--i: 1">A</span>
+      <span class="button_letter" style="--i: 2">N</span>
+      <span class="button_letter" style="--i: 3">D</span>
+      <span class="button_letter" style="--i: 4">A</span>
+      <span class="button_letter" style="--i: 5">N</span>
+    </button>
+
+    <br /><br /><br />
+
+    <!-- ===================================================== -->
+    <!-- SIGNATURE VIP                                           -->
+    <!-- ===================================================== -->
+
+    <h2>SIGNATURE VIP</h2>
+
+    <br />
+
+    <button
+      class="button button_for_Story"
+      [class.active]="selectedFlavor().id === 'black-edition'"
+      [disabled]="!buttonsActive()"
+      data-flavor="black-edition"
+      (click)="selectFlavor('black-edition')"
+    >
+      <span class="button_letter" style="--i: 0">B</span>
+      <span class="button_letter" style="--i: 1">L</span>
+      <span class="button_letter" style="--i: 2">A</span>
+      <span class="button_letter" style="--i: 3">C</span>
+      <span class="button_letter" style="--i: 4">K</span>
+
+      <span class="button_space"></span>
+
+      <span class="button_letter" style="--i: 5">E</span>
+      <span class="button_letter" style="--i: 6">D</span>
+      <span class="button_letter" style="--i: 7">I</span>
+      <span class="button_letter" style="--i: 8">T</span>
+      <span class="button_letter" style="--i: 9">I</span>
+      <span class="button_letter" style="--i: 10">O</span>
+      <span class="button_letter" style="--i: 11">N</span>
+    </button>
+
   </div>
-
-  <h1>DEFINE YOUR TASTE</h1>
-
-  <br /><br />
-
-  <h2>Main Flavors</h2>
-
-  <br />
-
-  <button
-    class="button button_for_Story"
-    [class.active]="selectedFlavor().id === 'keylime'"
-    [disabled]="!buttonsActive()"
-    data-flavor="keylime"
-    (click)="selectFlavor('keylime')"
-  >
-    <span class="button_letter" style="--i: 0">K</span>
-    <span class="button_letter" style="--i: 1">E</span>
-    <span class="button_letter" style="--i: 2">Y</span>
-    <span class="button_letter" style="--i: 3">L</span>
-    <span class="button_letter" style="--i: 4">I</span>
-    <span class="button_letter" style="--i: 5">M</span>
-    <span class="button_letter" style="--i: 6">E</span>
-  </button>
-
-  <br />
-
-  <button
-    class="button button_for_Story"
-    [class.active]="selectedFlavor().id === 'akebi'"
-    [disabled]="!buttonsActive()"
-    data-flavor="akebi"
-    (click)="selectFlavor('akebi')"
-  >
-    <span class="button_letter" style="--i: 0">A</span>
-    <span class="button_letter" style="--i: 1">K</span>
-    <span class="button_letter" style="--i: 2">E</span>
-    <span class="button_letter" style="--i: 3">B</span>
-    <span class="button_letter" style="--i: 4">I</span>
-  </button>
-
-  <br /><br /><br />
-
-  <h2>Premium Flavors</h2>
-
-  <br />
-
-  <button
-    class="button button_for_Story"
-    [class.active]="selectedFlavor().id === 'coconut'"
-    [disabled]="!buttonsActive()"
-    data-flavor="coconut"
-    (click)="selectFlavor('coconut')"
-  >
-    <span class="button_letter" style="--i: 0">C</span>
-    <span class="button_letter" style="--i: 1">O</span>
-    <span class="button_letter" style="--i: 2">C</span>
-    <span class="button_letter" style="--i: 3">O</span>
-    <span class="button_letter" style="--i: 4">N</span>
-    <span class="button_letter" style="--i: 5">U</span>
-    <span class="button_letter" style="--i: 6">T</span>
-  </button>
-
-  <br />
-
-  <button
-    class="button button_for_Story"
-    [class.active]="selectedFlavor().id === 'lychee'"
-    [disabled]="!buttonsActive()"
-    data-flavor="lychee"
-    (click)="selectFlavor('lychee')"
-  >
-    <span class="button_letter" style="--i: 0">L</span>
-    <span class="button_letter" style="--i: 1">Y</span>
-    <span class="button_letter" style="--i: 2">C</span>
-    <span class="button_letter" style="--i: 3">H</span>
-    <span class="button_letter" style="--i: 4">E</span>
-    <span class="button_letter" style="--i: 5">E</span>
-  </button>
-
-  <br />
-
-  <button
-    class="button button_for_Story"
-    [class.active]="selectedFlavor().id === 'pandan'"
-    [disabled]="!buttonsActive()"
-    data-flavor="pandan"
-    (click)="selectFlavor('pandan')"
-  >
-    <span class="button_letter" style="--i: 0">P</span>
-    <span class="button_letter" style="--i: 1">A</span>
-    <span class="button_letter" style="--i: 2">N</span>
-    <span class="button_letter" style="--i: 3">D</span>
-    <span class="button_letter" style="--i: 4">A</span>
-    <span class="button_letter" style="--i: 5">N</span>
-  </button>
-
-  <br /><br /><br />
-
-  <h2>SIGNATURE VIP</h2>
-
-  <br />
-
-  <button
-    class="button button_for_Story"
-    [class.active]="selectedFlavor().id === 'black-edition'"
-    [disabled]="!buttonsActive()"
-    data-flavor="black-edition"
-    (click)="selectFlavor('black-edition')"
-  >
-    <span class="button_letter" style="--i: 0">B</span>
-    <span class="button_letter" style="--i: 1">L</span>
-    <span class="button_letter" style="--i: 2">A</span>
-    <span class="button_letter" style="--i: 3">C</span>
-    <span class="button_letter" style="--i: 4">K</span>
-
-    <span class="button_space"></span>
-
-    <span class="button_letter" style="--i: 5">E</span>
-    <span class="button_letter" style="--i: 6">D</span>
-    <span class="button_letter" style="--i: 7">I</span>
-    <span class="button_letter" style="--i: 8">T</span>
-    <span class="button_letter" style="--i: 9">I</span>
-    <span class="button_letter" style="--i: 10">O</span>
-    <span class="button_letter" style="--i: 11">N</span>
-  </button>
-</div>
-
-
-
 </app-story>
 
 
-<app-story class="Section_4_about_flavor"
-  [from]="0.9"
-  [to]="1.2"
+<!-- ========================================================= -->
+<!-- SECTION 4 FLAVOR DESCRIPTION                              -->
+<!-- ========================================================= -->
+
+<app-story
+  class="Section_4_about_flavor"
+  [from]="0.8"
+  [to]="1"
+
   desktopHorizontal="right"
   desktopVertical="center"
   desktopPivot="center"
   desktopTextAlign="left"
   desktopEnter="bottom"
-  desktopLeave="left"
+  desktopLeave="top"
   [desktopOffsetX]="-156"
   [desktopOffsetY]="0"
   [desktopWidth]="800"
@@ -912,38 +943,56 @@
   [mobileWidth]="180"
   [mobileScale]="0.65"
 
-  [fadeIn]="0.3"
+  [fadeIn]="0.5"
   [fadeOut]="0.3"
   [opacity]="1"
   [distance]="250"
 >
   <div class="flavor_content">
+
     @for (flavor of flavors; track flavor.id) {
+
       @if (flavor.id === selectedFlavor().id) {
+
         <div class="flavor_content description_content">
-          <br><br>
-          <h2>About the flavor</h2>
-          <br>
+
+          <br /><br />
+
+          <h2>
+            About the flavor
+          </h2>
+
+          <br />
 
           <p class="description_text">
             {{ flavor.description }}
-          <p>
+          </p>
+
         </div>
+
       }
+
     }
+
   </div>
 </app-story>
 
 
-<app-story class="Section_4_about_flavor"
-  [from]="0.9"
-  [to]="1.2"
+<!-- ========================================================= -->
+<!-- SECTION 4 FLAVOR NAME                                     -->
+<!-- ========================================================= -->
+
+<app-story
+  class="Section_4_about_flavor"
+  [from]="0.8"
+  [to]="1"
+
   desktopHorizontal="right"
   desktopVertical="top"
   desktopPivot="center"
   desktopTextAlign="left"
   desktopEnter="bottom"
-  desktopLeave="left"
+  desktopLeave="top"
   [desktopOffsetX]="-156"
   [desktopOffsetY]="256"
   [desktopWidth]="800"
@@ -971,30 +1020,44 @@
   [mobileWidth]="320"
   [mobileScale]="0.9"
 
-  [fadeIn]="0.3"
+  [fadeIn]="0.5"
   [fadeOut]="0.3"
   [opacity]="1"
   [distance]="250"
 >
-      @for (flavor of flavors; track flavor.id) {
+  @for (flavor of flavors; track flavor.id) {
+
     @if (flavor.id === selectedFlavor().id) {
+
       <div class="flavor_content">
-        <h1>{{ flavor.name }}</h1>
+
+        <h1>
+          {{ flavor.name }}
+        </h1>
+
       </div>
+
     }
+
   }
 </app-story>
 
 
-<app-story class="Section_4_about_flavor"
-  [from]="0.9"
-  [to]="1.2"
+<!-- ========================================================= -->
+<!-- SECTION 4 PRICE                                           -->
+<!-- ========================================================= -->
+
+<app-story
+  class="Section_4_about_flavor"
+  [from]="0.8"
+  [to]="1"
+
   desktopHorizontal="right"
   desktopVertical="top"
   desktopPivot="center"
   desktopTextAlign="left"
   desktopEnter="bottom"
-  desktopLeave="left"
+  desktopLeave="top"
   [desktopOffsetX]="-156"
   [desktopOffsetY]="296"
   [desktopWidth]="800"
@@ -1022,20 +1085,28 @@
   [mobileWidth]="320"
   [mobileScale]="0.9"
 
-  [fadeIn]="0.3"
+  [fadeIn]="0.5"
   [fadeOut]="0.3"
   [opacity]="1"
   [distance]="250"
 >
-
   @for (flavor of flavors; track flavor.id) {
-    @if (flavor.id === selectedFlavor().id) {
-      <div class="flavor_content">
-        <h1>{{ formatPrice(flavor.price) }}</h1>
-      </div>
-    }
-  }
 
+    @if (flavor.id === selectedFlavor().id) {
+
+      <div class="flavor_content">
+
+        <h1>
+          {{ formatPrice(flavor.price) }}
+        </h1>
+
+      </div>
+
+    }
+
+  }
 </app-story>
 
-<!-- SECTION 4 END -->
+<!-- ========================================================= -->
+<!-- SECTION 4 END                                             -->
+<!-- ========================================================= -->
