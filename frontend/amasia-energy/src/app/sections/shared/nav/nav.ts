@@ -46,7 +46,9 @@ export class Nav {
     this.closeMenu();
     const frame = HERO_NAVIGATION[section];
     const currentUrl = this.router.url.split('?')[0].split('#')[0];
-    const isHeroPage = currentUrl === '/' || currentUrl === '';
+    const isHeroPage 
+    
+    = currentUrl === '/' || currentUrl === '';
     if (isHeroPage) {
       this.scrollService.scrollToFrame(frame, HERO_TOTAL_FRAMES, 'smooth');
       return;

@@ -17,8 +17,8 @@
 }
 .new-flavors-kicker {
   display: block;
-  margin-bottom: 30px;
   margin-top: 30px;
+  margin-bottom: 30px;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.38em;
@@ -27,7 +27,7 @@
   opacity: 0.62;
 }
 .new-flavors-heading {
-  margin: 0;
+  margin: 0 0 30px;
   font-size: clamp(3.5rem, 8vw, 8rem);
   font-weight: 900;
   line-height: 0.9;
@@ -35,9 +35,19 @@
   text-transform: uppercase;
   color: var(--text-primary);
   text-shadow: 0 15px 40px var(--text-shadow);
-  margin-bottom: 30px;
 }
-.canistel-new-flavor {
+.intro-line-main {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--text-primary) 100%, var(--border) 48%, transparent 100%);
+}
+.intro-line {
+  width: 100%;
+  height: 1px;
+  margin-bottom: 60px;
+  background: linear-gradient(90deg, var(--text-primary) 100%, var(--border) 48%, transparent 100%);
+}
+.new-flavor {
   position: relative;
   width: min(1450px, calc(100% - 80px));
   min-height: 760px;
@@ -50,13 +60,28 @@
   column-gap: 90px;
   padding: 30px 0 150px;
 }
-.canistel-product {
+.new-flavor--image-left {
+  grid-template-areas: 'product content';
+}
+.new-flavor--image-right {
+  grid-template-areas: 'content product';
+}
+.new-flavor-product {
+  grid-area: product;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 650px;
   min-width: 0;
+}
+.new-flavor-content {
+  grid-area: content;
+  position: relative;
+  min-width: 0;
+  width: 100%;
+  padding: 20px 0;
+  box-sizing: border-box;
 }
 .product-stage {
   position: relative;
@@ -82,7 +107,7 @@
   opacity: 0.55;
   pointer-events: none;
 }
-.canistel-img {
+.new-flavor-img {
   position: relative;
   z-index: 2;
   display: block;
@@ -95,54 +120,45 @@
     transform 0.7s cubic-bezier(0.2, 0.65, 0.3, 1),
     filter 0.7s ease;
 }
-.canistel-product:hover .canistel-img {
+.new-flavor-product:hover .new-flavor-img {
   transform: translateY(-10px) scale(1.02);
   filter: drop-shadow(0 55px 40px rgba(0, 0, 0, 0.19)) drop-shadow(0 20px 75px rgba(0, 0, 0, 0.12));
 }
-.canistel-content {
-  position: relative;
-  min-width: 0;
-  width: 100%;
-  padding: 20px 0;
-  box-sizing: border-box;
-}
-.canistel-title {
+.new-flavor-title {
   margin: 0;
   font-size: 96px;
   font-weight: 900;
   line-height: 0.86;
   text-transform: uppercase;
-  color: #d87924;
-  text-shadow: 0 15px 45px var(--text-shadow);
   white-space: nowrap;
   max-width: 100%;
+}
+.new-flavor-title--canistel {
+  color: #d87924;
   text-shadow: 5px 5px 5px #3d1d00;
 }
-.intro-line-main {
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(90deg, var(--text-primary) 100%, var(--border) 48%, transparent 100%);
+.new-flavor-title--salak {
+  color: #33593d;
+  text-shadow: 5px 5px 5px #0f1a12;
 }
-.intro-line {
-  width: 100%;
-  height: 1px;
-  margin-bottom: 60px;
-  background: linear-gradient(90deg, var(--text-primary) 100%, var(--border) 48%, transparent 100%);
+.new-flavor-title--kiwano {
+  color: #878319;
+  text-shadow: 5px 5px 5px #35330a;
 }
-.canistel-line {
+.new-flavor-line {
   width: 100%;
   height: 1px;
   margin: 38px 0 42px;
   background: linear-gradient(90deg, var(--text-primary) 0%, var(--border) 48%, transparent 100%);
   opacity: 0.32;
 }
-.canistel-info {
+.new-flavor-info {
   display: flex;
   flex-direction: column;
   gap: 35px;
   min-width: 0;
 }
-.canistel-label {
+.new-flavor-label {
   padding-top: 7px;
   flex-shrink: 0;
   font-size: 16px;
@@ -152,10 +168,10 @@
   color: var(--text-secondary);
   opacity: 0.7;
 }
-.canistel-copy {
+.new-flavor-copy {
   min-width: 0;
 }
-.canistel-copy h3 {
+.new-flavor-copy h3 {
   margin: 0 0 22px;
   max-width: 430px;
   font-size: clamp(1.7rem, 2.5vw, 2.55rem);
@@ -164,7 +180,7 @@
   letter-spacing: -0.035em;
   color: var(--text-primary);
 }
-.canistel-copy p {
+.new-flavor-copy p {
   margin: 0;
   font-size: 22px;
   line-height: 1.85;
@@ -172,7 +188,7 @@
   color: var(--text-secondary);
   opacity: 0.8;
 }
-.canistel-details {
+.new-flavor-details {
   display: flex;
   flex-direction: column;
   margin-top: 60px;
@@ -205,22 +221,22 @@
   min-width: 0;
 }
 @media (max-width: 1280px) and (min-width: 1101px) {
-  .canistel-new-flavor {
+  .new-flavor {
     width: calc(100% - 70px);
     grid-template-columns:
       minmax(0, 1.12fr)
       minmax(390px, 0.88fr);
     column-gap: 55px;
   }
-  .canistel-product,
+  .new-flavor-product,
   .product-stage {
     min-height: 650px;
   }
-  .canistel-img {
+  .new-flavor-img {
     width: 102%;
     max-width: none;
   }
-  .canistel-title {
+  .new-flavor-title {
     font-size: clamp(72px, 7vw, 96px);
   }
 }
@@ -229,7 +245,7 @@
     width: calc(100% - 60px);
     padding-top: 110px;
   }
-  .canistel-new-flavor {
+  .new-flavor {
     width: calc(100% - 45px);
     grid-template-columns:
       minmax(0, 1.22fr)
@@ -237,14 +253,14 @@
     column-gap: 25px;
     padding-bottom: 130px;
   }
-  .canistel-product {
+  .new-flavor-product {
     min-height: 620px;
   }
   .product-stage {
     min-height: 620px;
     width: 100%;
   }
-  .canistel-img {
+  .new-flavor-img {
     width: 112%;
     max-width: none;
   }
@@ -252,14 +268,14 @@
     width: 400px;
     height: 400px;
   }
-  .canistel-content {
+  .new-flavor-content {
     padding: 20px 0;
   }
-  .canistel-title {
+  .new-flavor-title {
     font-size: clamp(60px, 7.2vw, 78px);
     letter-spacing: -0.045em;
   }
-  .canistel-info {
+  .new-flavor-info {
     gap: 25px;
   }
 }
@@ -268,7 +284,7 @@
     width: calc(100% - 50px);
     padding: 90px 0 60px;
   }
-  .canistel-new-flavor {
+  .new-flavor {
     width: calc(100% - 36px);
     grid-template-columns:
       minmax(0, 1.18fr)
@@ -276,13 +292,13 @@
     column-gap: 18px;
     padding: 20px 0 110px;
   }
-  .canistel-product {
+  .new-flavor-product {
     min-height: 570px;
   }
   .product-stage {
     min-height: 570px;
   }
-  .canistel-img {
+  .new-flavor-img {
     width: 118%;
     max-width: none;
   }
@@ -291,22 +307,22 @@
     height: 350px;
     opacity: 0.48;
   }
-  .canistel-content {
+  .new-flavor-content {
     padding: 15px 0;
   }
-  .canistel-title {
+  .new-flavor-title {
     font-size: clamp(50px, 7.1vw, 65px);
     letter-spacing: -0.05em;
     line-height: 0.88;
   }
-  .canistel-info {
+  .new-flavor-info {
     flex-direction: column;
     gap: 16px;
   }
-  .canistel-label {
+  .new-flavor-label {
     padding-top: 0;
   }
-  .canistel-details {
+  .new-flavor-details {
     margin-top: 45px;
   }
 }
@@ -320,7 +336,9 @@
     font-size: 8px;
     letter-spacing: 0.27em;
   }
-  .canistel-new-flavor {
+  .new-flavor,
+  .new-flavor--image-left,
+  .new-flavor--image-right {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -329,7 +347,7 @@
     padding: 0 0 100px;
     gap: 0;
   }
-  .canistel-product {
+  .new-flavor-product {
     width: 100%;
     min-height: 520px;
     display: flex;
@@ -344,17 +362,17 @@
     align-items: center;
     justify-content: center;
   }
-  .canistel-img {
+  .new-flavor-img {
     width: 92%;
     max-width: 480px;
   }
-  .canistel-content {
+  .new-flavor-content {
     width: 100%;
     max-width: none;
     box-sizing: border-box;
     padding: 45px 20px 0;
   }
-  .canistel-title {
+  .new-flavor-title {
     width: 100%;
     text-align: center;
     margin: 0;
@@ -364,31 +382,31 @@
     white-space: nowrap;
     max-width: 100%;
   }
-  .canistel-line {
+  .new-flavor-line {
     width: 100%;
     margin: 30px 0 34px;
   }
-  .canistel-info {
+  .new-flavor-info {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 18px;
   }
-  .canistel-label {
+  .new-flavor-label {
     padding: 0;
     font-size: 14px;
     letter-spacing: 0.2em;
   }
-  .canistel-copy {
+  .new-flavor-copy {
     width: 100%;
   }
-  .canistel-copy h3 {
+  .new-flavor-copy h3 {
     width: 100%;
     max-width: none;
     font-size: 1.9rem;
     margin: 0 0 20px;
   }
-  .canistel-copy p {
+  .new-flavor-copy p {
     width: 100%;
     max-width: none;
     margin: 0;
@@ -396,7 +414,7 @@
     line-height: 1.8;
     letter-spacing: 0.01em;
   }
-  .canistel-details {
+  .new-flavor-details {
     width: 100%;
     margin-top: 45px;
   }
@@ -414,37 +432,36 @@
     width: calc(100% - 24px);
     padding: 0;
   }
-  .canistel-product {
+  .new-flavor-product {
     min-height: 460px;
   }
   .product-stage {
     min-height: 460px;
   }
-  .canistel-img {
+  .new-flavor-img {
     width: 96%;
     max-width: 430px;
   }
-  .canistel-content {
+  .new-flavor-content {
     padding: 35px 16px 0;
   }
-  .canistel-title {
-    font-size: clamp(2.9rem, 14vw, 4.5rem);
+  .new-flavor-title {
     line-height: 0.88;
     letter-spacing: -0.05em;
   }
-  .canistel-line {
+  .new-flavor-line {
     margin: 28px 0 32px;
   }
-  .canistel-copy p {
+  .new-flavor-copy p {
     width: 100%;
     max-width: none;
     font-size: 17px;
     line-height: 1.78;
   }
-  .canistel-copy h3 {
+  .new-flavor-copy h3 {
     font-size: 1.75rem;
   }
-  .canistel-details {
+  .new-flavor-details {
     margin-top: 40px;
   }
   .detail {
@@ -458,14 +475,14 @@
   }
 }
 @media (max-width: 360px) {
-  .canistel-content {
+  .new-flavor-content {
     padding-left: 14px;
     padding-right: 14px;
   }
-  .canistel-title {
+  .new-flavor-title {
     letter-spacing: -0.045em;
   }
-  .canistel-copy p {
+  .new-flavor-copy p {
     font-size: 16px;
     line-height: 1.75;
   }
@@ -480,7 +497,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .canistel-img {
+  .new-flavor-img {
     transition: none;
   }
 }
