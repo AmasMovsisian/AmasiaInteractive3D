@@ -12,7 +12,7 @@
 .new-flavors-intro {
   width: min(1400px, calc(100% - 100px));
   margin: 0 auto;
-  padding: 70px 0 70px;
+  padding: 70px 0;
   text-align: center;
 }
 .new-flavors-kicker {
@@ -55,10 +55,11 @@
   display: grid;
   grid-template-columns:
     minmax(0, 1.05fr)
-    minmax(400px, 0.95fr);
+    minmax(0, 0.95fr);
   align-items: center;
-  column-gap: 90px;
+  column-gap: clamp(30px, 5vw, 90px);
   padding: 30px 0 150px;
+  box-sizing: border-box;
 }
 .new-flavor--image-left {
   grid-template-areas: 'product content';
@@ -74,6 +75,7 @@
   justify-content: center;
   min-height: 650px;
   min-width: 0;
+  overflow: hidden;
 }
 .new-flavor-content {
   grid-area: content;
@@ -111,27 +113,26 @@
   position: relative;
   z-index: 2;
   display: block;
+  width: 100%;
   max-width: 100%;
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 45px 35px rgba(0, 0, 0, 0.17)) drop-shadow(0 15px 65px rgba(0, 0, 0, 0.1));
   transform: translateY(0);
-  transition:
-    transform 0.7s cubic-bezier(0.2, 0.65, 0.3, 1),
-    filter 0.7s ease;
 }
-.new-flavor-product:hover .new-flavor-img {
-  transform: translateY(-10px) scale(1.02);
-  filter: drop-shadow(0 55px 40px rgba(0, 0, 0, 0.19)) drop-shadow(0 20px 75px rgba(0, 0, 0, 0.12));
-}
+
 .new-flavor-title {
+  display: block;
+  width: 100%;
+  max-width: 100%;
   margin: 0;
-  font-size: 96px;
+  padding: 0;
+  font-size: clamp(48px, 6vw, 96px);
   font-weight: 900;
   line-height: 0.86;
+  letter-spacing: -0.045em;
   text-transform: uppercase;
   white-space: nowrap;
-  max-width: 100%;
+  box-sizing: border-box;
 }
 .new-flavor-title--canistel {
   color: #d87924;
@@ -147,6 +148,7 @@
 }
 .new-flavor-line {
   width: 100%;
+  max-width: 100%;
   height: 1px;
   margin: 38px 0 42px;
   background: linear-gradient(90deg, var(--text-primary) 0%, var(--border) 48%, transparent 100%);
@@ -225,7 +227,7 @@
     width: calc(100% - 70px);
     grid-template-columns:
       minmax(0, 1.12fr)
-      minmax(390px, 0.88fr);
+      minmax(0, 0.88fr);
     column-gap: 55px;
   }
   .new-flavor-product,
@@ -237,7 +239,7 @@
     max-width: none;
   }
   .new-flavor-title {
-    font-size: clamp(72px, 7vw, 96px);
+    font-size: clamp(64px, 5vw, 96px);
   }
 }
 @media (max-width: 1100px) and (min-width: 901px) {
@@ -249,7 +251,7 @@
     width: calc(100% - 45px);
     grid-template-columns:
       minmax(0, 1.22fr)
-      minmax(360px, 0.78fr);
+      minmax(0, 0.78fr);
     column-gap: 25px;
     padding-bottom: 130px;
   }
@@ -272,7 +274,7 @@
     padding: 20px 0;
   }
   .new-flavor-title {
-    font-size: clamp(60px, 7.2vw, 78px);
+    font-size: clamp(48px, 5vw, 78px);
     letter-spacing: -0.045em;
   }
   .new-flavor-info {
@@ -288,7 +290,7 @@
     width: calc(100% - 36px);
     grid-template-columns:
       minmax(0, 1.18fr)
-      minmax(320px, 0.82fr);
+      minmax(0, 0.82fr);
     column-gap: 18px;
     padding: 20px 0 110px;
   }
@@ -311,9 +313,14 @@
     padding: 15px 0;
   }
   .new-flavor-title {
-    font-size: clamp(50px, 7.1vw, 65px);
-    letter-spacing: -0.05em;
+    font-size: clamp(40px, 6.5vw, 65px);
+    letter-spacing: -0.045em;
     line-height: 0.88;
+    white-space: normal;
+    overflow-wrap: normal;
+  }
+  .new-flavor-title::first-line {
+    white-space: nowrap;
   }
   .new-flavor-info {
     flex-direction: column;
@@ -324,6 +331,12 @@
   }
   .new-flavor-details {
     margin-top: 45px;
+  }
+  .detail {
+    gap: 12px;
+  }
+  .detail strong {
+    text-align: right;
   }
 }
 @media (max-width: 768px) {
@@ -374,13 +387,14 @@
   }
   .new-flavor-title {
     width: 100%;
+    max-width: 100%;
     text-align: center;
     margin: 0;
     font-size: clamp(3.2rem, 12vw, 5.5rem);
     line-height: 0.88;
     letter-spacing: -0.045em;
-    white-space: nowrap;
-    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: normal;
   }
   .new-flavor-line {
     width: 100%;

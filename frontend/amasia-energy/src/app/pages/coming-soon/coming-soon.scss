@@ -10,7 +10,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: var(--canvas-bg);
+  background: var(--canvas-bg-2);
   color: var(--text-primary);
   transition:
     background 0.35s ease,
@@ -66,11 +66,11 @@
   letter-spacing: -0.02em;
   color: var(--text-primary);
   text-shadow: 0 12px 7px var(--text-shadow);
-  span {
-    margin-top: 28px;
-    color: var(--text-secondary);
-    opacity: 0.7;
-  }
+}
+.cs-title span {
+  margin-top: 28px;
+  color: var(--text-secondary);
+  opacity: 0.7;
 }
 .cs-subtitle {
   max-width: 450px;
@@ -115,24 +115,24 @@
   transition:
     border-color 0.3s ease,
     background 0.3s ease;
-  &::placeholder {
-    color: var(--text-muted);
-  }
-  &:focus {
-    border-color: var(--button-border);
-  }
+}
+.cs-input::placeholder {
+  color: var(--text-muted);
+}
+.cs-input:focus {
+  border-color: var(--button-border);
 }
 .cs-input--invalid {
-  border-color: #d96b6b;
-  &:focus {
-    border-color: #d96b6b;
-  }
+  border-color: #d83b3b;
+}
+.cs-input--invalid:focus {
+  border-color: #d83b3b;
 }
 .cs-input--valid {
   border-color: #6fae7a;
-  &:focus {
-    border-color: #6fae7a;
-  }
+}
+.cs-input--valid:focus {
+  border-color: #6fae7a;
 }
 .cs-error {
   position: absolute;
@@ -171,12 +171,81 @@
   transition:
     transform 0.3s ease,
     opacity 0.3s ease;
-  &:hover:not(:disabled) {
-    transform: translateY(-2px);
+}
+.cs-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+.cs-btn:disabled {
+  opacity: 0.9;
+  cursor: not-allowed;
+}
+.cs-btn.cs-btn--loading {
+  justify-content: center;
+  background: var(--button-bg) !important;
+  color: var(--button-text) !important;
+  border-color: var(--button-border) !important;
+  cursor: wait;
+  pointer-events: none;
+  transform: none !important;
+  opacity: 1 !important;
+}
+.cs-btn.cs-btn--loading:hover,
+.cs-btn.cs-btn--loading:focus,
+.cs-btn.cs-btn--loading:focus-visible,
+.cs-btn.cs-btn--loading:active {
+  background: var(--button-bg) !important;
+  color: var(--button-text) !important;
+  border-color: var(--button-border) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+.cs-loading-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  color: currentColor;
+  white-space: nowrap;
+}
+.cs-loading-text {
+  display: inline-block;
+}
+.cs-loading-dots {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 25px;
+  height: 20px;
+}
+.cs-loading-dots i {
+  display: block;
+  width: 5px;
+  height: 5px;
+  flex: 0 0 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.3;
+  animation: csLoadingDot 0.8s ease-in-out infinite;
+}
+.cs-loading-dots i:nth-child(1) {
+  animation-delay: 0s;
+}
+.cs-loading-dots i:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.cs-loading-dots i:nth-child(3) {
+  animation-delay: 0.24s;
+}
+@keyframes csLoadingDot {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.3;
   }
-  &:disabled {
-    opacity: 0.9;
-    cursor: not-allowed;
+  50% {
+    transform: translateY(-4px);
+    opacity: 1;
   }
 }
 .cs-footer {
@@ -206,18 +275,19 @@
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   opacity: 0;
   visibility: hidden;
   transition:
     opacity 0.4s ease,
     visibility 0.4s ease;
-  &.active {
-    opacity: 1;
-    visibility: visible;
-    .cs-modal {
-      transform: translateY(0) scale(1);
-    }
-  }
+}
+.cs-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+.cs-modal-overlay.active .cs-modal {
+  transform: translateY(0) scale(1);
 }
 .cs-modal {
   width: 100%;
@@ -265,9 +335,9 @@
   }
   .cs-title {
     font-size: clamp(38px, 11vw, 60px);
-    span {
-      margin-top: 22px;
-    }
+  }
+  .cs-title span {
+    margin-top: 22px;
   }
   .cs-subtitle {
     margin-top: 26px;
@@ -305,9 +375,9 @@
   }
   .cs-title {
     font-size: 32px;
-    span {
-      margin-top: 18px;
-    }
+  }
+  .cs-title span {
+    margin-top: 18px;
   }
   .cs-subtitle {
     margin-top: 20px;

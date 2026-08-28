@@ -5,7 +5,7 @@ html[data-theme='dark'] {
   --bg-glass: rgba(20, 20, 20, 0.55);
   --text-primary: #ffffff;
   --text-secondary: #dddddd;
-  --text-muted: #aaaaaa;
+  --text-muted: #b5b5b5;
   --text-inverse: #111111;
   --link: #ffffff;
   --link-hover: #f3f3f3;
@@ -28,7 +28,7 @@ html[data-theme='dark'] {
       #1d1d1d 18%,
       #181818 38%,
       #121212 58%,
-      #0b0b0b 78%,
+      #0b0b0b 80%,
       #060606 100%
     ),
     radial-gradient(
@@ -38,23 +38,23 @@ html[data-theme='dark'] {
       rgba(12, 12, 12, 0.16) 70%,
       transparent 100%
     ),
-    linear-gradient(135deg, #252525 0%, #181818 45%, #0a0a0a 100%);
+    linear-gradient(135deg, #252525 0%, #181818 42%, #0a0a0a 100%);
   --canvas-bg-2:
     radial-gradient(
-      ellipse 52% 44% at 50% 68%,
-      #242424 0%,
-      #1d1d1d 18%,
-      #181818 38%,
+      ellipse 0% 0% at 50% 32%,
+      #2a2a2a 0%,
+      #202020 18%,
+      #191919 38%,
       #121212 58%,
-      #0b0b0b 78%,
-      #060606 100%
+      #0a0a0a 80%,
+      #050505 100%
     ),
     radial-gradient(
-      ellipse 75% 60% at 50% -5%,
-      rgba(42, 42, 42, 0.82) 0%,
-      rgba(27, 27, 27, 0.58) 38%,
-      rgba(12, 12, 12, 0.16) 70%,
+      ellipse 75% 60% at 50% 105%,
+      rgba(48, 48, 48, 0.78) 0%,
+      rgba(30, 30, 30, 0.52) 38%,
+      rgba(10, 10, 10, 0.14) 70%,
       transparent 100%
     ),
-    linear-gradient(135deg, #0a0a0a 0%, #181818 45%, #252525 100%);
+    linear-gradient(135deg, #292929 0%, #191919 42%, #080808 100%);
 }

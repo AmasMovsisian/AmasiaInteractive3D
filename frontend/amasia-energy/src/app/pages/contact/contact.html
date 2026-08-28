@@ -1,0 +1,189 @@
+<section class="contact-section" id="contact">
+  <div class="contact-noise"></div>
+  <div class="contact-container">
+    <div class="contact-intro">
+      <div class="eyebrow">
+        <span></span>
+        AMASIA CONTACT
+        <span></span>
+      </div>
+      <h2>
+        THE DOOR<br />
+        <em>IS OPEN</em>
+      </h2>
+      <p class="intro-copy">
+        For collaborations, partnerships or simply to connect. Reach out to AMASIA. Every meaningful
+        connection begins with a conversation.
+      </p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="info-label">GET IN TOUCH</div>
+        <a class="email-link" href="mailto:contact@amasmovsisian.com">
+          <span>contact</span>
+          <span>@amasmovsisian.com</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h13M13 6l6 6-6 6" />
+          </svg>
+        </a>
+        <div class="info-divider"></div>
+        <div class="location-block">
+          <span class="small-label"> BASED IN </span>
+          <strong> GERMANY </strong>
+        </div>
+        <div class="contact-signature">
+          <span> AMASIA </span>
+          <small> ENERGY WITHOUT EXCESS </small>
+        </div>
+      </div>
+      <div class="form-wrapper">
+        <div class="form-header">
+          <span> MESSAGE </span>
+          <span class="required-note"> ALL FIELDS REQUIRED </span>
+        </div>
+        <form class="contact-form" (ngSubmit)="submitForm()" novalidate>
+          <div
+            class="field"
+            [class.invalid]="touched.name && !isNameValid"
+            [class.valid]="touched.name && isNameValid"
+          >
+            <label for="name">
+              <span> 01. </span>
+              YOUR NAME
+            </label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              placeholder="Enter your name"
+              maxlength="80"
+              [(ngModel)]="form.name"
+              (blur)="markTouched('name')"
+            />
+            @if (touched.name && !isNameValid) {
+              <small class="error"> Please enter your name. </small>
+            }
+          </div>
+          <div
+            class="field"
+            [class.invalid]="touched.email && !isEmailValid"
+            [class.valid]="touched.email && isEmailValid"
+          >
+            <label for="email">
+              <span> 02. </span>
+              EMAIL ADDRESS
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              maxlength="150"
+              [(ngModel)]="form.email"
+              (blur)="markTouched('email')"
+            />
+            @if (touched.email && !isEmailValid) {
+              <small class="error"> Please enter a valid email address. </small>
+            }
+          </div>
+          <div
+            class="field"
+            [class.invalid]="touched.subject && !isSubjectValid"
+            [class.valid]="touched.subject && isSubjectValid"
+          >
+            <label for="subject">
+              <span> 03. </span>
+              SUBJECT
+            </label>
+            <input
+              id="subject"
+              name="subject"
+              type="text"
+              placeholder="What would you like to talk about?"
+              maxlength="150"
+              [(ngModel)]="form.subject"
+              (blur)="markTouched('subject')"
+            />
+            @if (touched.subject && !isSubjectValid) {
+              <small class="error"> Please enter a subject. </small>
+            }
+          </div>
+          <div
+            class="field field-message"
+            [class.invalid]="touched.message && !isMessageValid"
+            [class.valid]="touched.message && isMessageValid"
+          >
+            <label for="message">
+              <span> 04. </span>
+              YOUR MESSAGE
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              rows="5"
+              maxlength="1000"
+              placeholder="Tell us what's on your mind..."
+              [(ngModel)]="form.message"
+              (blur)="markTouched('message')"
+            ></textarea>
+            <div class="message-meta">
+              @if (touched.message && !isMessageValid) {
+                <small class="error"> Please enter at least 10 characters. </small>
+              }
+              <small class="character-count"> {{ form.message.length }} / 1000 </small>
+            </div>
+          </div>
+          <button
+            type="submit"
+            class="submit-button"
+            [class.is-loading]="sending"
+            [disabled]="sending"
+          >
+            @if (!sending) {
+              <span> SEND MESSAGE </span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6" />
+              </svg>
+            }
+            @if (sending) {
+              <span class="loading-content">
+                <span class="loading-text"> SENDING </span>
+                <span class="loading-dots" aria-hidden="true">
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                </span>
+              </span>
+            }
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+@if (submitted) {
+  <div class="success-overlay" (click)="closeSuccess()">
+    <div
+      class="success-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="success-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="success-mark">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12.5l4.5 4.5L19 7.5" />
+        </svg>
+      </div>
+      <span class="success-eyebrow"> MESSAGE RECEIVED </span>
+      <h3 id="success-title">
+        YOU'RE<br />
+        <em>ON THE LIST</em>
+      </h3>
+      <p>Your message has been sent successfully. We'll get back to you as soon as possible.</p>
+      <button type="button" class="close-button" (click)="closeSuccess()">CLOSE</button>
+    </div>
+  </div>
+}

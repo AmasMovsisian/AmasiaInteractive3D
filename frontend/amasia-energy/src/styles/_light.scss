@@ -6,8 +6,8 @@
   --bg-surface: #fcfcfc;
   --bg-glass: rgba(255, 255, 255, 0.55);
   --text-primary: #111111;
-  --text-secondary: #383838;
-  --text-muted: #383838;
+  --text-secondary: #2b2b2b;
+  --text-muted: #242424;
   --text-inverse: #ffffff;
   --link: #111111;
   --link-hover: #000000;
@@ -43,7 +43,7 @@
     linear-gradient(135deg, #ffffff 0%, #f0f2f4 45%, #e0e4e7 100%);
   --canvas-bg-2:
     radial-gradient(
-      ellipse 52% 44% at 50% 68%,
+      ellipse 0% 0% at 50% 68%,
       #ffffff 0%,
       #fbfcfd 18%,
       #f6f8f9 38%,

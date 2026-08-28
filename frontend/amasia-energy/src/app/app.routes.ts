@@ -10,7 +10,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
   },
   {
-    path: '**',
-    redirectTo: '',
+    path: 'privacy-policy',
+    loadComponent: () => import('./sections/shared/pirvacy-policy/pirvacy-policy').then((m) => m.PirvacyPolicy),
   },
 ];

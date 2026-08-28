@@ -11,10 +11,13 @@ import { ThreeEngine } from '../../three/core/three-engine';
 import { Nav } from '../shared/nav/nav';
 import { ScrollStoryComponent } from '../scroll-story/scroll-story';
 import { NewFlavors } from '../../pages/new-flavors/new-flavors';
+import { Contact } from '../../pages/contact/contact';
+import { Footer } from '../shared/footer/footer';
+
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [RouterLink, Nav, ScrollStoryComponent, NewFlavors],
+  imports: [RouterLink, Nav, ScrollStoryComponent, NewFlavors, Contact, Footer],
   templateUrl: './hero.html',
   styleUrl: './hero.scss',
 })
