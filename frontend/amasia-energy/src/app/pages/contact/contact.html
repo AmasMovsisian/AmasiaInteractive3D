@@ -164,7 +164,7 @@
   </div>
 </section>
 @if (submitted) {
-  <div class="success-overlay" (click)="closeSuccess()">
+  <div #successOverlay class="success-overlay" (click)="closeSuccess()">
     <div
       class="success-modal"
       role="dialog"

@@ -1,13 +1,16 @@
 <div class="coming-soon-page">
   <div class="coming-soon">
     <app-nav class="nav"></app-nav>
+
     <div class="cs-container">
       <div class="cs-intro">
         <div class="cs-eyebrow">AMASIA // EARLY ACCESS</div>
+
         <h1 class="cs-title">
           REFINED ENERGY
-          <span> COMING SOON </span>
+          <span>COMING SOON</span>
         </h1>
+
         <h2 class="cs-subtitle">
           Registration and ordering will open shortly
           <br />
@@ -15,7 +18,13 @@
           Join the waitlist to experience a different expression of energy before anyone else
         </h2>
       </div>
-      <form class="cs-form" (ngSubmit)="onSubmit()" #emailForm="ngForm" novalidate>
+
+      <form
+        class="cs-form"
+        (ngSubmit)="onSubmit()"
+        #emailForm="ngForm"
+        novalidate
+      >
         <div class="cs-input-wrapper">
           <input
             type="email"
@@ -29,20 +38,25 @@
             class="cs-input"
             #emailInput="ngModel"
             [class.cs-input--invalid]="
-              emailInput.invalid && (emailInput.touched || emailInput.dirty)
+              emailInput.invalid &&
+              (emailInput.touched || emailInput.dirty)
             "
-            [class.cs-input--valid]="emailInput.valid && emailInput.touched"
+            [class.cs-input--valid]="
+              emailInput.valid && emailInput.touched
+            "
           />
+
           @if (emailInput.invalid && (emailInput.touched || emailInput.dirty)) {
             <div class="cs-error" role="alert">
               @if (emailInput.errors?.['required']) {
-                <span> Please enter your email address. </span>
+                <span>Please enter your email address.</span>
               } @else if (emailInput.errors?.['email']) {
-                <span> Please enter a valid email address. </span>
+                <span>Please enter a valid email address.</span>
               }
             </div>
           }
         </div>
+
         <button
           type="submit"
           class="button cs-btn"
@@ -50,11 +64,13 @@
           [disabled]="emailForm.invalid || requesting"
         >
           @if (!requesting) {
-            <span> REQUEST ACCESS </span>
+            <span>REQUEST ACCESS</span>
           }
+
           @if (requesting) {
             <span class="cs-loading-content">
-              <span class="cs-loading-text"> REQUESTING </span>
+              <span class="cs-loading-text">REQUESTING</span>
+
               <span class="cs-loading-dots" aria-hidden="true">
                 <i></i>
                 <i></i>
@@ -64,26 +80,48 @@
           }
         </button>
       </form>
+
       <div class="cs-footer">
-        <span> FUEL YOUR AMBITION. </span>
-        <span class="cs-footer-dot"> • </span>
-        <span> NOT YOUR ADDICTION. </span>
+        <span>FUEL YOUR AMBITION</span>
+        <span class="cs-footer-dot">•</span>
+        <span>NOT YOUR ADDICTION</span>
       </div>
     </div>
-    <div class="cs-modal-overlay" [class.active]="showSuccess" (click)="closeModal()">
-      <div class="cs-modal" (click)="$event.stopPropagation()">
+
+    <!-- Modal -->
+    <div
+      class="cs-modal-overlay"
+      [class.active]="showSuccess"
+      (click)="closeModal()"
+    >
+      <div
+        class="cs-modal"
+        (click)="$event.stopPropagation()"
+      >
         <div class="cs-modal__content">
           <div class="cs-modal__eyebrow">AMASIA</div>
-          <h2 class="cs-modal__title">YOU'RE ON THE LIST</h2>
+
+          <h2 class="cs-modal__title">
+            YOU'RE ON THE LIST
+          </h2>
+
           <p class="cs-modal__text">
             Welcome to the inner circle.
             <br />
             We will notify you the moment ordering opens.
           </p>
-          <button type="button" class="button cs-modal__close" (click)="closeModal()">CLOSE</button>
+
+          <button
+            type="button"
+            class="button cs-modal__close"
+            (click)="closeModal()"
+          >
+            CLOSE
+          </button>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 <app-footer></app-footer>

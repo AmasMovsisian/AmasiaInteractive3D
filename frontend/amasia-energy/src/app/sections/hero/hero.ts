@@ -8,12 +8,12 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ThreeEngine } from '../../three/core/three-engine';
+import { ScrollService } from '../../core/services/scroll.service';
 import { Nav } from '../shared/nav/nav';
 import { ScrollStoryComponent } from '../scroll-story/scroll-story';
 import { NewFlavors } from '../../pages/new-flavors/new-flavors';
 import { Contact } from '../../pages/contact/contact';
 import { Footer } from '../shared/footer/footer';
-
 @Component({
   selector: 'app-hero',
   standalone: true,
@@ -25,17 +25,27 @@ export class HeroComponent implements AfterViewInit {
   @ViewChild('canvas')
   canvas!: ElementRef<HTMLCanvasElement>;
   readonly loading = signal(true);
-  constructor(private readonly threeEngine: ThreeEngine) {}
+  contactSubmitted = false;
+  constructor(
+    private readonly threeEngine: ThreeEngine,
+    private readonly scrollService: ScrollService,
+  ) {}
   async ngAfterViewInit(): Promise<void> {
+    this.scrollService.setLocked(true);
     this.loading.set(true);
     try {
       await this.threeEngine.init(this.canvas.nativeElement);
+      this.scrollService.setLocked(false);
       this.loading.set(false);
     } catch (error) {
       console.error('Hero / ThreeEngine initialization failed:', error);
+      this.scrollService.setLocked(true);
       this.loading.set(true);
     }
     this.updateLandscapeMode();
+  }
+  closeContactSuccess(): void {
+    this.contactSubmitted = false;
   }
   @HostListener('window:resize')
   @HostListener('window:orientationchange')
