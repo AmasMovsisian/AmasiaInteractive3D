@@ -5,7 +5,7 @@
 
 .footer {
   position: relative;
-  z-index: 2147483647;
+  z-index: 0;
   width: 100%;
   padding: clamp(32px, 1.667vw, 64px) clamp(28px, 1.667vw, 64px) clamp(32px, 1.875vw, 72px);
   overflow: hidden;
@@ -32,7 +32,7 @@
 
 .footer__container {
   position: relative;
-  z-index: 2147483647;
+  z-index: 0;
   width: 100%;
   max-width: 3840px;
   margin: 0 auto;
@@ -40,7 +40,7 @@
 
 .footer__top {
   position: relative;
-  z-index: 2147483647;
+  z-index: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -50,7 +50,7 @@
 
 .footer__logo {
   position: relative;
-  z-index: 2147483647;
+  z-index: 0;
   display: inline-flex;
   align-items: center;
   cursor: pointer;
@@ -94,7 +94,7 @@
 
 .footer__privacy {
   position: relative;
-  z-index: 2147483647;
+  z-index: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -149,7 +149,7 @@
 
 .footer__bottom {
   position: relative;
-  z-index: 1;
+  z-index: 0;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;

@@ -32,15 +32,7 @@ export class ScrollService {
       return;
     }
 
-    const scrollKeys = [
-      'ArrowUp',
-      'ArrowDown',
-      'PageUp',
-      'PageDown',
-      'Home',
-      'End',
-      ' ',
-    ];
+    const scrollKeys = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '];
 
     if (scrollKeys.includes(event.key)) {
       event.preventDefault();
@@ -66,25 +58,17 @@ export class ScrollService {
   setLocked(locked: boolean): void {
     this.locked.set(locked);
 
-    document.documentElement.classList.toggle(
-      'scroll-locked',
-      locked,
-    );
+    document.documentElement.classList.toggle('scroll-locked', locked);
 
-    document.body.classList.toggle(
-      'scroll-locked',
-      locked,
-    );
+    document.body.classList.toggle('scroll-locked', locked);
 
     if (locked) {
-      // Immer ganz oben starten
       window.scrollTo({
         top: 0,
         left: 0,
         behavior: 'instant',
       });
 
-      // Wheel / Touch / Scroll-Events blockieren
       window.addEventListener('wheel', this.preventScroll, {
         passive: false,
       });
@@ -104,7 +88,6 @@ export class ScrollService {
       window.removeEventListener('touchmove', this.preventScroll);
       window.removeEventListener('keydown', this.preventKeyboardScroll);
 
-      // Nach Freigabe Progress neu berechnen
       this.updateProgress();
       this.updateButtonsActive();
     }
@@ -134,11 +117,7 @@ export class ScrollService {
 
     const currentScroll = window.scrollY - heroStart;
 
-    const progress = THREE.MathUtils.clamp(
-      currentScroll / heroScrollDistance,
-      0,
-      1,
-    );
+    const progress = THREE.MathUtils.clamp(currentScroll / heroScrollDistance, 0, 1);
 
     this.progress.set(progress);
   }
@@ -162,11 +141,9 @@ export class ScrollService {
     const sectionEnd = 1;
     const sectionRange = sectionEnd - sectionStart;
 
-    const fadeInEnd =
-      sectionStart + sectionRange * 0.45;
+    const fadeInEnd = sectionStart + sectionRange * 0.45;
 
-    const fadeOutStart =
-      sectionEnd - sectionRange * 0.3;
+    const fadeOutStart = sectionEnd - sectionRange * 0.3;
 
     if (progress < fadeInEnd) {
       this.buttonsActive.set(false);
@@ -182,33 +159,22 @@ export class ScrollService {
     const viewportHeight = window.innerHeight;
     const tolerance = 2;
 
-    const hasSize =
-      rect.width > 0 && rect.height > 0;
+    const hasSize = rect.width > 0 && rect.height > 0;
 
-    const completelyVisible =
-      rect.top >= -tolerance &&
-      rect.bottom <= viewportHeight + tolerance;
+    const completelyVisible = rect.top >= -tolerance && rect.bottom <= viewportHeight + tolerance;
 
-    const computedStyle =
-      window.getComputedStyle(buttonSection);
+    const computedStyle = window.getComputedStyle(buttonSection);
 
-    const opacity =
-      Number.parseFloat(computedStyle.opacity);
+    const opacity = Number.parseFloat(computedStyle.opacity);
 
     const fullyOpaque = opacity >= 0.99;
 
-    const active =
-      hasSize &&
-      completelyVisible &&
-      fullyOpaque;
+    const active = hasSize && completelyVisible && fullyOpaque;
 
     this.buttonsActive.set(active);
   }
 
-  scrollToProgress(
-    progress: number,
-    behavior: ScrollBehavior = 'smooth',
-  ): void {
+  scrollToProgress(progress: number, behavior: ScrollBehavior = 'smooth'): void {
     if (this.locked()) {
       return;
     }
@@ -221,19 +187,15 @@ export class ScrollService {
 
     const heroRect = hero.getBoundingClientRect();
     const heroStart = window.scrollY + heroRect.top;
-    const heroScrollDistance =
-      hero.offsetHeight - window.innerHeight;
+    const heroScrollDistance = hero.offsetHeight - window.innerHeight;
 
     if (heroScrollDistance <= 0) {
       return;
     }
 
-    const clampedProgress =
-      THREE.MathUtils.clamp(progress, 0, 1);
+    const clampedProgress = THREE.MathUtils.clamp(progress, 0, 1);
 
-    const targetY =
-      heroStart +
-      clampedProgress * heroScrollDistance;
+    const targetY = heroStart + clampedProgress * heroScrollDistance;
 
     window.scrollTo({
       top: targetY,
@@ -241,25 +203,13 @@ export class ScrollService {
     });
   }
 
-  scrollToFrame(
-    frame: number,
-    totalFrames: number,
-    behavior: ScrollBehavior = 'smooth',
-  ): void {
+  scrollToFrame(frame: number, totalFrames: number, behavior: ScrollBehavior = 'smooth'): void {
     if (totalFrames <= 0) {
       return;
     }
 
-    const progress =
-      THREE.MathUtils.clamp(
-        frame / totalFrames,
-        0,
-        1,
-      );
+    const progress = THREE.MathUtils.clamp(frame / totalFrames, 0, 1);
 
-    this.scrollToProgress(
-      progress,
-      behavior,
-    );
+    this.scrollToProgress(progress, behavior);
   }
 }
