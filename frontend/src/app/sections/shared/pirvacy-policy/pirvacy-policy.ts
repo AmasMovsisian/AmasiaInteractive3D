@@ -9,7 +9,9 @@ import { Footer } from '../footer/footer';
   templateUrl: './pirvacy-policy.html',
   styleUrl: './pirvacy-policy.scss',
 })
+/** Privacy policy page component. */
 export class PirvacyPolicy implements OnInit {
+  /** Scrolls to top on initialization. */
   ngOnInit(): void {
     window.scrollTo({
       top: 0,
@@ -18,20 +20,15 @@ export class PirvacyPolicy implements OnInit {
     });
   }
 
+  /** Smoothly scrolls to a section by ID and updates the URL hash. */
   scrollToSection(id: string, event: Event): void {
     event.preventDefault();
-
     const element = document.getElementById(id);
-
-    if (!element) {
-      return;
-    }
-
+    if (!element) return;
     element.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
     });
-
     history.replaceState(null, '', `#${id}`);
   }
 }

@@ -5,6 +5,7 @@ import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 @Injectable({
   providedIn: 'root',
 })
+/** Manages loading, caching, and GPU preparation of KTX2 textures and PBR materials. */
 export class TextureManager {
   private readonly ktx2Loader = new KTX2Loader();
   private renderer?: THREE.WebGLRenderer;
@@ -14,6 +15,7 @@ export class TextureManager {
   private readonly materialCache = new Map<string, THREE.MeshPhysicalMaterial>();
   private readonly materialPromises = new Map<string, Promise<THREE.MeshPhysicalMaterial>>();
 
+  /** Initializes the KTX2 loader with the renderer and transcoder path. */
   setRenderer(renderer: THREE.WebGLRenderer): void {
     this.renderer = renderer;
 
@@ -28,11 +30,13 @@ export class TextureManager {
     this.ktx2Initialized = true;
   }
 
+  /** Resolves a relative asset path to an absolute URL based on the document base URI. */
   private assetUrl(path: string): string {
     const baseUrl = document.baseURI.endsWith('/') ? document.baseURI : `${document.baseURI}/`;
     return new URL(path.replace(/^\/+/, ''), baseUrl).toString();
   }
 
+  /** Loads a KTX2 texture from cache or disk, with in-flight request deduplication. */
   private loadTexture(path: string): Promise<THREE.Texture | null> {
     const cachedTexture = this.textureCache.get(path);
 
@@ -76,6 +80,7 @@ export class TextureManager {
     return promise;
   }
 
+  /** Applies standard texture settings including filtering and anisotropy. */
   private configureTexture(texture: THREE.Texture, path: string): void {
     texture.flipY = false;
     texture.generateMipmaps = false;
@@ -87,6 +92,7 @@ export class TextureManager {
     texture.needsUpdate = true;
   }
 
+  /** Loads a PBR material from cache or creates it, with in-flight request deduplication. */
   async loadPBRMaterial(
     flavor: string,
     materialFolder: string,
@@ -115,6 +121,7 @@ export class TextureManager {
     }
   }
 
+  /** Creates a MeshPhysicalMaterial from base color, roughness, and metallic texture maps. */
   private async createPBRMaterial(
     flavor: string,
     materialFolder: string,
@@ -194,6 +201,7 @@ export class TextureManager {
     return material;
   }
 
+  /** Uploads a texture to the GPU if a renderer is available. */
   prepareTextureForGPU(texture: THREE.Texture | null | undefined): void {
     if (!texture || !this.renderer) {
       return;
@@ -204,6 +212,7 @@ export class TextureManager {
     } catch (error) {}
   }
 
+  /** Uploads all texture maps of a material to the GPU. */
   prepareMaterialForGPU(material: THREE.Material): void {
     if (
       !(
@@ -220,20 +229,24 @@ export class TextureManager {
     this.prepareTextureForGPU(material.normalMap);
   }
 
+  /** Uploads all cached materials to the GPU. */
   prepareAllMaterialsForGPU(): void {
     for (const material of this.materialCache.values()) {
       this.prepareMaterialForGPU(material);
     }
   }
 
+  /** Returns a cached texture by path. */
   getTexture(path: string): THREE.Texture | undefined {
     return this.textureCache.get(path);
   }
 
+  /** Returns a cached material by flavor and folder. */
   getMaterial(flavor: string, materialFolder: string): THREE.MeshPhysicalMaterial | undefined {
     return this.materialCache.get(`${flavor}/${materialFolder}`);
   }
 
+  /** Returns cache statistics including sizes and pending requests. */
   getCacheStats() {
     return {
       textures: this.textureCache.size,

@@ -7,6 +7,7 @@ import { ScrollService } from '../../core/services/scroll.service';
 import { FlavorId, FlavorService } from '../../core/services/flavor.service';
 import { ArnoldLightLoader } from '../lighting/arnold-light-loader';
 
+/** Collection of PBR materials for a single flavor variant. */
 interface FlavorMaterials {
   body: THREE.MeshPhysicalMaterial;
   aluminium: THREE.MeshPhysicalMaterial;
@@ -16,6 +17,7 @@ interface FlavorMaterials {
 @Injectable({
   providedIn: 'root',
 })
+/** Core Three.js engine managing scene, rendering, animation, and flavor switching. */
 export class ThreeEngine {
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
@@ -65,31 +67,24 @@ export class ThreeEngine {
   ) {
     effect(() => {
       const flavorId = this.flavorService.selectedFlavorId();
-      if (!this.materialsReady) {
-        return;
-      }
-      if (flavorId === this.currentCenterFlavor && !this.centerRotationAnimating) {
-        return;
-      }
-      if (this.centerRotationAnimating) {
-        return;
-      }
+      if (!this.materialsReady) return;
+      if (flavorId === this.currentCenterFlavor && !this.centerRotationAnimating) return;
+      if (this.centerRotationAnimating) return;
       this.applyFlavorToCenter(flavorId);
     });
   }
 
+  /** Initializes the Three.js engine with the given canvas. */
   async init(canvas: HTMLCanvasElement): Promise<void> {
     this.canvas = canvas;
     this.attachedCanvas = canvas;
     this.heroActive = true;
-
     if (this.initialized) {
       this.loading.set(false);
       this.attachRendererToCanvas(canvas);
       this.resizeCamera();
       return;
     }
-
     if (this.initPromise) {
       this.loading.set(true);
       await this.initPromise;
@@ -101,10 +96,8 @@ export class ThreeEngine {
       this.loading.set(false);
       return;
     }
-
     this.loading.set(true);
     this.initPromise = this.initializeEngine(canvas);
-
     try {
       await this.initPromise;
       await new Promise<void>((resolve) => {
@@ -120,57 +113,48 @@ export class ThreeEngine {
     }
   }
 
+  /** Deactivates hero rendering without disposing resources. */
   detach(): void {
     this.heroActive = false;
   }
 
+  /** Disposes all Three.js resources and resets the engine state. */
   dispose(): void {
     this.heroActive = false;
     this.initialized = false;
     this.initPromise = undefined;
     this.loading.set(false);
-
     if (this.resizeListener) {
       window.removeEventListener('resize', this.resizeListener);
       this.resizeListener = undefined;
     }
-
     if (this.mixer) {
       this.mixer.stopAllAction();
       this.mixer.uncacheRoot(this.scene);
       this.mixer = undefined;
     }
-
     if (this.scene) {
       this.scene.traverse((object) => {
-        if (!(object instanceof THREE.Mesh)) {
-          return;
-        }
-
+        if (!(object instanceof THREE.Mesh)) return;
         object.geometry?.dispose();
         const materials = Array.isArray(object.material) ? object.material : [object.material];
-
         for (const material of materials) {
           material.dispose();
         }
       });
     }
-
     if (this.scene?.environment) {
       this.scene.environment.dispose();
     }
-
     this.flavorMaterials = {};
     this.materialsReady = false;
     this.materialsPreloadPromise = undefined;
     this.centerGroup = undefined;
     this.centerRotationPivot = undefined;
-
     if (this.renderer) {
       this.renderer.dispose();
       this.renderer.forceContextLoss();
     }
-
     this.renderer = undefined!;
     this.scene = undefined!;
     this.camera = undefined!;
@@ -178,218 +162,176 @@ export class ThreeEngine {
     this.attachedCanvas = undefined!;
   }
 
+  /** Sets up scene, renderer, lighting, model, and starts the render loop. */
   private async initializeEngine(canvas: HTMLCanvasElement): Promise<void> {
     this.canvas = canvas;
     this.attachedCanvas = canvas;
     this.initialDevicePixelRatio = window.devicePixelRatio || 1;
     this.scene = new THREE.Scene();
-
     this.renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: true,
       alpha: true,
       powerPreference: 'high-performance',
     });
-
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.2;
-
     this.updateRenderPixelRatio();
     this.renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
     this.textureManager.setRenderer(this.renderer);
     this.setupResizeListener();
-
     if (this.enableHDRI) {
       await this.loadHDRILighting();
     }
-
     await this.loadArnoldLights();
-
     if (this.enableFallbackLight) {
       this.createFallbackLight();
     }
-
     await this.loadModel();
     this.startRenderLoop();
   }
 
+  /** Attaches the renderer's canvas to the DOM, replacing the Angular canvas if needed. */
   private attachRendererToCanvas(canvas: HTMLCanvasElement): void {
-    if (!this.renderer) {
-      return;
-    }
-
+    if (!this.renderer) return;
     this.canvas = canvas;
     this.attachedCanvas = canvas;
-
     if (canvas !== this.renderer.domElement) {
       this.replaceAngularCanvasWithPersistentCanvas(canvas);
     }
-
     this.resizeCamera();
   }
 
+  /** Replaces the Angular canvas element with the persistent renderer canvas. */
   private replaceAngularCanvasWithPersistentCanvas(angularCanvas: HTMLCanvasElement): void {
     const persistentCanvas = this.renderer.domElement;
-
-    if (angularCanvas === persistentCanvas) {
-      return;
-    }
-
+    if (angularCanvas === persistentCanvas) return;
     const parent = angularCanvas.parentElement;
-
-    if (!parent) {
-      return;
-    }
-
+    if (!parent) return;
     persistentCanvas.className = angularCanvas.className;
     persistentCanvas.style.cssText = angularCanvas.style.cssText;
     persistentCanvas.style.width = '100%';
     persistentCanvas.style.height = '100%';
-
     parent.replaceChild(persistentCanvas, angularCanvas);
     this.canvas = persistentCanvas;
     this.attachedCanvas = persistentCanvas;
   }
 
+  /** Registers a window resize listener. */
   private setupResizeListener(): void {
-    if (this.resizeListener) {
-      return;
-    }
-
+    if (this.resizeListener) return;
     this.resizeListener = () => {
       this.resizeCamera();
     };
-
     window.addEventListener('resize', this.resizeListener, {
       passive: true,
     });
   }
 
+  /** Updates the renderer's pixel ratio within configured bounds. */
   private updateRenderPixelRatio(): void {
-    if (!this.renderer) {
-      return;
-    }
-
+    if (!this.renderer) return;
     const currentDpr = window.devicePixelRatio || 1;
     const pixelRatio = THREE.MathUtils.clamp(
       currentDpr,
       this.initialDevicePixelRatio,
       this.maxRenderPixelRatio,
     );
-
     this.renderer.setPixelRatio(pixelRatio);
   }
 
+  /** Adds fallback hemisphere and directional lights to the scene. */
   private createFallbackLight() {
     const light = new THREE.HemisphereLight(0xffffff, 0x444444, this.fallbackLightIntensity);
     light.name = 'ThreeFallbackHemisphereLight';
     this.scene.add(light);
-
     const frontLight = new THREE.DirectionalLight(0xffffff, 0.25);
     frontLight.name = 'ThreeFallbackFrontLight';
     frontLight.position.set(0, 3, 5);
     frontLight.target.position.set(0, 0, 0);
-
     this.scene.add(frontLight);
     this.scene.add(frontLight.target);
   }
 
+  /** Resolves an asset path to an absolute URL. */
   private assetUrl(path: string): string {
     const cleanPath = path.replace(/^\/+/, '');
     const baseHref =
       document.querySelector('base')?.getAttribute('href') || document.baseURI || '/';
-
     return new URL(cleanPath, new URL(baseHref, window.location.origin)).toString();
   }
 
+  /** Loads and applies HDRI environment lighting. */
   private async loadHDRILighting() {
     try {
       const loader = new EXRLoader();
       const hdriUrl = this.assetUrl('three/hdri/hdri_1.exr');
       const hdri = await loader.loadAsync(hdriUrl);
-
       const pmrem = new THREE.PMREMGenerator(this.renderer);
       const envMap = pmrem.fromEquirectangular(hdri).texture;
-
       this.scene.environment = envMap;
       this.scene.environmentRotation = new THREE.Euler(0, this.hdriStartRotation, 0);
       this.scene.environmentIntensity = 2;
-
       hdri.dispose();
       pmrem.dispose();
     } catch (error) {}
   }
 
+  /** Loads Arnold lights from JSON and adds them to the scene. */
   private async loadArnoldLights() {
     this.arnoldLightLoader = new ArnoldLightLoader(this.scene);
     const arnoldLightsUrl = this.assetUrl('three/lighting/arnold_lights.json');
     await this.arnoldLightLoader.load(arnoldLightsUrl);
   }
 
+  /** Rotates HDRI environment based on scroll progress. */
   private updateHDRIRotation() {
-    if (!this.enableHDRI) {
-      return;
-    }
-
-    if (!this.scene.environmentRotation) {
-      return;
-    }
-
+    if (!this.enableHDRI) return;
+    if (!this.scene.environmentRotation) return;
     const progress = this.scrollService.progress();
     const rotation = this.hdriStartRotation + progress * this.hdriRotationAmount;
     this.scene.environmentRotation.y = rotation;
   }
 
+  /** Loads the GLTF model, applies textures, and sets up camera and animation. */
   private async loadModel() {
     const modelUrl = this.assetUrl('three/models/MyHeroAnimation.glb');
     const gltf = await this.gltfLoader.load(modelUrl);
-
     this.scene.add(gltf.scene);
-
     await this.applyGuaranteedTexturesToMeshes(gltf.scene);
     this.setupCamera(gltf);
     this.setupAnimation(gltf);
   }
 
+  /** Creates a pivot group for rotating the center can model. */
   private createCenterRotationPivot(): void {
-    if (!this.centerGroup || !this.centerGroup.parent) {
-      return;
-    }
-
+    if (!this.centerGroup || !this.centerGroup.parent) return;
     const originalParent = this.centerGroup.parent;
-
     this.scene.updateMatrixWorld(true);
-
     const worldPosition = new THREE.Vector3();
     this.centerGroup.getWorldPosition(worldPosition);
-
     const pivot = new THREE.Group();
     pivot.name = 'Can_Center_FlavorRotation_Pivot';
-
     originalParent.add(pivot);
     pivot.position.copy(originalParent.worldToLocal(worldPosition.clone()));
     pivot.attach(this.centerGroup);
-
     this.centerRotationPivot = pivot;
     this.centerRotationPivot.rotation.set(0, 0, 0);
   }
 
+  /** Extracts or creates the camera from the GLTF model. */
   private setupCamera(gltf: any) {
     let camera: THREE.PerspectiveCamera | undefined;
-
     if (gltf.cameras && gltf.cameras.length > 0) {
       const gltfCamera = gltf.cameras[0];
-
       if (gltfCamera instanceof THREE.PerspectiveCamera) {
         camera = gltfCamera;
       }
     }
-
     if (!camera) {
       gltf.scene.traverse((object: THREE.Object3D) => {
         if (object instanceof THREE.PerspectiveCamera) {
@@ -397,28 +339,22 @@ export class ThreeEngine {
         }
       });
     }
-
     if (!camera) {
       camera = new THREE.PerspectiveCamera(22.9, this.canvasAspect(), 0.01, 1000);
       camera.position.set(0, 0, 10);
       camera.lookAt(0, 0, 0);
     }
-
     this.camera = camera;
     this.originalCameraFov = this.camera.fov;
     this.resizeCamera();
   }
 
+  /** Adjusts camera FOV and renderer size based on viewport dimensions. */
   private resizeCamera() {
-    if (!this.camera || !this.renderer || !this.canvas) {
-      return;
-    }
-
+    if (!this.camera || !this.renderer || !this.canvas) return;
     this.updateRenderPixelRatio();
-
     const width = window.innerWidth;
     let multiplier = 1;
-
     if (width <= 390) {
       multiplier = 1.75;
     } else if (width <= 480) {
@@ -430,119 +366,87 @@ export class ThreeEngine {
     } else if (width <= 1420) {
       multiplier = 1.5;
     }
-
     if (this.isBrowserZoomedTooFar()) {
       multiplier = 1;
     }
-
     this.camera.fov = this.originalCameraFov * multiplier;
     this.camera.aspect = this.canvasAspect();
     this.camera.updateProjectionMatrix();
-
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight, false);
-
     this.lastValidFov = this.camera.fov;
     this.lastValidAspect = this.camera.aspect;
   }
 
+  /** Detects if browser zoom level is outside acceptable range. */
   private isBrowserZoomedTooFar(): boolean {
     const screenWidth = window.screen.width;
     const viewportWidth = window.innerWidth;
-
-    if (screenWidth <= 0 || viewportWidth <= 0) {
-      return false;
-    }
-
+    if (screenWidth <= 0 || viewportWidth <= 0) return false;
     const zoomRatio = viewportWidth / screenWidth;
     return zoomRatio < 0.75 || zoomRatio > 1.25;
   }
 
+  /** Sets up the animation mixer and plays the first animation clip. */
   private setupAnimation(gltf: any) {
-    if (!gltf.animations || gltf.animations.length === 0) {
-      return;
-    }
-
+    if (!gltf.animations || gltf.animations.length === 0) return;
     const clip = gltf.animations[0];
     this.animationDuration = clip.duration;
-
     this.mixer = new THREE.AnimationMixer(gltf.scene);
     this.action = this.mixer.clipAction(clip);
-
     this.action.reset();
     this.action.enabled = true;
     this.action.setEffectiveWeight(1);
     this.action.play();
   }
 
+  /** Applies PBR materials to can meshes and preloads all flavor variants. */
   private async applyGuaranteedTexturesToMeshes(object: THREE.Object3D) {
     const centerGroup = object.getObjectByName('Can_Center_GRP');
     const leftGroup = object.getObjectByName('Can_Left_GRP');
     const rightGroup = object.getObjectByName('Can_Right_GRP');
-
     this.centerGroup = centerGroup ?? undefined;
-
     const flavorMaterialConfigs: Record<
       FlavorId,
       {
         folder: string;
       }
     > = {
-      keylime: {
-        folder: 'Keylime',
-      },
-      akebi: {
-        folder: 'Akebi',
-      },
-      coconut: {
-        folder: 'Coconut',
-      },
-      lychee: {
-        folder: 'Lychee',
-      },
-      pandan: {
-        folder: 'Pandan',
-      },
-      'black-edition': {
-        folder: 'BlackEdition',
-      },
+      keylime: { folder: 'Keylime' },
+      akebi: { folder: 'Akebi' },
+      coconut: { folder: 'Coconut' },
+      lychee: { folder: 'Lychee' },
+      pandan: { folder: 'Pandan' },
+      'black-edition': { folder: 'BlackEdition' },
     };
-
     if (this.materialsPreloadPromise) {
       await this.materialsPreloadPromise;
       return;
     }
-
     this.materialsPreloadPromise = this.preloadAllFlavorMaterials(flavorMaterialConfigs);
     await this.materialsPreloadPromise;
-
     const keylimeMaterials = this.flavorMaterials.keylime;
-
     if (keylimeMaterials) {
       if (leftGroup) {
         this.applyMaterialsToCan(leftGroup, keylimeMaterials, 'keylime');
       }
-
       if (rightGroup) {
         this.applyMaterialsToCan(rightGroup, keylimeMaterials, 'keylime');
       }
     }
-
     const initialFlavor = this.flavorService.selectedFlavorId();
     const initialMaterials = this.flavorMaterials[initialFlavor];
-
     if (initialMaterials && centerGroup) {
       this.applyMaterialsToCan(centerGroup, initialMaterials, initialFlavor);
       this.currentCenterFlavor = initialFlavor;
     }
-
     if (centerGroup) {
       this.createCenterRotationPivot();
     }
-
     await this.precompileMaterials();
     this.materialsReady = true;
   }
 
+  /** Preloads all flavor material variants in parallel. */
   private async preloadAllFlavorMaterials(
     configs: Record<
       FlavorId,
@@ -552,45 +456,36 @@ export class ThreeEngine {
     >,
   ): Promise<void> {
     const flavorIds = Object.keys(configs) as FlavorId[];
-
     await Promise.all(
       flavorIds.map(async (flavorId) => {
         const config = configs[flavorId];
-
         try {
           const [body, aluminium, tab] = await Promise.all([
             this.textureManager.loadPBRMaterial(config.folder, 'Body_Texture_Main'),
             this.textureManager.loadPBRMaterial(config.folder, 'Top_Bottom_Aluminium'),
             this.textureManager.loadPBRMaterial(config.folder, 'Opening_Tab_Aluminium'),
           ]);
-
           const materials: FlavorMaterials = {
             body,
             aluminium,
             tab,
           };
-
           this.flavorMaterials[flavorId] = materials;
-
           this.textureManager.prepareMaterialForGPU(body);
           this.textureManager.prepareMaterialForGPU(aluminium);
           this.textureManager.prepareMaterialForGPU(tab);
-
           return true;
         } catch (error) {
           return false;
         }
       }),
     );
-
     this.textureManager.prepareAllMaterialsForGPU();
   }
 
+  /** Precompiles all materials for the renderer. */
   private async precompileMaterials(): Promise<void> {
-    if (!this.renderer || !this.scene || !this.camera) {
-      return;
-    }
-
+    if (!this.renderer || !this.scene || !this.camera) return;
     try {
       if (typeof this.renderer.compileAsync === 'function') {
         await this.renderer.compileAsync(this.scene, this.camera);
@@ -600,32 +495,26 @@ export class ThreeEngine {
     } catch (error) {}
   }
 
+  /** Assigns PBR materials to meshes within a can group based on mesh name. */
   private applyMaterialsToCan(
     canGroup: THREE.Object3D,
     materials: FlavorMaterials,
     flavor: FlavorId | string,
   ): void {
     canGroup.traverse((child: THREE.Object3D) => {
-      if (!(child instanceof THREE.Mesh)) {
-        return;
-      }
-
+      if (!(child instanceof THREE.Mesh)) return;
       child.castShadow = true;
       child.receiveShadow = true;
       child.frustumCulled = false;
-
       const name = child.name.toLowerCase();
-
       if (name.includes('body_texture_main')) {
         child.material = materials.body;
         return;
       }
-
       if (name.includes('top_bottom_aluminium')) {
         child.material = materials.aluminium;
         return;
       }
-
       if (name.includes('opening_tab_aluminium')) {
         child.material = materials.tab;
         return;
@@ -633,55 +522,34 @@ export class ThreeEngine {
     });
   }
 
+  /** Initiates flavor swap on the center can with rotation animation. */
   private applyFlavorToCenter(flavorId: FlavorId): void {
-    if (!this.centerGroup) {
-      return;
-    }
-
-    if (!this.centerRotationPivot) {
-      return;
-    }
-
+    if (!this.centerGroup) return;
+    if (!this.centerRotationPivot) return;
     const materials = this.flavorMaterials[flavorId];
-
-    if (!materials) {
-      return;
-    }
-
-    if (flavorId === this.currentCenterFlavor) {
-      return;
-    }
-
-    if (this.centerRotationAnimating) {
-      return;
-    }
-
+    if (!materials) return;
+    if (flavorId === this.currentCenterFlavor) return;
+    if (this.centerRotationAnimating) return;
     this.pendingFlavorId = flavorId;
     this.pendingFlavorMaterials = materials;
     this.pendingMaterialApplied = false;
-
     this.startCenterRotation();
   }
 
+  /** Starts the center can rotation animation. */
   private startCenterRotation(): void {
-    if (!this.centerRotationPivot) {
-      return;
-    }
-
+    if (!this.centerRotationPivot) return;
     this.centerRotationAnimating = true;
     this.centerRotationStart = this.centerRotationPivot.rotation.y;
     this.centerRotationTarget = this.centerRotationStart + Math.PI * 2;
     this.centerRotationStartTime = performance.now();
   }
 
+  /** Updates center rotation progress and swaps materials at midpoint. */
   private updateCenterRotation(): void {
-    if (!this.centerRotationAnimating || !this.centerRotationPivot) {
-      return;
-    }
-
+    if (!this.centerRotationAnimating || !this.centerRotationPivot) return;
     const elapsed = performance.now() - this.centerRotationStartTime;
     const progress = THREE.MathUtils.clamp(elapsed / (this.centerRotationDuration * 1000), 0, 1);
-
     if (!this.pendingMaterialApplied && progress >= 0.5) {
       if (this.pendingFlavorMaterials && this.pendingFlavorId) {
         this.applyMaterialsToCan(
@@ -689,72 +557,56 @@ export class ThreeEngine {
           this.pendingFlavorMaterials,
           this.pendingFlavorId,
         );
-
         this.currentCenterFlavor = this.pendingFlavorId;
         this.pendingMaterialApplied = true;
       }
     }
-
     this.centerRotationPivot.rotation.y = THREE.MathUtils.lerp(
       this.centerRotationStart,
       this.centerRotationTarget,
       progress,
     );
-
     if (progress >= 1) {
       this.centerRotationPivot.rotation.y = this.centerRotationTarget;
-
       this.centerRotationPivot.rotation.y = THREE.MathUtils.euclideanModulo(
         this.centerRotationPivot.rotation.y,
         Math.PI * 2,
       );
-
       if (!this.pendingMaterialApplied && this.pendingFlavorMaterials && this.pendingFlavorId) {
         this.applyMaterialsToCan(
           this.centerGroup!,
           this.pendingFlavorMaterials,
           this.pendingFlavorId,
         );
-
         this.currentCenterFlavor = this.pendingFlavorId;
         this.pendingMaterialApplied = true;
       }
-
       this.pendingFlavorId = undefined;
       this.pendingFlavorMaterials = undefined;
       this.centerRotationAnimating = false;
     }
   }
 
+  /** Calculates the canvas aspect ratio. */
   private canvasAspect() {
-    if (!this.canvas) {
-      return 1;
-    }
-
+    if (!this.canvas) return 1;
     const width = this.canvas.clientWidth;
     const height = this.canvas.clientHeight;
-
-    if (height <= 0) {
-      return 1;
-    }
-
+    if (height <= 0) return 1;
     return width / height;
   }
 
+  /** Starts the render loop. */
   private startRenderLoop(): void {
-    if (this.renderLoopStarted) {
-      return;
-    }
-
+    if (this.renderLoopStarted) return;
     this.renderLoopStarted = true;
     requestAnimationFrame(this.animate);
   }
 
+  /** Animation loop updating mixer, rotation, and rendering. */
   private animate = () => {
     requestAnimationFrame(this.animate);
-
     const progress = this.scrollService.progress();
-
     if (this.mixer && this.animationDuration > 0) {
       const epsilon = 0.0001;
       const time = THREE.MathUtils.clamp(
@@ -762,13 +614,10 @@ export class ThreeEngine {
         0,
         this.animationDuration - epsilon,
       );
-
       this.mixer.setTime(time);
     }
-
     this.updateCenterRotation();
     this.updateHDRIRotation();
-
     if (this.renderer && this.scene && this.camera) {
       this.renderer.render(this.scene, this.camera);
     }

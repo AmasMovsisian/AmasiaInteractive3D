@@ -14,6 +14,7 @@ import { ScrollStoryComponent } from '../scroll-story/scroll-story';
 import { NewFlavors } from '../../pages/new-flavors/new-flavors';
 import { Contact } from '../../pages/contact/contact';
 import { Footer } from '../shared/footer/footer';
+
 @Component({
   selector: 'app-hero',
   standalone: true,
@@ -21,15 +22,19 @@ import { Footer } from '../shared/footer/footer';
   templateUrl: './hero.html',
   styleUrl: './hero.scss',
 })
+/** Hero section component initializing the Three.js engine and managing landscape mode. */
 export class HeroComponent implements AfterViewInit {
   @ViewChild('canvas')
   canvas!: ElementRef<HTMLCanvasElement>;
   readonly loading = signal(true);
   contactSubmitted = false;
+
   constructor(
     private readonly threeEngine: ThreeEngine,
     private readonly scrollService: ScrollService,
   ) {}
+
+  /** Initializes the Three.js engine and unlocks scrolling on success. */
   async ngAfterViewInit(): Promise<void> {
     this.scrollService.setLocked(true);
     this.loading.set(true);
@@ -44,9 +49,13 @@ export class HeroComponent implements AfterViewInit {
     }
     this.updateLandscapeMode();
   }
+
+  /** Closes the contact success notification. */
   closeContactSuccess(): void {
     this.contactSubmitted = false;
   }
+
+  /** Toggles landscape lock class on touch devices based on orientation. */
   @HostListener('window:resize')
   @HostListener('window:orientationchange')
   updateLandscapeMode(): void {

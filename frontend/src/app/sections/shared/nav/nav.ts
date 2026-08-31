@@ -6,6 +6,7 @@ import {
   HERO_TOTAL_FRAMES,
   HeroNavigationSection,
 } from '../../../core/services/hero-navigation';
+
 @Component({
   selector: 'app-nav',
   standalone: true,
@@ -13,16 +14,20 @@ import {
   templateUrl: './nav.html',
   styleUrl: './nav.scss',
 })
+/** Navigation component with theme toggle and hero section scrolling. */
 export class Nav {
   menuOpen = false;
   isDarkMode = false;
   private readonly themeKey = 'theme';
+
   constructor(
     private readonly scrollService: ScrollService,
     private readonly router: Router,
   ) {
     this.loadTheme();
   }
+
+  /** Navigates to the hero start section, scrolling smoothly if already on hero page. */
   goToStart(event?: Event): void {
     event?.preventDefault();
     this.closeMenu();
@@ -41,14 +46,14 @@ export class Nav {
       });
     });
   }
+
+  /** Scrolls to a hero section, navigating to hero page first if needed. */
   async scrollToSection(section: HeroNavigationSection, event?: Event): Promise<void> {
     event?.preventDefault();
     this.closeMenu();
     const frame = HERO_NAVIGATION[section];
     const currentUrl = this.router.url.split('?')[0].split('#')[0];
-    const isHeroPage 
-    
-    = currentUrl === '/' || currentUrl === '';
+    const isHeroPage = currentUrl === '/' || currentUrl === '';
     if (isHeroPage) {
       this.scrollService.scrollToFrame(frame, HERO_TOTAL_FRAMES, 'smooth');
       return;
@@ -64,30 +69,44 @@ export class Nav {
       console.error('Navigation to hero section failed:', error);
     }
   }
+
+  /** Toggles the mobile menu and updates body scroll lock. */
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
     this.updateBodyScrollLock();
   }
+
+  /** Toggles dark/light theme and persists the preference. */
   toggleTheme(): void {
     this.isDarkMode = !this.isDarkMode;
     this.applyTheme();
     localStorage.setItem(this.themeKey, this.isDarkMode ? 'dark' : 'light');
   }
+
+  /** Closes the mobile menu and updates body scroll lock. */
   closeMenu(): void {
     this.menuOpen = false;
     this.updateBodyScrollLock();
   }
+
+  /** Loads the saved theme preference from localStorage. */
   private loadTheme(): void {
     const savedTheme = localStorage.getItem(this.themeKey);
     this.isDarkMode = savedTheme === 'dark';
     this.applyTheme();
   }
+
+  /** Applies the current theme to the document root. */
   private applyTheme(): void {
     document.documentElement.setAttribute('data-theme', this.isDarkMode ? 'dark' : 'light');
   }
+
+  /** Locks or unlocks body scroll based on menu state. */
   private updateBodyScrollLock(): void {
     document.body.style.overflow = this.menuOpen ? 'hidden' : '';
   }
+
+  /** Closes the menu on desktop resize. */
   @HostListener('window:resize')
   onResize(): void {
     if (window.innerWidth > 900 && this.menuOpen) {
@@ -95,6 +114,8 @@ export class Nav {
       this.updateBodyScrollLock();
     }
   }
+
+  /** Closes the menu on Escape key press. */
   @HostListener('window:keydown.escape')
   onEscape(): void {
     if (this.menuOpen) {
@@ -102,6 +123,8 @@ export class Nav {
       this.updateBodyScrollLock();
     }
   }
+
+  /** Cleans up body scroll lock on component destruction. */
   ngOnDestroy(): void {
     document.body.style.overflow = '';
   }

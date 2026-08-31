@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 
+/** Data structure representing an Arnold light exported from Maya. */
 export interface ArnoldLightData {
   name: string;
   transform: {
@@ -29,6 +30,7 @@ export interface ArnoldLightData {
   };
 }
 
+/** Loads Arnold light JSON data and creates Three.js lights in the scene. */
 export class ArnoldLightLoader {
   private lights: THREE.Light[] = [];
   private readonly mayaToThree = 0.01;
@@ -40,6 +42,7 @@ export class ArnoldLightLoader {
     RectAreaLightUniformsLib.init();
   }
 
+  /** Fetches and parses Arnold light JSON, then creates and adds lights to the scene. */
   async load(jsonPath: string): Promise<THREE.Light[]> {
     const response = await fetch(jsonPath);
 
@@ -65,6 +68,7 @@ export class ArnoldLightLoader {
     return this.lights;
   }
 
+  /** Removes all existing lights from the scene. */
   private removeExistingLights() {
     const lightsToRemove: THREE.Light[] = [];
 
@@ -79,11 +83,13 @@ export class ArnoldLightLoader {
     }
   }
 
+  /** Extracts RGB color from Arnold light data. */
   private getColor(data: ArnoldLightData): THREE.Color {
     const rgb = data.attributes.color?.[0] ?? [1, 1, 1];
     return new THREE.Color(rgb[0], rgb[1], rgb[2]);
   }
 
+  /** Converts Arnold intensity and exposure values to Three.js light intensity. */
   private getLightPower(data: ArnoldLightData): number {
     const intensity = Number.isFinite(data.attributes.intensity) ? data.attributes.intensity : 1;
     const exposure = Number.isFinite(data.attributes.exposure) ? data.attributes.exposure : 0;
@@ -93,6 +99,7 @@ export class ArnoldLightLoader {
     return threeIntensity;
   }
 
+  /** Creates the appropriate light type based on configuration. */
   private createLight(data: ArnoldLightData): THREE.Light {
     if (this.debugDirectionalLight) {
       return this.createDirectionalLight(data);
@@ -101,6 +108,7 @@ export class ArnoldLightLoader {
     return this.createRectAreaLight(data);
   }
 
+  /** Creates a RectAreaLight from Arnold light data. */
   private createRectAreaLight(data: ArnoldLightData): THREE.RectAreaLight {
     const color = this.getColor(data);
     const intensity = this.getLightPower(data);
@@ -129,6 +137,7 @@ export class ArnoldLightLoader {
     return light;
   }
 
+  /** Creates a DirectionalLight from Arnold light data for debugging. */
   private createDirectionalLight(data: ArnoldLightData): THREE.DirectionalLight {
     const color = this.getColor(data);
     const intensity = this.getLightPower(data);

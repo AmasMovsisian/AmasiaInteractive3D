@@ -10,12 +10,14 @@ import { Footer } from '../../sections/shared/footer/footer';
   templateUrl: './coming-soon.html',
   styleUrl: './coming-soon.scss',
 })
+/** Coming soon page with email submission form. */
 export class ComingSoon implements OnInit {
   showSuccess = false;
   requesting = false;
 
   constructor(private readonly cdr: ChangeDetectorRef) {}
 
+  /** Scrolls to top on initialization. */
   ngOnInit(): void {
     window.scrollTo({
       top: 0,
@@ -24,26 +26,18 @@ export class ComingSoon implements OnInit {
     });
   }
 
+  /** Validates and submits the email form, showing success after a delay. */
   onSubmit(): void {
-    if (this.requesting) {
-      return;
-    }
-
+    if (this.requesting) return;
     const form = document.querySelector('.cs-form') as HTMLFormElement | null;
     const emailInput = document.querySelector('.cs-input') as HTMLInputElement | null;
-
-    if (!form || !emailInput) {
-      return;
-    }
-
+    if (!form || !emailInput) return;
     if (!emailInput.value.trim() || !emailInput.checkValidity()) {
       emailInput.reportValidity();
       return;
     }
-
     this.requesting = true;
     this.cdr.detectChanges();
-
     window.setTimeout(() => {
       this.requesting = false;
       this.showSuccess = true;
@@ -53,6 +47,7 @@ export class ComingSoon implements OnInit {
     }, 2000);
   }
 
+  /** Closes the success modal. */
   closeModal(): void {
     this.showSuccess = false;
     this.cdr.detectChanges();

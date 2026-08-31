@@ -15,6 +15,7 @@ export interface Flavor {
 @Injectable({
   providedIn: 'root',
 })
+/** Manages flavor data and selected flavor state. */
 export class FlavorService {
   readonly flavors: readonly Flavor[] = [
     {
@@ -27,7 +28,6 @@ export class FlavorService {
         'KEYLIME combines vibrant citrus character with a clean, elegant finish.\n' +
         'Fresh enough to energize the moment, refined enough to leave a lasting impression.',
     },
-
     {
       id: 'akebi',
       name: 'AKEBI',
@@ -38,7 +38,6 @@ export class FlavorService {
         'AKEBI unfolds with a delicate sweetness and a smooth, subtly complex finish.\n' +
         'Distinctive yet effortlessly balanced, it brings an unexpected touch of energy to the experience.',
     },
-
     {
       id: 'coconut',
       name: 'COCONUT',
@@ -49,7 +48,6 @@ export class FlavorService {
         'COCONUT balances creamy tropical notes with a clean and sophisticated finish.\n' +
         'A relaxed expression of luxury, created for moments that deserve something beyond the ordinary.',
     },
-
     {
       id: 'lychee',
       name: 'LYCHEE',
@@ -60,7 +58,6 @@ export class FlavorService {
         'LYCHEE brings together juicy fruit notes and subtle floral elegance in a beautifully balanced profile.\n' +
         'Light, refined and quietly expressive, it turns every sip into something memorable.',
     },
-
     {
       id: 'pandan',
       name: 'PANDAN',
@@ -71,7 +68,6 @@ export class FlavorService {
         'PANDAN introduces a smooth tropical character with delicate herbal and vanilla-like nuances.\n' +
         'Unexpected yet beautifully balanced, it creates a sophisticated flavor experience unlike anything ordinary.',
     },
-
     {
       id: 'black-edition',
       name: 'BLACK EDITION',
@@ -98,6 +94,7 @@ export class FlavorService {
     return this.flavorsById[this.selectedFlavorId()];
   });
 
+  /** Sets the selected flavor by ID. */
   selectFlavor(flavorId: FlavorId): void {
     this.selectedFlavorId.set(flavorId);
   }
