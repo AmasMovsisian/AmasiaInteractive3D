@@ -1,0 +1,67 @@
+<section class="register">
+  <h1>Register</h1>
+
+  <form (ngSubmit)="onSubmit()">
+    <div>
+      <label for="username"> Username </label>
+
+      <input
+        id="username"
+        name="username"
+        type="text"
+        [(ngModel)]="username"
+        autocomplete="username"
+        required
+      />
+    </div>
+
+    <div>
+      <label for="email"> Email </label>
+
+      <input
+        id="email"
+        name="email"
+        type="email"
+        [(ngModel)]="email"
+        autocomplete="email"
+        required
+      />
+    </div>
+
+    <div>
+      <label for="password"> Password </label>
+
+      <input
+        id="password"
+        name="password"
+        type="password"
+        [(ngModel)]="password"
+        autocomplete="new-password"
+        required
+      />
+    </div>
+
+    <div>
+      <label for="password2"> Confirm Password </label>
+
+      <input
+        id="password2"
+        name="password2"
+        type="password"
+        [(ngModel)]="password2"
+        autocomplete="new-password"
+        required
+      />
+    </div>
+
+    @if (errorMessage) {
+      <p class="error">
+        {{ errorMessage }}
+      </p>
+    }
+
+    <button type="submit" [disabled]="isLoading">
+      {{ isLoading ? 'Creating account...' : 'Register' }}
+    </button>
+  </form>
+</section>

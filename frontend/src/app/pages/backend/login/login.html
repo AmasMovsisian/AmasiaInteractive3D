@@ -1,0 +1,41 @@
+<section class="login">
+  <h1>Login</h1>
+
+  <form (ngSubmit)="onSubmit()">
+    <div>
+      <label for="username"> Username </label>
+
+      <input
+        id="username"
+        name="username"
+        type="text"
+        [(ngModel)]="username"
+        autocomplete="username"
+        required
+      />
+    </div>
+
+    <div>
+      <label for="password"> Password </label>
+
+      <input
+        id="password"
+        name="password"
+        type="password"
+        [(ngModel)]="password"
+        autocomplete="current-password"
+        required
+      />
+    </div>
+
+    @if (errorMessage) {
+      <p class="error">
+        {{ errorMessage }}
+      </p>
+    }
+
+    <button type="submit" [disabled]="isLoading">
+      {{ isLoading ? 'Logging in...' : 'Login' }}
+    </button>
+  </form>
+</section>

@@ -1,0 +1,80 @@
+.dashboard {
+  max-width: 1000px;
+  margin: 80px auto;
+  padding: 20px;
+  color: white;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.dashboard-header button,
+.product button {
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 30px;
+  margin-bottom: 30px;
+  background: #151515;
+  border-radius: 12px;
+}
+
+.profile-image {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #333;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.profile-info h2 {
+  margin: 0 0 5px;
+}
+
+.profile-info p {
+  margin: 0;
+  color: #aaa;
+}
+
+.dashboard-section {
+  padding: 30px;
+  margin-bottom: 30px;
+  background: #151515;
+  border-radius: 12px;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.product {
+  padding: 20px;
+  background: #222;
+  border-radius: 10px;
+}
+
+.error {
+  color: #ff5555;
+}
+
+@media (max-width: 700px) {
+  .products {
+    grid-template-columns: 1fr;
+  }
+}

@@ -3,6 +3,7 @@
     <a href="/" class="logo" (click)="goToStart($event)">
       <h2>AMASIA</h2>
     </a>
+
     <ul class="nav__links">
       <li>
         <a href="#about" (click)="scrollToSection('about')"> About </a>
@@ -37,7 +38,17 @@
         </span>
       </button>
 
-      <a routerLink="/coming-soon" class="button nav__cta"> REQUEST ACCESS </a>
+      @if (!isLoggedIn) {
+        <a routerLink="/login" class="button nav__cta"> LOGIN </a>
+
+        <a routerLink="/register" class="button nav__cta nav__cta--secondary"> REGISTER </a>
+      } @else {
+        <a routerLink="/dashboard" class="button nav__cta"> MY ACCOUNT </a>
+
+        <button type="button" class="button nav__cta nav__cta--secondary" (click)="logout()">
+          LOGOUT
+        </button>
+      }
 
       <button
         class="hamburger"
@@ -110,9 +121,19 @@
     </nav>
 
     <div class="mobile-menu__bottom">
-      <a routerLink="/coming-soon" class="button mobile-menu__cta" (click)="closeMenu()">
-        REQUEST ACCESS
-      </a>
+      @if (!isLoggedIn) {
+        <a routerLink="/login" class="button mobile-menu__cta" (click)="closeMenu()"> LOGIN </a>
+
+        <a routerLink="/register" class="button mobile-menu__cta" (click)="closeMenu()">
+          REGISTER
+        </a>
+      } @else {
+        <a routerLink="/dashboard" class="button mobile-menu__cta" (click)="closeMenu()">
+          MY ACCOUNT
+        </a>
+
+        <button type="button" class="button mobile-menu__cta" (click)="logout()">LOGOUT</button>
+      }
     </div>
   </div>
 </nav>
