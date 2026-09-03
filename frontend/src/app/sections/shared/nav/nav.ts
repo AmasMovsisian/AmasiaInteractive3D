@@ -72,6 +72,11 @@ export class Nav implements OnInit, OnDestroy {
     event?.preventDefault();
     this.closeMenu();
 
+    if (section === 'contact') {
+      await this.scrollToContact();
+      return;
+    }
+
     const frame = HERO_NAVIGATION[section];
     const currentUrl = this.router.url.split('?')[0].split('#')[0];
     const isHeroPage = currentUrl === '/' || currentUrl === '';
@@ -92,6 +97,42 @@ export class Nav implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Navigation to hero section failed:', error);
     }
+  }
+
+  private async scrollToContact(): Promise<void> {
+    const currentUrl = this.router.url.split('?')[0].split('#')[0];
+    const isHeroPage = currentUrl === '/' || currentUrl === '';
+
+    if (!isHeroPage) {
+      try {
+        await this.router.navigate(['/']);
+      } catch (error) {
+        console.error('Navigation to home failed:', error);
+        return;
+      }
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const contactElement = document.getElementById('contact');
+
+          if (!contactElement) {
+            console.error('Contact element with id="contact" was not found.');
+            return;
+          }
+
+          const isMobile = window.innerWidth <= 900;
+          const offset = isMobile ? 0 : -200;
+          const contactTop = contactElement.getBoundingClientRect().top + window.scrollY;
+
+          window.scrollTo({
+            top: Math.max(0, contactTop - offset),
+            behavior: 'smooth',
+          });
+        });
+      });
+    });
   }
 
   toggleMenu(): void {
