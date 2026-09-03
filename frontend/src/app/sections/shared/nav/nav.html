@@ -8,15 +8,12 @@
       <li>
         <a href="#about" (click)="scrollToSection('about', $event)"> About </a>
       </li>
-
       <li>
         <a href="#pricing" (click)="scrollToSection('pricing', $event)"> Pricing </a>
       </li>
-
       <li>
         <a href="#flavors" (click)="scrollToSection('flavors', $event)"> Flavors </a>
       </li>
-
       <li>
         <a href="#contact" (click)="scrollToSection('contact', $event)"> Contact </a>
       </li>
@@ -32,22 +29,17 @@
         <span class="theme-switch__track">
           <span class="theme-switch__indicator"></span>
         </span>
-
         <span class="theme-switch__label">
           {{ isDarkMode ? 'Dark' : 'Light' }}
         </span>
       </button>
 
       @if (!isLoggedIn) {
-        <a routerLink="/login" class="button nav__cta"> LOGIN </a>
-
-        <a routerLink="/register" class="button nav__cta nav__cta--secondary"> REGISTER </a>
+        <a routerLink="/login" class="nav__cta"> LOGIN </a>
+        <a routerLink="/register" class="nav__cta"> REGISTER </a>
       } @else {
-        <a routerLink="/dashboard" class="button nav__cta"> MY ACCOUNT </a>
-
-        <button type="button" class="button nav__cta nav__cta--secondary" (click)="logout()">
-          LOGOUT
-        </button>
+        <a routerLink="/dashboard" class="nav__cta"> MY ACCOUNT </a>
+        <button type="button" class="nav__cta" (click)="logout()">LOGOUT</button>
       }
 
       <button
@@ -67,23 +59,18 @@
 
   <div class="mobile-menu" [class.open]="menuOpen" [attr.aria-hidden]="!menuOpen">
     <div class="mobile-menu__glow mobile-menu__glow--one"></div>
-
     <div class="mobile-menu__glow mobile-menu__glow--two"></div>
-
     <div class="mobile-menu__grid"></div>
 
     <div class="mobile-menu__header">
       <span class="mobile-menu__eyebrow"> AMASIA </span>
-
       <span class="mobile-menu__status"> MENU </span>
     </div>
 
     <nav class="mobile-menu__nav">
       <a href="#about" (click)="scrollToSection('about', $event)">
         <span class="mobile-menu__number"> 01 </span>
-
         <span class="mobile-menu__link"> About </span>
-
         <span class="mobile-menu__arrow" aria-hidden="true">
           <span class="mobile-menu__arrow-line"></span>
         </span>
@@ -91,9 +78,7 @@
 
       <a href="#flavors" (click)="scrollToSection('flavors', $event)">
         <span class="mobile-menu__number"> 02 </span>
-
         <span class="mobile-menu__link"> Flavors </span>
-
         <span class="mobile-menu__arrow" aria-hidden="true">
           <span class="mobile-menu__arrow-line"></span>
         </span>
@@ -101,9 +86,7 @@
 
       <a href="#pricing" (click)="scrollToSection('pricing', $event)">
         <span class="mobile-menu__number"> 03 </span>
-
         <span class="mobile-menu__link"> Pricing </span>
-
         <span class="mobile-menu__arrow" aria-hidden="true">
           <span class="mobile-menu__arrow-line"></span>
         </span>
@@ -111,9 +94,7 @@
 
       <a href="#contact" (click)="scrollToSection('contact', $event)">
         <span class="mobile-menu__number"> 04 </span>
-
         <span class="mobile-menu__link"> Contact </span>
-
         <span class="mobile-menu__arrow" aria-hidden="true">
           <span class="mobile-menu__arrow-line"></span>
         </span>
@@ -123,7 +104,6 @@
     <div class="mobile-menu__bottom">
       @if (!isLoggedIn) {
         <a routerLink="/login" class="button mobile-menu__cta" (click)="closeMenu()"> LOGIN </a>
-
         <a routerLink="/register" class="button mobile-menu__cta" (click)="closeMenu()">
           REGISTER
         </a>
@@ -131,7 +111,6 @@
         <a routerLink="/dashboard" class="button mobile-menu__cta" (click)="closeMenu()">
           MY ACCOUNT
         </a>
-
         <button type="button" class="button mobile-menu__cta" (click)="logout()">LOGOUT</button>
       }
     </div>

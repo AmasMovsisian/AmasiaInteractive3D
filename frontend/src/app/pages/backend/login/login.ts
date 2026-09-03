@@ -21,6 +21,7 @@ export class Login {
 
   username = '';
   password = '';
+  showPassword = false;
 
   errorMessage = '';
   isLoading = false;

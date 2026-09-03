@@ -1,67 +1,193 @@
-<section class="register">
-  <h1>Register</h1>
+<div class="register-page">
+  <div class="register-page__background"></div>
 
-  <form (ngSubmit)="onSubmit()">
-    <div>
-      <label for="username"> Username </label>
+  <app-nav></app-nav>
 
-      <input
-        id="username"
-        name="username"
-        type="text"
-        [(ngModel)]="username"
-        autocomplete="username"
-        required
-      />
-    </div>
+  <main class="register-main">
+    <section class="register-section">
+      <div class="register-container">
+        <div class="register-header">
+          <div class="eyebrow"></div>
+          <h1>CREATE ACCOUNT</h1>
+          <p>Create your account and join the AMASIA community</p>
+        </div>
 
-    <div>
-      <label for="email"> Email </label>
+        <div class="register-form-wrapper">
+          <div class="form-header">
+            <span>ACCOUNT REGISTRATION</span>
+            <span class="form-index">01 / 04</span>
+          </div>
 
-      <input
-        id="email"
-        name="email"
-        type="email"
-        [(ngModel)]="email"
-        autocomplete="email"
-        required
-      />
-    </div>
+          <form class="register-form" (ngSubmit)="onSubmit()" novalidate>
+            <div class="field" [class.invalid]="errorMessage">
+              <label for="username">
+                <span>01.</span>
+                USERNAME
+              </label>
 
-    <div>
-      <label for="password"> Password </label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                [(ngModel)]="username"
+                autocomplete="username"
+                placeholder="Choose a username"
+                required
+                [disabled]="isLoading"
+              />
+            </div>
 
-      <input
-        id="password"
-        name="password"
-        type="password"
-        [(ngModel)]="password"
-        autocomplete="new-password"
-        required
-      />
-    </div>
+            <div class="field" [class.invalid]="errorMessage">
+              <label for="email">
+                <span>02.</span>
+                EMAIL
+              </label>
 
-    <div>
-      <label for="password2"> Confirm Password </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                [(ngModel)]="email"
+                autocomplete="email"
+                placeholder="Enter your email address"
+                required
+                [disabled]="isLoading"
+              />
+            </div>
 
-      <input
-        id="password2"
-        name="password2"
-        type="password"
-        [(ngModel)]="password2"
-        autocomplete="new-password"
-        required
-      />
-    </div>
+            <div class="field" [class.invalid]="errorMessage">
+              <label for="password">
+                <span>03.</span>
+                PASSWORD
+              </label>
 
-    @if (errorMessage) {
-      <p class="error">
-        {{ errorMessage }}
-      </p>
-    }
+              <div class="password-input-wrapper">
+                <input
+                  id="password"
+                  name="password"
+                  [type]="showPassword ? 'text' : 'password'"
+                  [(ngModel)]="password"
+                  autocomplete="new-password"
+                  placeholder="Choose a password"
+                  required
+                  [disabled]="isLoading"
+                />
 
-    <button type="submit" [disabled]="isLoading">
-      {{ isLoading ? 'Creating account...' : 'Register' }}
-    </button>
-  </form>
-</section>
+                <button
+                  type="button"
+                  class="password-toggle"
+                  [class.is-visible]="showPassword"
+                  (click)="showPassword = !showPassword"
+                  [disabled]="isLoading"
+                  [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    @if (!showPassword) {
+                      <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                      <circle cx="12" cy="12" r="2.5" />
+                    }
+
+                    @if (showPassword) {
+                      <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                      <circle cx="12" cy="12" r="2.5" />
+                      <path d="M4 4l16 16" />
+                    }
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="field" [class.invalid]="errorMessage">
+              <label for="password2">
+                <span>04.</span>
+                CONFIRM PASSWORD
+              </label>
+
+              <div class="password-input-wrapper">
+                <input
+                  id="password2"
+                  name="password2"
+                  [type]="showPassword2 ? 'text' : 'password'"
+                  [(ngModel)]="password2"
+                  autocomplete="new-password"
+                  placeholder="Confirm your password"
+                  required
+                  [disabled]="isLoading"
+                />
+
+                <button
+                  type="button"
+                  class="password-toggle"
+                  [class.is-visible]="showPassword2"
+                  (click)="showPassword2 = !showPassword2"
+                  [disabled]="isLoading"
+                  [attr.aria-label]="showPassword2 ? 'Hide password' : 'Show password'"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    @if (!showPassword2) {
+                      <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                      <circle cx="12" cy="12" r="2.5" />
+                    }
+
+                    @if (showPassword2) {
+                      <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                      <circle cx="12" cy="12" r="2.5" />
+                      <path d="M4 4l16 16" />
+                    }
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            @if (errorMessage) {
+              <div class="register-error" role="alert" aria-live="polite">
+                <span class="register-error__line"></span>
+                <span>{{ errorMessage }}</span>
+              </div>
+            }
+
+            <button
+              type="submit"
+              class="register-button"
+              [class.is-loading]="isLoading"
+              [disabled]="isLoading"
+            >
+              @if (!isLoading) {
+                <span>CREATE ACCOUNT</span>
+
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 12h13M13 6l6 6-6 6" />
+                </svg>
+              }
+
+              @if (isLoading) {
+                <span class="loading-content">
+                  <span>CREATING ACCOUNT</span>
+
+                  <span class="loading-dots" aria-hidden="true">
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                  </span>
+                </span>
+              }
+            </button>
+          </form>
+
+          <div class="register-login">
+            <span class="register-login__label"> ALREADY HAVE AN ACCOUNT? </span>
+
+            <a routerLink="/login" class="register-login__link">
+              SIGN IN
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <app-footer></app-footer>
+</div>

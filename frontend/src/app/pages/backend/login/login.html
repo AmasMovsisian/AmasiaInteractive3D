@@ -45,16 +45,40 @@
                 PASSWORD
               </label>
 
-              <input
-                id="password"
-                name="password"
-                type="password"
-                [(ngModel)]="password"
-                autocomplete="current-password"
-                placeholder="Enter your password"
-                required
-                [disabled]="isLoading"
-              />
+              <div class="password-input-wrapper">
+                <input
+                  id="password"
+                  name="password"
+                  [type]="showPassword ? 'text' : 'password'"
+                  [(ngModel)]="password"
+                  autocomplete="current-password"
+                  placeholder="Enter your password"
+                  required
+                  [disabled]="isLoading"
+                />
+
+                <button
+                  type="button"
+                  class="password-toggle"
+                  [class.is-visible]="showPassword"
+                  (click)="showPassword = !showPassword"
+                  [disabled]="isLoading"
+                  [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    @if (!showPassword) {
+                      <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                      <circle cx="12" cy="12" r="2.5" />
+                    }
+
+                    @if (showPassword) {
+                      <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                      <circle cx="12" cy="12" r="2.5" />
+                      <path d="M4 4l16 16" />
+                    }
+                  </svg>
+                </button>
+              </div>
             </div>
 
             @if (errorMessage) {

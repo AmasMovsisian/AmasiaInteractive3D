@@ -1,13 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../core/services/backend/authentication/auth.service';
+import { Nav } from '../../../sections/shared/nav/nav';
+import { Footer } from '../../../sections/shared/footer/footer';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink, Nav, Footer],
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
@@ -20,19 +22,31 @@ export class Register {
   password = '';
   password2 = '';
 
+  showPassword = false;
+  showPassword2 = false;
+
   errorMessage = '';
   isLoading = false;
 
   onSubmit(): void {
     this.errorMessage = '';
 
-    if (!this.username || !this.email || !this.password || !this.password2) {
+    const username = this.username.trim();
+    const email = this.email.trim();
+    const password = this.password;
+    const password2 = this.password2;
+
+    if (!username || !email || !password || !password2) {
       this.errorMessage = 'Please fill in all fields.';
       return;
     }
 
-    if (this.password !== this.password2) {
+    if (password !== password2) {
       this.errorMessage = 'Passwords do not match.';
+      return;
+    }
+
+    if (this.isLoading) {
       return;
     }
 
@@ -40,15 +54,14 @@ export class Register {
 
     this.authService
       .register({
-        username: this.username,
-        email: this.email,
-        password: this.password,
-        password2: this.password2,
+        username,
+        email,
+        password,
+        password2,
       })
       .subscribe({
         next: () => {
           this.isLoading = false;
-
           this.router.navigate(['/login']);
         },
 
@@ -57,7 +70,7 @@ export class Register {
 
           console.error('Registration failed:', error);
 
-          if (error.status === 400 && error.error) {
+          if (error?.status === 400 && error?.error) {
             this.errorMessage = this.getErrorMessage(error.error);
             return;
           }
