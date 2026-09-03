@@ -16,15 +16,22 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
+  // Nur Requests an unser Backend bearbeiten
   if (!req.url.startsWith(environment.apiUrl)) {
     return next(req);
   }
+
+  const isLoginRequest = req.url === `${environment.apiUrl}/auth/login/`;
 
   const isRefreshRequest = req.url === `${environment.apiUrl}/auth/refresh/`;
 
   const accessToken = authService.getAccessToken();
 
-  if (!accessToken) {
+  /*
+   * Login und Refresh brauchen keinen bestehenden
+   * Access Token.
+   */
+  if (isLoginRequest || isRefreshRequest || !accessToken) {
     return next(req);
   }
 
@@ -36,7 +43,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status !== 401 || isRefreshRequest) {
+      /*
+       * Ein 401 vom normalen Request kann einen
+       * Token-Refresh auslösen.
+
+       * Login und Refresh werden oben bereits
+       * ausgeschlossen.
+       */
+      if (error.status !== 401) {
         return throwError(() => error);
       }
 

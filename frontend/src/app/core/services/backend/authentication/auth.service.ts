@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap, of, catchError, map, finalize } from 'rxjs';
 
@@ -11,16 +11,16 @@ import { LoginRequest, LoginResponse, RegisterRequest, User } from './models/aut
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-
   private readonly apiUrl = `${environment.apiUrl}/auth`;
-
   private readonly accessTokenKey = 'access_token';
-
   private readonly refreshTokenKey = 'refresh_token';
-
   private readonly userSubject = new BehaviorSubject<User | null>(null);
 
   readonly user$ = this.userSubject.asObservable();
+
+  private readonly authState = signal(this.hasStoredAccessToken());
+
+  readonly isLoggedIn = this.authState.asReadonly();
 
   private readonly authInitializedSubject = new BehaviorSubject<boolean>(false);
 
@@ -42,6 +42,7 @@ export class AuthService {
     return this.http.get<User>(`${this.apiUrl}/me/`).pipe(
       tap((user) => {
         this.userSubject.next(user);
+        this.authState.set(true);
       }),
     );
   }
@@ -49,20 +50,20 @@ export class AuthService {
   initializeAuthentication(): Observable<boolean> {
     if (!this.getAccessToken()) {
       this.userSubject.next(null);
+      this.authState.set(false);
       this.authInitializedSubject.next(true);
-
       return of(false);
     }
 
     return this.getMe().pipe(
-      map(() => true),
-
+      map(() => {
+        this.authState.set(true);
+        return true;
+      }),
       catchError(() => {
         this.clearSession();
-
         return of(false);
       }),
-
       finalize(() => {
         this.authInitializedSubject.next(true);
       }),
@@ -71,10 +72,11 @@ export class AuthService {
 
   logout(): Observable<void> {
     const refreshToken = this.getRefreshToken();
+    this.userSubject.next(null);
+    this.authState.set(false);
 
     if (!refreshToken) {
       this.clearSession();
-
       return of(undefined);
     }
 
@@ -83,14 +85,12 @@ export class AuthService {
         refresh: refreshToken,
       })
       .pipe(
-        tap(() => {
+        finalize(() => {
           this.clearSession();
         }),
-
         catchError((error) => {
-          this.clearSession();
-
-          throw error;
+          console.error('Backend logout failed:', error);
+          return of(undefined);
         }),
       );
   }
@@ -100,7 +100,6 @@ export class AuthService {
 
     if (!refreshToken) {
       this.clearSession();
-
       return new Observable((subscriber) => {
         subscriber.error(new Error('No refresh token available.'));
       });
@@ -139,15 +138,18 @@ export class AuthService {
 
   private setTokens(response: LoginResponse): void {
     localStorage.setItem(this.accessTokenKey, response.access);
-
     localStorage.setItem(this.refreshTokenKey, response.refresh);
+    this.authState.set(true);
   }
 
   private clearSession(): void {
     localStorage.removeItem(this.accessTokenKey);
-
     localStorage.removeItem(this.refreshTokenKey);
-
     this.userSubject.next(null);
+    this.authState.set(false);
+  }
+
+  private hasStoredAccessToken(): boolean {
+    return !!localStorage.getItem(this.accessTokenKey);
   }
 }

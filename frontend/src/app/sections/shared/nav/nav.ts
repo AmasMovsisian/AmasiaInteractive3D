@@ -1,15 +1,13 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-
 import { Router, RouterLink } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 
 import { ScrollService } from '../../../core/services/scroll.service';
-
 import {
   HERO_NAVIGATION,
   HERO_TOTAL_FRAMES,
   HeroNavigationSection,
 } from '../../../core/services/hero-navigation';
-
 import { AuthService } from '../../../core/services/backend/authentication/auth.service';
 
 @Component({
@@ -25,6 +23,7 @@ export class Nav implements OnInit, OnDestroy {
   isLoggedIn = false;
 
   private readonly themeKey = 'theme';
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
     private readonly scrollService: ScrollService,
@@ -35,41 +34,28 @@ export class Nav implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.isLoggedIn = this.authService.isAuthenticated();
+    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
+      this.isLoggedIn = !!user;
+    });
   }
 
   logout(): void {
-    this.authService.logout().subscribe({
-      next: () => {
-        this.isLoggedIn = false;
-        this.closeMenu();
-
-        this.router.navigate(['/']);
-      },
-
-      error: () => {
-        this.isLoggedIn = false;
-        this.closeMenu();
-
-        this.router.navigate(['/']);
-      },
+    this.closeMenu();
+    this.authService.logout().subscribe(() => {
+      this.router.navigate(['/']);
     });
   }
 
   goToStart(event?: Event): void {
     event?.preventDefault();
-
     this.closeMenu();
 
     const frame = HERO_NAVIGATION.home;
-
     const currentUrl = this.router.url.split('?')[0].split('#')[0];
-
     const isHeroPage = currentUrl === '/' || currentUrl === '';
 
     if (isHeroPage) {
       this.scrollService.scrollToFrame(frame, HERO_TOTAL_FRAMES, 'smooth');
-
       return;
     }
 
@@ -84,18 +70,14 @@ export class Nav implements OnInit, OnDestroy {
 
   async scrollToSection(section: HeroNavigationSection, event?: Event): Promise<void> {
     event?.preventDefault();
-
     this.closeMenu();
 
     const frame = HERO_NAVIGATION[section];
-
     const currentUrl = this.router.url.split('?')[0].split('#')[0];
-
     const isHeroPage = currentUrl === '/' || currentUrl === '';
 
     if (isHeroPage) {
       this.scrollService.scrollToFrame(frame, HERO_TOTAL_FRAMES, 'smooth');
-
       return;
     }
 
@@ -114,29 +96,23 @@ export class Nav implements OnInit, OnDestroy {
 
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
+    this.updateBodyScrollLock();
+  }
 
+  closeMenu(): void {
+    this.menuOpen = false;
     this.updateBodyScrollLock();
   }
 
   toggleTheme(): void {
     this.isDarkMode = !this.isDarkMode;
-
     this.applyTheme();
-
     localStorage.setItem(this.themeKey, this.isDarkMode ? 'dark' : 'light');
-  }
-
-  closeMenu(): void {
-    this.menuOpen = false;
-
-    this.updateBodyScrollLock();
   }
 
   private loadTheme(): void {
     const savedTheme = localStorage.getItem(this.themeKey);
-
     this.isDarkMode = savedTheme === 'dark';
-
     this.applyTheme();
   }
 
@@ -152,7 +128,6 @@ export class Nav implements OnInit, OnDestroy {
   onResize(): void {
     if (window.innerWidth > 900 && this.menuOpen) {
       this.menuOpen = false;
-
       this.updateBodyScrollLock();
     }
   }
@@ -161,12 +136,13 @@ export class Nav implements OnInit, OnDestroy {
   onEscape(): void {
     if (this.menuOpen) {
       this.menuOpen = false;
-
       this.updateBodyScrollLock();
     }
   }
 
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     document.body.style.overflow = '';
   }
 }

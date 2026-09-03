@@ -1,41 +1,112 @@
-<section class="login">
-  <h1>Login</h1>
+<div class="login-page">
+  <div class="login-page__background"></div>
 
-  <form (ngSubmit)="onSubmit()">
-    <div>
-      <label for="username"> Username </label>
+  <app-nav></app-nav>
 
-      <input
-        id="username"
-        name="username"
-        type="text"
-        [(ngModel)]="username"
-        autocomplete="username"
-        required
-      />
-    </div>
+  <main class="login-main">
+    <section class="login-section">
+      <div class="login-container">
+        <div class="login-header">
+          <div class="eyebrow"></div>
 
-    <div>
-      <label for="password"> Password </label>
+          <h1>SIGN IN</h1>
 
-      <input
-        id="password"
-        name="password"
-        type="password"
-        [(ngModel)]="password"
-        autocomplete="current-password"
-        required
-      />
-    </div>
+          <p>Enter your credentials to access your account</p>
+        </div>
 
-    @if (errorMessage) {
-      <p class="error">
-        {{ errorMessage }}
-      </p>
-    }
+        <div class="login-form-wrapper">
+          <div class="form-header">
+            <span>ACCOUNT LOGIN</span>
+            <span class="form-index">01 / 02</span>
+          </div>
 
-    <button type="submit" [disabled]="isLoading">
-      {{ isLoading ? 'Logging in...' : 'Login' }}
-    </button>
-  </form>
-</section>
+          <form class="login-form" (ngSubmit)="onSubmit()" novalidate>
+            <div class="field" [class.invalid]="errorMessage">
+              <label for="username">
+                <span>01.</span>
+                USERNAME
+              </label>
+
+              <input
+                id="username"
+                name="username"
+                type="text"
+                [(ngModel)]="username"
+                autocomplete="username"
+                placeholder="Enter your username"
+                required
+                [disabled]="isLoading"
+              />
+            </div>
+
+            <div class="field" [class.invalid]="errorMessage">
+              <label for="password">
+                <span>02.</span>
+                PASSWORD
+              </label>
+
+              <input
+                id="password"
+                name="password"
+                type="password"
+                [(ngModel)]="password"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                required
+                [disabled]="isLoading"
+              />
+            </div>
+
+            @if (errorMessage) {
+              <div class="login-error" role="alert" aria-live="polite">
+                <span class="login-error__line"></span>
+
+                <span>{{ errorMessage }}</span>
+              </div>
+            }
+
+            <button
+              type="submit"
+              class="login-button"
+              [class.is-loading]="isLoading"
+              [disabled]="isLoading"
+            >
+              @if (!isLoading) {
+                <span>SIGN IN</span>
+
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 12h13M13 6l6 6-6 6" />
+                </svg>
+              }
+
+              @if (isLoading) {
+                <span class="loading-content">
+                  <span>AUTHENTICATING</span>
+
+                  <span class="loading-dots" aria-hidden="true">
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                  </span>
+                </span>
+              }
+            </button>
+          </form>
+
+          <div class="login-register">
+            <span class="login-register__label"> NEW TO AMASIA? </span>
+
+            <a routerLink="/register" class="login-register__link">
+              CREATE ACCOUNT
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <app-footer></app-footer>
+</div>
