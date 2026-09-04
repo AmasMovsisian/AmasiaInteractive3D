@@ -78,4 +78,8 @@ html[data-theme='dark'] {
       transparent 100%
     ),
     linear-gradient(135deg, #292929 0%, #191919 42%, #080808 100%);
+
+    .settings-icon {
+  background-image: url('/icons/settings_dark.png');
+}
 }

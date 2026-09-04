@@ -19,4 +19,11 @@ export interface User {
   id: number;
   username: string;
   email: string;
+  profile_image: string | null;
+}
+
+export interface ChangePasswordRequest {
+  old_password: string;
+  new_password: string;
+  new_password2: string;
 }

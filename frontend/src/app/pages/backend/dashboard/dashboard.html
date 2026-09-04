@@ -1,60 +1,67 @@
 <section class="dashboard">
-  <header class="dashboard-header">
-    <h1>My Account</h1>
+  <app-nav></app-nav>
 
-    <button type="button" (click)="logout()">Logout</button>
-  </header>
+  <main class="dashboard-main">
+    @if (isLoading) {
+      <section class="dashboard-loading">
+        <div class="loading-line"></div>
+        <span>LOADING ACCOUNT</span>
+      </section>
+    }
 
-  @if (isLoading) {
-    <p>Loading your account...</p>
-  }
+    @if (errorMessage) {
+      <section class="dashboard-error">
+        <span class="status-dot"></span>
+        <div>
+          <span class="error-label">ACCOUNT ERROR</span>
+          <p>{{ errorMessage }}</p>
+        </div>
+      </section>
+    }
 
-  @if (errorMessage) {
-    <p class="error">
-      {{ errorMessage }}
-    </p>
-  }
+    @if (user; as currentUser) {
+      <section class="account-hero">
+        <div class="hero-eyebrow">
+          <span></span>
+          AMASIA / PRIVATE ACCOUNT
+          <span></span>
+        </div>
 
-  @if (user) {
-    <section class="profile">
-      <div class="profile-image">
-        <span>
-          {{ user.username.charAt(0).toUpperCase() }}
-        </span>
-      </div>
+        <div class="hero-heading">
+          <div>
+            <span class="hero-overline">WELCOME BACK</span>
+            <h1>{{ currentUser.username }}</h1>
+          </div>
+        </div>
 
-      <div class="profile-info">
-        <h2>{{ user.username }}</h2>
-        <p>{{ user.email }}</p>
-      </div>
-    </section>
+        <p class="hero-description">
+          Your personal AMASIA space<br />
+          Manage your profile and account settings
+        </p>
+      </section>
 
-    <section class="dashboard-section">
-      <h2>Order History</h2>
+      <section class="account-grid">
+        <app-profile-card
+          [user]="currentUser"
+          [profileImageUrl]="profileImageUrl"
+          (openSettings)="openProfileSettings()"
+          (profileImageError)="onProfileImageError($event)"
+        ></app-profile-card>
 
-      <p>Your orders will appear here.</p>
-    </section>
+        <app-orders-card></app-orders-card>
+      </section>
 
-    <section class="dashboard-section">
-      <h2>Products</h2>
-
-      <div class="products">
-        <article class="product">
-          <h3>6-Pack</h3>
-
-          <p>Add a 6-pack to your cart.</p>
-
-          <button type="button">Add to Cart</button>
-        </article>
-
-        <article class="product">
-          <h3>12-Pack</h3>
-
-          <p>Add a 12-pack to your cart.</p>
-
-          <button type="button">Add to Cart</button>
-        </article>
-      </div>
-    </section>
-  }
+      <div class="signature-line"></div>
+    }
+  </main>
 </section>
+
+@if (isProfileSettingsOpen && user; as currentUser) {
+  <app-profile-settings-dialog
+    [user]="currentUser"
+    (close)="closeProfileSettings()"
+    (userUpdated)="onUserUpdated($event)"
+  ></app-profile-settings-dialog>
+}
+
+<app-footer></app-footer>

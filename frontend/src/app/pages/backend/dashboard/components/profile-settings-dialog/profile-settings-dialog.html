@@ -1,0 +1,259 @@
+<div class="profile-settings-overlay" role="presentation" (click)="closeDialog()">
+  <section
+    class="profile-settings-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="profile-settings-title"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="profile-settings-header">
+      <div>
+        <span class="profile-settings-eyebrow">AMASIA / ACCOUNT</span>
+
+        <h2 id="profile-settings-title">
+          PROFILE<br />
+          <em>SETTINGS</em>
+        </h2>
+      </div>
+
+      <button
+        type="button"
+        class="profile-settings-close"
+        aria-label="Close profile settings"
+        [disabled]="isUpdatingProfile || isImageCropOpen"
+        (click)="closeDialog()"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="profile-settings-line"></div>
+
+    <div class="profile-settings-list">
+      <div class="profile-setting-row profile-image-setting">
+        <div class="setting-main">
+          <span class="setting-index">01</span>
+
+          <div class="setting-preview">
+            <div class="setting-avatar">
+              @if (user.profile_image) {
+                <img
+                  [src]="getProfileImageUrl(user.profile_image)"
+                  [alt]="user.username"
+                  (error)="onProfileImageError($event)"
+                />
+              } @else {
+                <span>{{ user.username.charAt(0).toUpperCase() }}</span>
+              }
+            </div>
+
+            <div class="setting-copy">
+              <span class="setting-label">PROFILE IMAGE</span>
+
+              <strong>
+                @if (user.profile_image) {
+                  IMAGE SET
+                } @else {
+                  NO IMAGE
+                }
+              </strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-actions">
+          <button
+            type="button"
+            class="setting-action"
+            [disabled]="isUpdatingProfile || isImageCropOpen"
+            (click)="openImageCrop()"
+          >
+            <span>
+              @if (isUpdatingProfile) {
+                UPLOADING
+              } @else if (user.profile_image) {
+                CHANGE
+              } @else {
+                ADD
+              }
+            </span>
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h13M13 6l6 6-6 6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="profile-setting-row">
+        <div class="setting-main">
+          <span class="setting-index">02</span>
+
+          <div class="setting-copy">
+            <span class="setting-label">USERNAME</span>
+
+            @if (editingSetting === 'username') {
+              <input
+                class="setting-input"
+                type="text"
+                autocomplete="username"
+                [(ngModel)]="usernameEditValue"
+                maxlength="10"
+                [disabled]="isUpdatingProfile"
+                (keydown.enter)="saveUsername()"
+                (keydown.escape)="cancelSettingEdit()"
+              />
+            } @else {
+              <strong>{{ user.username }}</strong>
+            }
+          </div>
+        </div>
+
+        <div class="setting-actions">
+          @if (editingSetting === 'username') {
+            <button
+              type="button"
+              class="setting-action setting-action-secondary"
+              [disabled]="isUpdatingProfile"
+              (click)="cancelSettingEdit()"
+            >
+              <span>CANCEL</span>
+            </button>
+
+            <button
+              type="button"
+              class="setting-action"
+              [disabled]="isUpdatingProfile"
+              (click)="saveUsername()"
+            >
+              <span>
+                @if (isUpdatingProfile) {
+                  SAVING
+                } @else {
+                  SAVE
+                }
+              </span>
+
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6" />
+              </svg>
+            </button>
+          } @else {
+            <button type="button" class="setting-action" (click)="editName()">
+              <span>EDIT</span>
+
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6" />
+              </svg>
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="profile-setting-row password-setting-row">
+        <div class="setting-main">
+          <span class="setting-index">03</span>
+
+          <div class="setting-copy">
+            <span class="setting-label">PASSWORD</span>
+
+            @if (editingSetting === 'password') {
+              <div class="password-fields">
+                <input
+                  class="setting-input"
+                  type="password"
+                  autocomplete="current-password"
+                  placeholder="CURRENT PASSWORD"
+                  [(ngModel)]="passwordForm.currentPassword"
+                  [disabled]="isUpdatingProfile"
+                />
+
+                <input
+                  class="setting-input"
+                  type="password"
+                  autocomplete="new-password"
+                  placeholder="NEW PASSWORD"
+                  [(ngModel)]="passwordForm.newPassword"
+                  [disabled]="isUpdatingProfile"
+                />
+
+                <input
+                  class="setting-input"
+                  type="password"
+                  autocomplete="new-password"
+                  placeholder="CONFIRM PASSWORD"
+                  [(ngModel)]="passwordForm.confirmPassword"
+                  [disabled]="isUpdatingProfile"
+                />
+              </div>
+            } @else {
+              <strong class="password-mask">••••••••••</strong>
+            }
+          </div>
+        </div>
+
+        <div class="setting-actions">
+          @if (editingSetting === 'password') {
+            <button
+              type="button"
+              class="setting-action setting-action-secondary"
+              [disabled]="isUpdatingProfile"
+              (click)="cancelSettingEdit()"
+            >
+              <span>CANCEL</span>
+            </button>
+
+            <button
+              type="button"
+              class="setting-action"
+              [disabled]="isUpdatingProfile"
+              (click)="savePassword()"
+            >
+              <span>
+                @if (isUpdatingProfile) {
+                  SAVING
+                } @else {
+                  SAVE
+                }
+              </span>
+
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6" />
+              </svg>
+            </button>
+          } @else {
+            <button type="button" class="setting-action" (click)="editPassword()">
+              <span>CHANGE</span>
+
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6" />
+              </svg>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    @if (profileUpdateMessage) {
+      <div class="profile-update-message" [class.profile-update-error]="profileUpdateError">
+        <span class="status-dot"></span>
+        <span>{{ profileUpdateMessage }}</span>
+      </div>
+    }
+
+    <div class="profile-settings-footer">
+      <span>ACCOUNT SECURITY / PRIVATE</span>
+      <span>AMASIA</span>
+    </div>
+  </section>
+</div>
+
+@if (isImageCropOpen) {
+  <app-image-crop-modal
+    [user]="user"
+    (close)="closeImageCrop()"
+    (imageUploaded)="onImageUploaded($event)"
+  ></app-image-crop-modal>
+}

@@ -1,0 +1,45 @@
+<article class="profile-card glass-card">
+  <div class="card-header">
+    <span>01. PROFILE</span>
+
+    <div class="profile-card-actions">
+      <span class="card-status">
+        <i></i>
+        ACTIVE
+      </span>
+
+      <button
+        type="button"
+        class="profile-settings-button"
+        aria-label="Open profile settings"
+        (click)="openProfileSettings()"
+      >
+        <span class="settings-icon" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="profile-content">
+    <div class="profile-image">
+      @if (profileImageUrl) {
+        <img [src]="profileImageUrl" [alt]="user.username" (error)="onProfileImageError($event)" />
+      } @else {
+        <span>{{ user.username.charAt(0).toUpperCase() }}</span>
+      }
+    </div>
+
+    <div class="profile-info">
+      <span class="profile-label">ACCOUNT HOLDER</span>
+      <h2>{{ user.username }}</h2>
+
+      <a [href]="'mailto:' + user.email">
+        {{ user.email }}
+      </a>
+    </div>
+  </div>
+
+  <div class="profile-footer">
+    <span>MEMBER ACCESS</span>
+    <strong>STANDARD</strong>
+  </div>
+</article>

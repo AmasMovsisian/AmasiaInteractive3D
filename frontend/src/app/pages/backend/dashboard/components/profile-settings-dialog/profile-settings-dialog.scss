@@ -1,0 +1,649 @@
+:host {
+  display: block;
+}
+
+.profile-settings-overlay {
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  background: color-mix(in srgb, var(--bg-primary) 48%, transparent);
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  animation: profileOverlayIn 250ms ease forwards;
+}
+
+.profile-settings-dialog {
+  position: relative;
+  z-index: 10000;
+  width: min(680px, 100%);
+  max-height: calc(100vh - 60px);
+  overflow: auto;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 18%, transparent);
+  border-radius: 16px;
+  background:
+    radial-gradient(
+      ellipse 70% 50% at 50% 0%,
+      color-mix(in srgb, var(--text-primary) 5%, transparent),
+      transparent 70%
+    ),
+    color-mix(in srgb, var(--bg-glass) 97%, var(--bg-primary));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--text-primary) 15%, transparent),
+    0 35px 100px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(30px) saturate(140%);
+  -webkit-backdrop-filter: blur(30px) saturate(140%);
+  animation: profileDialogIn 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text-primary) 20%, transparent) transparent;
+}
+
+.profile-settings-dialog::-webkit-scrollbar {
+  width: 5px;
+}
+
+.profile-settings-dialog::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.profile-settings-dialog::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--text-primary) 20%, transparent);
+  border-radius: 20px;
+}
+
+.profile-settings-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 38px 42px 32px;
+}
+
+.profile-settings-eyebrow {
+  display: block;
+  margin-bottom: 18px;
+  font-family: var(--font-heading);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+}
+
+.profile-settings-header h2 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(38px, 6vw, 58px);
+  font-weight: 700;
+  line-height: 0.88;
+  letter-spacing: -0.045em;
+}
+
+.profile-settings-header h2 em {
+  font-style: normal;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.profile-settings-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    transform 300ms ease,
+    color 250ms ease,
+    border-color 250ms ease,
+    background-color 250ms ease,
+    opacity 250ms ease;
+}
+
+.profile-settings-close:hover:not(:disabled) {
+  transform: rotate(90deg);
+  color: var(--text-primary);
+  border-color: color-mix(in srgb, var(--text-primary) 30%, transparent);
+  background: color-mix(in srgb, var(--text-primary) 5%, transparent);
+}
+
+.profile-settings-close:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.profile-settings-close svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.profile-settings-line {
+  width: calc(100% - 84px);
+  height: 1px;
+  margin: 0 42px;
+  background: var(--border);
+}
+
+.profile-settings-list {
+  padding: 6px 42px 18px;
+}
+
+.profile-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 25px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.setting-main {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  min-width: 0;
+}
+
+.setting-index {
+  width: 28px;
+  flex-shrink: 0;
+  font-family: var(--font-heading);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  opacity: 0.55;
+}
+
+.setting-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.setting-label {
+  font-family: var(--font-heading);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--text-muted);
+}
+
+.setting-copy strong {
+  overflow: hidden;
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-image-setting {
+  padding-top: 26px;
+}
+
+.setting-preview {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.setting-avatar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 24%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
+}
+
+.setting-avatar::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  z-index: 2;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.setting-avatar img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.setting-avatar span {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.setting-input {
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  padding: 9px 12px;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 16%, transparent);
+  border-radius: 8px;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition:
+    border-color 250ms ease,
+    background-color 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.setting-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.65;
+}
+
+.setting-input:hover {
+  border-color: color-mix(in srgb, var(--text-primary) 24%, transparent);
+}
+
+.setting-input:focus {
+  border-color: color-mix(in srgb, var(--text-primary) 40%, transparent);
+  background: color-mix(in srgb, var(--text-primary) 6%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--text-primary) 5%, transparent);
+}
+
+.setting-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.password-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: min(340px, 100%);
+}
+
+.password-mask {
+  letter-spacing: 0.22em;
+  opacity: 0.65;
+}
+
+.setting-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.setting-action {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  min-width: 105px;
+  min-height: 40px;
+  flex-shrink: 0;
+  padding: 9px 12px;
+  border: 1px solid var(--button-border);
+  border-radius: 9px;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--button-bg);
+  color: var(--button-text);
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  font-family: var(--font-heading);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  line-height: 1;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    opacity 200ms ease;
+}
+
+.setting-action:hover:not(:disabled) {
+  transform: none;
+  background: var(--button-hover-bg);
+  color: var(--button-hover-text);
+  border-color: var(--button-hover-border);
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+}
+
+.setting-action:focus-visible {
+  border-color: var(--button-hover-border);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--text-primary) 8%, transparent);
+}
+
+.setting-action:active:not(:disabled) {
+  transform: none;
+  box-shadow: none;
+  opacity: 0.85;
+}
+
+.setting-action:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+.setting-action svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  pointer-events: none;
+  transition: none;
+}
+
+.setting-action:hover:not(:disabled) svg {
+  transform: none;
+}
+
+.setting-action-secondary {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: var(--border);
+}
+
+.setting-action-secondary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
+  color: var(--text-primary);
+  border-color: color-mix(in srgb, var(--text-primary) 20%, transparent);
+}
+
+.setting-action[type='button'],
+.setting-action[type='submit'] {
+  font-family: var(--font-heading);
+}
+
+.setting-action input[type='file'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.profile-update-message {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin: 0 42px 4px;
+  padding: 13px 15px;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 12%, transparent);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--text-primary) 3%, transparent);
+  color: var(--text-muted);
+  font-family: var(--font-heading);
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+  animation: profileMessageIn 300ms ease forwards;
+}
+
+.profile-update-message .status-dot {
+  width: 5px;
+  height: 5px;
+  margin: 0;
+  background: currentColor;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.profile-update-error {
+  border-color: rgba(216, 59, 59, 0.25);
+  color: #d83b3b;
+}
+
+.profile-update-error .status-dot {
+  background: #d83b3b;
+  box-shadow: 0 0 10px rgba(216, 59, 59, 0.45);
+}
+
+.profile-settings-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 21px 42px 26px;
+  font-family: var(--font-heading);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+}
+
+.profile-settings-footer span:last-child {
+  color: var(--text-primary);
+  opacity: 0.55;
+}
+
+@keyframes profileMessageIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes profileOverlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes profileDialogIn {
+  from {
+    opacity: 0;
+    transform: translateY(25px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes profileDialogMobileIn {
+  from {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 700px) {
+  .profile-settings-overlay {
+    align-items: flex-end;
+    padding: 12px;
+    background: color-mix(in srgb, var(--bg-primary) 55%, transparent);
+  }
+  .profile-settings-dialog {
+    width: 100%;
+    max-height: calc(100vh - 24px);
+    border-radius: 16px;
+    animation-name: profileDialogMobileIn;
+  }
+  .profile-settings-header {
+    padding: 30px 24px 26px;
+  }
+  .profile-settings-header h2 {
+    font-size: 42px;
+  }
+  .profile-settings-close {
+    width: 38px;
+    height: 38px;
+  }
+  .profile-settings-line {
+    width: calc(100% - 48px);
+    margin: 0 24px;
+  }
+  .profile-settings-list {
+    padding: 4px 24px 10px;
+  }
+  .profile-setting-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+    padding: 23px 0;
+  }
+  .setting-main {
+    width: 100%;
+  }
+  .setting-copy {
+    max-width: calc(100% - 50px);
+  }
+  .setting-copy strong {
+    max-width: 100%;
+    font-size: 16px;
+  }
+  .setting-actions {
+    width: 100%;
+  }
+  .setting-action {
+    flex: 1;
+  }
+  .setting-preview {
+    max-width: 100%;
+  }
+  .setting-avatar {
+    width: 46px;
+    height: 46px;
+  }
+  .password-fields {
+    width: 100%;
+  }
+  .profile-update-message {
+    margin-right: 24px;
+    margin-left: 24px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .profile-settings-footer {
+    padding: 19px 24px 24px;
+    font-size: 8px;
+  }
+}
+
+@media (max-width: 420px) {
+  .profile-settings-overlay {
+    padding: 8px;
+  }
+  .profile-settings-dialog {
+    max-height: calc(100vh - 16px);
+    border-radius: 14px;
+  }
+  .profile-settings-header {
+    padding: 26px 20px 23px;
+  }
+  .profile-settings-header h2 {
+    font-size: 38px;
+  }
+  .profile-settings-close {
+    width: 36px;
+    height: 36px;
+  }
+  .profile-settings-line {
+    width: calc(100% - 40px);
+    margin: 0 20px;
+  }
+  .profile-settings-list {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+  .profile-settings-footer {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+  .profile-update-message {
+    margin-right: 20px;
+    margin-left: 20px;
+  }
+  .setting-main {
+    gap: 16px;
+  }
+  .setting-index {
+    width: 24px;
+  }
+  .setting-preview {
+    gap: 12px;
+  }
+  .setting-avatar {
+    width: 42px;
+    height: 42px;
+  }
+  .setting-avatar span {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-settings-overlay,
+  .profile-settings-dialog {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

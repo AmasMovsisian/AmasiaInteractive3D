@@ -1,0 +1,132 @@
+<div class="image-crop-overlay" role="presentation" (click)="closeModal()">
+  <section
+    class="image-crop-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="image-crop-title"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="image-crop-header">
+      <div>
+        <span class="image-crop-eyebrow">AMASIA / PROFILE</span>
+        <h2 id="image-crop-title">
+          ADJUST<br />
+          <em>IMAGE</em>
+        </h2>
+      </div>
+
+      <button
+        type="button"
+        class="profile-settings-close"
+        aria-label="Close image editor"
+        [disabled]="isUpdatingProfile"
+        (click)="closeModal()"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="profile-settings-line"></div>
+
+    <input
+      #fileInput
+      type="file"
+      accept="image/jpeg,image/png,image/webp"
+      hidden
+      (change)="onFileSelected($event)"
+    />
+
+    <div
+      class="image-crop-stage"
+      #cropStage
+      (pointerdown)="onPointerDown($event)"
+      (pointermove)="onPointerMove($event)"
+      (pointerup)="onPointerUp($event)"
+      (pointercancel)="onPointerUp($event)"
+      (pointerleave)="onPointerUp($event)"
+    >
+      <div class="image-crop-image-wrap">
+        @if (cropImageUrl) {
+          <img
+            #cropImage
+            class="image-crop-image"
+            [src]="cropImageUrl"
+            alt="Profile image preview"
+            draggable="false"
+            [style.transform]="cropTransform"
+          />
+        }
+      </div>
+
+      <div class="image-crop-mask">
+        <div class="image-crop-circle"></div>
+      </div>
+
+      <div class="image-crop-hint">DRAG TO POSITION</div>
+    </div>
+
+    <div class="image-crop-controls">
+      <div class="image-crop-control-header">
+        <span>ZOOM</span>
+        <span>{{ cropZoomPercent }}%</span>
+      </div>
+
+      <div class="image-crop-slider-row">
+        <span class="crop-slider-icon">−</span>
+
+        <input
+          class="image-crop-slider"
+          type="range"
+          min="100"
+          max="300"
+          step="1"
+          [value]="cropZoomPercent"
+          (input)="onZoomChange($event)"
+          [disabled]="isUpdatingProfile"
+          aria-label="Image zoom"
+        />
+
+        <span class="crop-slider-icon">+</span>
+      </div>
+
+      <p class="image-crop-help">Drag the image to choose what appears inside the circle.</p>
+    </div>
+
+    <div class="image-crop-actions">
+      <button
+        type="button"
+        class="setting-action setting-action-secondary"
+        [disabled]="isUpdatingProfile"
+        (click)="closeModal()"
+      >
+        <span>CANCEL</span>
+      </button>
+
+      <button
+        type="button"
+        class="setting-action"
+        [disabled]="isUpdatingProfile"
+        (click)="applyCrop()"
+      >
+        <span>
+          @if (isUpdatingProfile) {
+            UPLOADING
+          } @else {
+            APPLY IMAGE
+          }
+        </span>
+
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12h13M13 6l6 6-6 6" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="profile-settings-footer">
+      <span>IMAGE / POSITION &amp; SCALE</span>
+      <span>AMASIA</span>
+    </div>
+  </section>
+</div>

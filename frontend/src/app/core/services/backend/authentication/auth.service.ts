@@ -4,7 +4,13 @@ import { Observable, BehaviorSubject, tap, of, catchError, map, finalize } from 
 
 import { environment } from '../../../../../environments/environment';
 
-import { LoginRequest, LoginResponse, RegisterRequest, User } from './models/auth.models';
+import {
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  User,
+  ChangePasswordRequest,
+} from './models/auth.models';
 
 @Injectable({
   providedIn: 'root',
@@ -47,6 +53,28 @@ export class AuthService {
     );
   }
 
+  updateProfile(data: { username?: string; profile_image?: File }): Observable<User> {
+    const formData = new FormData();
+
+    if (data.username !== undefined) {
+      formData.append('username', data.username);
+    }
+
+    if (data.profile_image) {
+      formData.append('profile_image', data.profile_image);
+    }
+
+    return this.http.patch<User>(`${this.apiUrl}/me/`, formData).pipe(
+      tap((user) => {
+        this.userSubject.next(user);
+      }),
+    );
+  }
+
+  changePassword(data: ChangePasswordRequest): Observable<{ detail: string }> {
+    return this.http.post<{ detail: string }>(`${this.apiUrl}/change-password/`, data);
+  }
+
   initializeAuthentication(): Observable<boolean> {
     if (!this.getAccessToken()) {
       this.userSubject.next(null);
@@ -72,6 +100,7 @@ export class AuthService {
 
   logout(): Observable<void> {
     const refreshToken = this.getRefreshToken();
+
     this.userSubject.next(null);
     this.authState.set(false);
 
@@ -100,6 +129,7 @@ export class AuthService {
 
     if (!refreshToken) {
       this.clearSession();
+
       return new Observable((subscriber) => {
         subscriber.error(new Error('No refresh token available.'));
       });
