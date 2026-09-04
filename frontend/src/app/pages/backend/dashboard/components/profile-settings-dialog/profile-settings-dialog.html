@@ -9,13 +9,11 @@
     <div class="profile-settings-header">
       <div>
         <span class="profile-settings-eyebrow">AMASIA / ACCOUNT</span>
-
         <h2 id="profile-settings-title">
           PROFILE<br />
           <em>SETTINGS</em>
         </h2>
       </div>
-
       <button
         type="button"
         class="profile-settings-close"
@@ -28,14 +26,11 @@
         </svg>
       </button>
     </div>
-
     <div class="profile-settings-line"></div>
-
     <div class="profile-settings-list">
       <div class="profile-setting-row profile-image-setting">
         <div class="setting-main">
           <span class="setting-index">01</span>
-
           <div class="setting-preview">
             <div class="setting-avatar">
               @if (user.profile_image) {
@@ -48,10 +43,8 @@
                 <span>{{ user.username.charAt(0).toUpperCase() }}</span>
               }
             </div>
-
             <div class="setting-copy">
               <span class="setting-label">PROFILE IMAGE</span>
-
               <strong>
                 @if (user.profile_image) {
                   IMAGE SET
@@ -62,7 +55,6 @@
             </div>
           </div>
         </div>
-
         <div class="setting-actions">
           <button
             type="button"
@@ -79,21 +71,17 @@
                 ADD
               }
             </span>
-
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M5 12h13M13 6l6 6-6 6" />
             </svg>
           </button>
         </div>
       </div>
-
       <div class="profile-setting-row">
         <div class="setting-main">
           <span class="setting-index">02</span>
-
-          <div class="setting-copy">
+          <div class="setting-copy" [class.is-editing]="editingSetting === 'username'">
             <span class="setting-label">USERNAME</span>
-
             @if (editingSetting === 'username') {
               <input
                 class="setting-input"
@@ -110,7 +98,6 @@
             }
           </div>
         </div>
-
         <div class="setting-actions">
           @if (editingSetting === 'username') {
             <button
@@ -121,7 +108,6 @@
             >
               <span>CANCEL</span>
             </button>
-
             <button
               type="button"
               class="setting-action"
@@ -135,7 +121,6 @@
                   SAVE
                 }
               </span>
-
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M5 12h13M13 6l6 6-6 6" />
               </svg>
@@ -143,7 +128,6 @@
           } @else {
             <button type="button" class="setting-action" (click)="editName()">
               <span>EDIT</span>
-
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M5 12h13M13 6l6 6-6 6" />
               </svg>
@@ -151,14 +135,11 @@
           }
         </div>
       </div>
-
       <div class="profile-setting-row password-setting-row">
         <div class="setting-main">
           <span class="setting-index">03</span>
-
           <div class="setting-copy">
             <span class="setting-label">PASSWORD</span>
-
             @if (editingSetting === 'password') {
               <div class="password-fields">
                 <input
@@ -169,7 +150,6 @@
                   [(ngModel)]="passwordForm.currentPassword"
                   [disabled]="isUpdatingProfile"
                 />
-
                 <input
                   class="setting-input"
                   type="password"
@@ -178,7 +158,6 @@
                   [(ngModel)]="passwordForm.newPassword"
                   [disabled]="isUpdatingProfile"
                 />
-
                 <input
                   class="setting-input"
                   type="password"
@@ -193,7 +172,6 @@
             }
           </div>
         </div>
-
         <div class="setting-actions">
           @if (editingSetting === 'password') {
             <button
@@ -204,7 +182,6 @@
             >
               <span>CANCEL</span>
             </button>
-
             <button
               type="button"
               class="setting-action"
@@ -218,7 +195,6 @@
                   SAVE
                 }
               </span>
-
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M5 12h13M13 6l6 6-6 6" />
               </svg>
@@ -226,7 +202,6 @@
           } @else {
             <button type="button" class="setting-action" (click)="editPassword()">
               <span>CHANGE</span>
-
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M5 12h13M13 6l6 6-6 6" />
               </svg>
@@ -235,21 +210,18 @@
         </div>
       </div>
     </div>
-
     @if (profileUpdateMessage) {
       <div class="profile-update-message" [class.profile-update-error]="profileUpdateError">
         <span class="status-dot"></span>
         <span>{{ profileUpdateMessage }}</span>
       </div>
     }
-
     <div class="profile-settings-footer">
       <span>ACCOUNT SECURITY / PRIVATE</span>
       <span>AMASIA</span>
     </div>
   </section>
 </div>
-
 @if (isImageCropOpen) {
   <app-image-crop-modal
     [user]="user"

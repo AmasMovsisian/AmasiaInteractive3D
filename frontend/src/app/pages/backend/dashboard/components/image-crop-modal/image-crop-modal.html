@@ -14,7 +14,6 @@
           <em>IMAGE</em>
         </h2>
       </div>
-
       <button
         type="button"
         class="profile-settings-close"
@@ -27,9 +26,7 @@
         </svg>
       </button>
     </div>
-
     <div class="profile-settings-line"></div>
-
     <input
       #fileInput
       type="file"
@@ -37,7 +34,6 @@
       hidden
       (change)="onFileSelected($event)"
     />
-
     <div
       class="image-crop-stage"
       #cropStage
@@ -59,23 +55,18 @@
           />
         }
       </div>
-
       <div class="image-crop-mask">
         <div class="image-crop-circle"></div>
       </div>
-
       <div class="image-crop-hint">DRAG TO POSITION</div>
     </div>
-
     <div class="image-crop-controls">
       <div class="image-crop-control-header">
         <span>ZOOM</span>
         <span>{{ cropZoomPercent }}%</span>
       </div>
-
       <div class="image-crop-slider-row">
         <span class="crop-slider-icon">−</span>
-
         <input
           class="image-crop-slider"
           type="range"
@@ -87,13 +78,10 @@
           [disabled]="isUpdatingProfile"
           aria-label="Image zoom"
         />
-
         <span class="crop-slider-icon">+</span>
       </div>
-
       <p class="image-crop-help">Drag the image to choose what appears inside the circle.</p>
     </div>
-
     <div class="image-crop-actions">
       <button
         type="button"
@@ -103,7 +91,6 @@
       >
         <span>CANCEL</span>
       </button>
-
       <button
         type="button"
         class="setting-action"
@@ -117,13 +104,11 @@
             APPLY IMAGE
           }
         </span>
-
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M5 12h13M13 6l6 6-6 6" />
         </svg>
       </button>
     </div>
-
     <div class="profile-settings-footer">
       <span>IMAGE / POSITION &amp; SCALE</span>
       <span>AMASIA</span>

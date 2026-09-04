@@ -1,7 +1,6 @@
 :host {
   display: block;
 }
-
 .profile-settings-overlay {
   position: fixed;
   z-index: 9999;
@@ -9,18 +8,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 30px;
-  background: color-mix(in srgb, var(--bg-primary) 48%, transparent);
-  backdrop-filter: blur(18px) saturate(120%);
-  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  padding: 24px;
+  background: color-mix(in srgb, var(--bg-primary) 72%, transparent);
+  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
   animation: profileOverlayIn 250ms ease forwards;
 }
-
 .profile-settings-dialog {
   position: relative;
   z-index: 10000;
-  width: min(680px, 100%);
-  max-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  width: min(760px, 100%);
+  max-height: calc(100vh - 48px);
   overflow: auto;
   border: 1px solid color-mix(in srgb, var(--text-primary) 18%, transparent);
   border-radius: 16px;
@@ -33,66 +33,59 @@
     color-mix(in srgb, var(--bg-glass) 97%, var(--bg-primary));
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, var(--text-primary) 15%, transparent),
-    0 35px 100px rgba(0, 0, 0, 0.25);
+    0 35px 100px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(30px) saturate(140%);
   -webkit-backdrop-filter: blur(30px) saturate(140%);
   animation: profileDialogIn 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, var(--text-primary) 20%, transparent) transparent;
 }
-
 .profile-settings-dialog::-webkit-scrollbar {
   width: 5px;
 }
-
 .profile-settings-dialog::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .profile-settings-dialog::-webkit-scrollbar-thumb {
   background: color-mix(in srgb, var(--text-primary) 20%, transparent);
   border-radius: 20px;
 }
-
 .profile-settings-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 30px;
-  padding: 38px 42px 32px;
+  gap: 24px;
+  padding: 32px 36px 26px;
 }
-
 .profile-settings-eyebrow {
   display: block;
   margin-bottom: 18px;
   font-family: var(--font-heading);
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  line-height: 1.3;
+  letter-spacing: 0.12em;
   color: var(--text-muted);
 }
-
 .profile-settings-header h2 {
   margin: 0;
   font-family: var(--font-heading);
-  font-size: clamp(38px, 6vw, 58px);
+  font-size: clamp(44px, 6vw, 64px);
   font-weight: 700;
-  line-height: 0.88;
-  letter-spacing: -0.045em;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
 }
-
 .profile-settings-header h2 em {
   font-style: normal;
   font-weight: 400;
   color: var(--text-secondary);
 }
-
 .profile-settings-close {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   flex-shrink: 0;
   padding: 0;
   border: 1px solid var(--border);
@@ -110,40 +103,34 @@
     background-color 250ms ease,
     opacity 250ms ease;
 }
-
 .profile-settings-close:hover:not(:disabled) {
   transform: rotate(90deg);
   color: var(--text-primary);
   border-color: color-mix(in srgb, var(--text-primary) 30%, transparent);
   background: color-mix(in srgb, var(--text-primary) 5%, transparent);
 }
-
 .profile-settings-close:disabled {
   cursor: not-allowed;
   opacity: 0.35;
 }
-
 .profile-settings-close svg {
-  width: 17px;
-  height: 17px;
+  width: 20px;
+  height: 20px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.4;
   stroke-linecap: round;
   pointer-events: none;
 }
-
 .profile-settings-line {
   width: calc(100% - 84px);
   height: 1px;
   margin: 0 42px;
   background: var(--border);
 }
-
 .profile-settings-list {
   padding: 6px 42px 18px;
 }
-
 .profile-setting-row {
   display: flex;
   align-items: center;
@@ -152,39 +139,40 @@
   padding: 25px 0;
   border-bottom: 1px solid var(--border);
 }
-
+.profile-setting-row:last-child {
+  border-bottom: 0;
+}
 .setting-main {
   display: flex;
   align-items: center;
   gap: 22px;
   min-width: 0;
 }
-
 .setting-index {
   width: 28px;
   flex-shrink: 0;
   font-family: var(--font-heading);
-  font-size: 10px;
-  letter-spacing: 0.12em;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
   color: var(--text-muted);
   opacity: 0.55;
 }
-
 .setting-copy {
   display: flex;
   flex-direction: column;
   gap: 8px;
   min-width: 0;
 }
-
 .setting-label {
   font-family: var(--font-heading);
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
   color: var(--text-muted);
 }
-
 .setting-copy strong {
   overflow: hidden;
   color: var(--text-primary);
@@ -195,18 +183,15 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 .profile-image-setting {
   padding-top: 26px;
 }
-
 .setting-preview {
   display: flex;
   align-items: center;
   gap: 16px;
   min-width: 0;
 }
-
 .setting-avatar {
   position: relative;
   display: flex;
@@ -220,7 +205,6 @@
   border-radius: 50%;
   background: color-mix(in srgb, var(--text-primary) 4%, transparent);
 }
-
 .setting-avatar::after {
   content: '';
   position: absolute;
@@ -230,7 +214,6 @@
   border-radius: 50%;
   pointer-events: none;
 }
-
 .setting-avatar img {
   position: relative;
   z-index: 1;
@@ -240,7 +223,6 @@
   border-radius: 50%;
   pointer-events: none;
 }
-
 .setting-avatar span {
   position: relative;
   z-index: 1;
@@ -249,12 +231,11 @@
   font-weight: 500;
   pointer-events: none;
 }
-
 .setting-input {
   width: 100%;
   min-width: 0;
-  height: 40px;
-  padding: 9px 12px;
+  height: 48px;
+  padding: 12px 14px;
   border: 1px solid color-mix(in srgb, var(--text-primary) 16%, transparent);
   border-radius: 8px;
   outline: none;
@@ -263,66 +244,59 @@
   background: color-mix(in srgb, var(--text-primary) 4%, transparent);
   color: var(--text-primary);
   font-family: var(--font-heading);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
+  line-height: 1.2;
   letter-spacing: 0.04em;
   transition:
     border-color 250ms ease,
     background-color 250ms ease,
     box-shadow 250ms ease;
 }
-
 .setting-input::placeholder {
   color: var(--text-muted);
   opacity: 0.65;
 }
-
 .setting-input:hover {
   border-color: color-mix(in srgb, var(--text-primary) 24%, transparent);
 }
-
 .setting-input:focus {
   border-color: color-mix(in srgb, var(--text-primary) 40%, transparent);
   background: color-mix(in srgb, var(--text-primary) 6%, transparent);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--text-primary) 5%, transparent);
 }
-
 .setting-input:disabled {
   cursor: not-allowed;
   opacity: 0.45;
 }
-
 .password-fields {
   display: flex;
   flex-direction: column;
-  gap: 9px;
-  width: min(340px, 100%);
+  gap: 10px;
+  width: min(360px, 100%);
 }
-
 .password-mask {
   letter-spacing: 0.22em;
   opacity: 0.65;
 }
-
 .setting-actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 10px;
   flex-shrink: 0;
 }
-
 .setting-action {
   position: relative;
   z-index: 2;
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
-  min-width: 105px;
-  min-height: 40px;
+  gap: 16px;
+  min-width: 130px;
+  min-height: 48px;
   flex-shrink: 0;
-  padding: 9px 12px;
+  padding: 12px 16px;
   border: 1px solid var(--button-border);
   border-radius: 9px;
   outline: none;
@@ -336,10 +310,10 @@
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   font-family: var(--font-heading);
-  font-size: 9px;
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: 0.13em;
-  line-height: 1;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
   transition:
     background-color 200ms ease,
     color 200ms ease,
@@ -347,7 +321,6 @@
     box-shadow 200ms ease,
     opacity 200ms ease;
 }
-
 .setting-action:hover:not(:disabled) {
   transform: none;
   background: var(--button-hover-bg);
@@ -355,27 +328,23 @@
   border-color: var(--button-hover-border);
   box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
 }
-
 .setting-action:focus-visible {
   border-color: var(--button-hover-border);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--text-primary) 8%, transparent);
 }
-
 .setting-action:active:not(:disabled) {
   transform: none;
   box-shadow: none;
   opacity: 0.85;
 }
-
 .setting-action:disabled {
   cursor: not-allowed;
   pointer-events: none;
   opacity: 0.45;
 }
-
 .setting-action svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
   fill: none;
   stroke: currentColor;
@@ -383,28 +352,23 @@
   pointer-events: none;
   transition: none;
 }
-
 .setting-action:hover:not(:disabled) svg {
   transform: none;
 }
-
 .setting-action-secondary {
   background: transparent;
   color: var(--text-muted);
   border-color: var(--border);
 }
-
 .setting-action-secondary:hover:not(:disabled) {
   background: color-mix(in srgb, var(--text-primary) 4%, transparent);
   color: var(--text-primary);
   border-color: color-mix(in srgb, var(--text-primary) 20%, transparent);
 }
-
 .setting-action[type='button'],
 .setting-action[type='submit'] {
   font-family: var(--font-heading);
 }
-
 .setting-action input[type='file'] {
   position: absolute;
   width: 1px;
@@ -418,7 +382,6 @@
   opacity: 0;
   pointer-events: none;
 }
-
 .profile-update-message {
   display: flex;
   align-items: center;
@@ -430,47 +393,45 @@
   background: color-mix(in srgb, var(--text-primary) 3%, transparent);
   color: var(--text-muted);
   font-family: var(--font-heading);
-  font-size: 12px;
+  font-size: 16px;
+  font-weight: 400;
   line-height: 1.5;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.06em;
   animation: profileMessageIn 300ms ease forwards;
 }
-
 .profile-update-message .status-dot {
   width: 5px;
   height: 5px;
   margin: 0;
+  flex-shrink: 0;
   background: currentColor;
   box-shadow: 0 0 10px currentColor;
 }
-
 .profile-update-error {
   border-color: rgba(216, 59, 59, 0.25);
   color: #d83b3b;
 }
-
 .profile-update-error .status-dot {
   background: #d83b3b;
   box-shadow: 0 0 10px rgba(216, 59, 59, 0.45);
 }
-
 .profile-settings-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 21px 42px 26px;
+  padding: 22px 42px 28px;
   font-family: var(--font-heading);
-  font-size: 9px;
-  letter-spacing: 0.15em;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
   color: var(--text-muted);
 }
-
 .profile-settings-footer span:last-child {
   color: var(--text-primary);
   opacity: 0.55;
 }
-
 @keyframes profileMessageIn {
   from {
     opacity: 0;
@@ -481,7 +442,6 @@
     transform: translateY(0);
   }
 }
-
 @keyframes profileOverlayIn {
   from {
     opacity: 0;
@@ -490,7 +450,6 @@
     opacity: 1;
   }
 }
-
 @keyframes profileDialogIn {
   from {
     opacity: 0;
@@ -501,7 +460,6 @@
     transform: translateY(0) scale(1);
   }
 }
-
 @keyframes profileDialogMobileIn {
   from {
     opacity: 0;
@@ -512,35 +470,48 @@
     transform: translateY(0);
   }
 }
-
+@media (min-width: 701px) {
+  .setting-copy.is-editing .setting-label {
+    display: none;
+  }
+}
 @media (max-width: 700px) {
   .profile-settings-overlay {
-    align-items: flex-end;
-    padding: 12px;
-    background: color-mix(in srgb, var(--bg-primary) 55%, transparent);
+    align-items: center;
+    padding: 10px;
   }
   .profile-settings-dialog {
     width: 100%;
-    max-height: calc(100vh - 24px);
+    max-height: calc(100vh - 20px);
     border-radius: 16px;
     animation-name: profileDialogMobileIn;
   }
   .profile-settings-header {
-    padding: 30px 24px 26px;
+    gap: 18px;
+    padding: 26px 20px 22px;
+  }
+  .profile-settings-eyebrow {
+    margin-bottom: 16px;
+    font-size: 16px;
   }
   .profile-settings-header h2 {
-    font-size: 42px;
+    font-size: 44px;
+    line-height: 0.92;
   }
   .profile-settings-close {
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
+  }
+  .profile-settings-close svg {
+    width: 20px;
+    height: 20px;
   }
   .profile-settings-line {
-    width: calc(100% - 48px);
-    margin: 0 24px;
+    width: calc(100% - 40px);
+    margin: 0 20px;
   }
   .profile-settings-list {
-    padding: 4px 24px 10px;
+    padding: 4px 20px 10px;
   }
   .profile-setting-row {
     align-items: flex-start;
@@ -551,18 +522,29 @@
   .setting-main {
     width: 100%;
   }
+  .setting-index {
+    width: 28px;
+    font-size: 16px;
+  }
   .setting-copy {
     max-width: calc(100% - 50px);
   }
+  .setting-label {
+    font-size: 16px;
+  }
   .setting-copy strong {
     max-width: 100%;
-    font-size: 16px;
+    font-size: 17px;
   }
   .setting-actions {
     width: 100%;
+    gap: 10px;
   }
   .setting-action {
     flex: 1;
+    min-width: 0;
+    min-height: 50px;
+    font-size: 16px;
   }
   .setting-preview {
     max-width: 100%;
@@ -574,57 +556,69 @@
   .password-fields {
     width: 100%;
   }
-  .profile-update-message {
-    margin-right: 24px;
-    margin-left: 24px;
-    font-size: 12px;
-    line-height: 1.5;
-  }
-  .profile-settings-footer {
-    padding: 19px 24px 24px;
-    font-size: 8px;
-  }
-}
-
-@media (max-width: 420px) {
-  .profile-settings-overlay {
-    padding: 8px;
-  }
-  .profile-settings-dialog {
-    max-height: calc(100vh - 16px);
-    border-radius: 14px;
-  }
-  .profile-settings-header {
-    padding: 26px 20px 23px;
-  }
-  .profile-settings-header h2 {
-    font-size: 38px;
-  }
-  .profile-settings-close {
-    width: 36px;
-    height: 36px;
-  }
-  .profile-settings-line {
-    width: calc(100% - 40px);
-    margin: 0 20px;
-  }
-  .profile-settings-list {
-    padding-right: 20px;
-    padding-left: 20px;
-  }
-  .profile-settings-footer {
-    padding-right: 20px;
-    padding-left: 20px;
+  .setting-input {
+    height: 48px;
+    font-size: 16px;
   }
   .profile-update-message {
     margin-right: 20px;
     margin-left: 20px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .profile-settings-footer {
+    padding: 20px 20px 24px;
+    font-size: 16px;
+  }
+}
+@media (max-width: 420px) {
+  .profile-settings-overlay {
+    padding: 6px;
+  }
+  .profile-settings-dialog {
+    max-height: calc(100vh - 12px);
+    border-radius: 14px;
+  }
+  .profile-settings-header {
+    gap: 14px;
+    padding: 22px 16px 20px;
+  }
+  .profile-settings-eyebrow {
+    margin-bottom: 14px;
+    font-size: 16px;
+  }
+  .profile-settings-header h2 {
+    font-size: 40px;
+  }
+  .profile-settings-close {
+    width: 42px;
+    height: 42px;
+  }
+  .profile-settings-line {
+    width: calc(100% - 32px);
+    margin: 0 16px;
+  }
+  .profile-settings-list {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+  .profile-setting-row {
+    gap: 16px;
+    padding: 21px 0;
   }
   .setting-main {
     gap: 16px;
   }
   .setting-index {
     width: 24px;
+    font-size: 14px;
+  }
+  .setting-label {
+    font-size: 14px;
+    letter-spacing: 0.08em;
+  }
+  .setting-copy strong {
+    font-size: 16px;
   }
   .setting-preview {
     gap: 12px;
@@ -636,8 +630,59 @@
   .setting-avatar span {
     font-size: 16px;
   }
+  .setting-actions {
+    gap: 8px;
+  }
+  .setting-action {
+    min-height: 50px;
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+  .setting-action svg {
+    width: 17px;
+    height: 17px;
+  }
+  .setting-input {
+    height: 46px;
+    padding: 11px 12px;
+    font-size: 14px;
+  }
+  .password-fields {
+    gap: 8px;
+  }
+  .profile-update-message {
+    margin-right: 16px;
+    margin-left: 16px;
+    padding: 12px 13px;
+    font-size: 14px;
+  }
+  .profile-settings-footer {
+    gap: 12px;
+    padding: 18px 16px 22px;
+    font-size: 14px;
+  }
 }
-
+@media (max-height: 760px) and (min-width: 701px) {
+  .profile-settings-header {
+    padding-top: 24px;
+    padding-bottom: 20px;
+  }
+  .profile-setting-row {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  .profile-settings-list {
+    padding-top: 4px;
+    padding-bottom: 12px;
+  }
+  .profile-update-message {
+    margin-bottom: 2px;
+  }
+  .profile-settings-footer {
+    padding-top: 18px;
+    padding-bottom: 22px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .profile-settings-overlay,
   .profile-settings-dialog {
@@ -645,5 +690,8 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  .profile-settings-close {
+    transition: none;
   }
 }
