@@ -1,0 +1,66 @@
+from django.urls import path
+from .views import (
+    AddToCartView,
+    CancelOrderView,
+    CartView,
+    CheckoutView,
+    OrderDetailView,
+    OrderListView,
+    ProductDetailView,
+    ProductListView,
+    RemoveCartItemView,
+    UpdateCartItemView,
+)
+
+urlpatterns = [
+    path(
+        "products/",
+        ProductListView.as_view(),
+        name="product-list",
+    ),
+    path(
+        "products/<int:pk>/",
+        ProductDetailView.as_view(),
+        name="product-detail",
+    ),
+    path(
+        "cart/",
+        CartView.as_view(),
+        name="cart",
+    ),
+    path(
+        "cart/add/",
+        AddToCartView.as_view(),
+        name="cart-add",
+    ),
+    path(
+        "cart/items/<int:pk>/",
+        UpdateCartItemView.as_view(),
+        name="cart-update",
+    ),
+    path(
+        "cart/items/<int:pk>/remove/",
+        RemoveCartItemView.as_view(),
+        name="cart-remove",
+    ),
+    path(
+        "checkout/",
+        CheckoutView.as_view(),
+        name="checkout",
+    ),
+    path(
+        "<int:pk>/cancel/",
+        CancelOrderView.as_view(),
+        name="order-cancel",
+    ),
+    path(
+        "",
+        OrderListView.as_view(),
+        name="order-list",
+    ),
+    path(
+        "<int:pk>/",
+        OrderDetailView.as_view(),
+        name="order-detail",
+    ),
+]
