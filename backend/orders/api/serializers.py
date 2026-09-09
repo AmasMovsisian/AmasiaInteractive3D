@@ -1,6 +1,8 @@
 from datetime import timedelta
+
 from django.utils import timezone
 from rest_framework import serializers
+
 from ..models import (
     Cart,
     CartItem,
@@ -74,6 +76,7 @@ class CartSerializer(serializers.ModelSerializer):
         read_only=True,
     )
     total = serializers.SerializerMethodField()
+    total_units = serializers.SerializerMethodField()
 
     class Meta:
         model = Cart
@@ -81,6 +84,7 @@ class CartSerializer(serializers.ModelSerializer):
             "id",
             "items",
             "total",
+            "total_units",
         ]
 
     def get_total(self, obj):
@@ -91,6 +95,23 @@ class CartSerializer(serializers.ModelSerializer):
             ),
             start=0,
         )
+
+    def get_total_units(self, obj):
+        total_units = 0
+
+        for item in obj.items.all():
+            if (
+                item.item_type
+                == CartItem.ItemType.INDIVIDUAL
+            ):
+                total_units += item.quantity
+            else:
+                total_units += (
+                    item.pack_size
+                    * item.quantity
+                )
+
+        return total_units
 
 
 class OrderItemProductSerializer(
@@ -159,24 +180,30 @@ class OrderSerializer(
     def get_status(self, obj):
         if obj.status == Order.Status.CANCELLED:
             return Order.Status.CANCELLED
+
         delivery_date = (
             obj.created_at
             + timedelta(
                 days=self.DELIVERY_DAYS
             )
         )
+
         now = timezone.now()
+
         if now >= delivery_date:
             return Order.Status.DELIVERED
+
         return Order.Status.CONFIRMED
 
     def get_estimated_delivery(self, obj):
         if obj.status == Order.Status.CANCELLED:
             return None
+
         delivery_date = (
             obj.created_at
             + timedelta(
                 days=self.DELIVERY_DAYS
             )
         )
+
         return delivery_date

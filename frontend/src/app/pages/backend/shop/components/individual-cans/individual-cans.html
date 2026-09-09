@@ -1,0 +1,93 @@
+<section class="collection-section">
+  <div class="section-heading">
+    <div class="section-heading-main">
+      <h2>ALL <em>FLAVOURS</em></h2>
+    </div>
+    <p>Prefer individual cans? Build your own selection freely</p>
+  </div>
+  <div class="minimum-notice">
+    <span class="notice-mark">!</span>
+    <div class="notice-copy">
+      <strong>MINIMUM 4 CANS</strong>
+      <p>
+        Individual cans can be mixed freely across all flavours <br />
+        <strong>A minimum of four cans is required when ordering individual cans only!</strong>
+      </p>
+    </div>
+    <span class="notice-count">{{ individualCanCount }} / 4</span>
+  </div>
+  <div class="product-grid">
+    @for (flavor of flavors; track flavor.id) {
+      <article class="product-card glass-card">
+        <div class="product-visual" [style.--flavor-color]="flavor.accent">
+          <span class="product-number">
+            {{ $index + 1 < 10 ? '0' + ($index + 1) : $index + 1 }}
+          </span>
+          <img
+            class="product-image"
+            [src]="'/shop/' + flavorImages[flavor.id]"
+            [alt]="flavor.name"
+          />
+        </div>
+        <div class="product-content">
+          <span class="product-category">{{ flavor.category }}</span>
+          <h3>{{ flavor.name }}</h3>
+          <p>{{ flavor.description }}</p>
+          <div class="product-bottom">
+            <div class="product-price">
+              <strong>€{{ formatPrice(flavor.price) }}</strong>
+              <small>/ CAN</small>
+            </div>
+            <div class="quantity-control">
+              <button
+                type="button"
+                aria-label="Decrease quantity"
+                [disabled]="!individualQuantities[flavor.id]"
+                (click)="decreaseIndividual(flavor.id)"
+              >
+                −
+              </button>
+              <input
+                class="quantity-input"
+                type="number"
+                inputmode="numeric"
+                min="0"
+                [max]="maxQuantityForFlavor(flavor.id)"
+                [value]="individualQuantities[flavor.id] || 0"
+                aria-label="Quantity"
+                (input)="limitQuantityInput(flavor.id, $any($event.target))"
+                (change)="setIndividualQuantity(flavor.id, $any($event.target).value)"
+                (keydown.enter)="setIndividualQuantity(flavor.id, $any($event.target).value)"
+              />
+              <button
+                type="button"
+                aria-label="Increase quantity"
+                [disabled]="
+                  !canAddIndividual ||
+                  maxQuantityForFlavor(flavor.id) <= (individualQuantities[flavor.id] || 0)
+                "
+                (click)="increaseIndividual(flavor.id)"
+              >
+                +
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+    }
+  </div>
+  <div class="collection-footer">
+    <div class="collection-footer-item">
+      <span>INDIVIDUAL ORDERS</span>
+      <strong>4 CANS MINIMUM</strong>
+    </div>
+    <div class="collection-footer-item">
+      <span>MAXIMUM</span>
+      <strong>900 CANS</strong>
+    </div>
+    <div class="collection-footer-item">
+      <span>DELIVERY</span>
+      <strong>FREE</strong>
+    </div>
+  </div>
+</section>

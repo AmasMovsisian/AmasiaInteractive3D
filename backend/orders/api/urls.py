@@ -12,6 +12,8 @@ from .views import (
     UpdateCartItemView,
 )
 
+app_name = 'orders'
+
 urlpatterns = [
     path(
         "products/",

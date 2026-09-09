@@ -1,0 +1,226 @@
+@if (showCart) {
+  <div class="cart-backdrop" aria-hidden="true" (click)="cartClosed.emit()"></div>
+  <aside class="cart-panel" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+    <div class="cart-header">
+      <div>
+        <span>AMASIA / CART</span>
+        <h2 id="cart-title">YOUR <em>SELECTION</em></h2>
+      </div>
+      <button
+        type="button"
+        class="close-button"
+        aria-label="Close cart"
+        (click)="cartClosed.emit()"
+      >
+        ×
+      </button>
+    </div>
+    @if (cart.length === 0) {
+      <div class="cart-empty">
+        <span>00</span>
+        <h3>YOUR CART IS <em>EMPTY</em></h3>
+        <p>Build your pack or select individual cans from the collection.</p>
+        <button type="button" class="button cart-empty-button" (click)="cartClosed.emit()">
+          CONTINUE SHOPPING
+        </button>
+      </div>
+    } @else {
+      <div class="cart-items">
+        @for (item of cart; track item.id) {
+          <article class="cart-item">
+            <div class="cart-item-main">
+              <span class="cart-item-type">{{ item.type }}</span>
+              <h3>{{ item.name }}</h3>
+              @if (item.type === 'PACK') {
+                <span class="cart-item-flavors">
+                  {{ getPackCompositionLabel(item) }} · {{ item.packSize }} CANS
+                </span>
+              }
+            </div>
+            <div class="cart-item-side">
+              <strong>€{{ formatPrice(item.price * item.quantity) }}</strong>
+              <div class="cart-quantity">
+                <button type="button" (click)="decreaseCartItem(item)">−</button>
+                <input
+                  class="cart-quantity-input"
+                  type="text"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  maxlength="3"
+                  [value]="item.quantity"
+                  (input)="onQuantityInput(item, $any($event.target))"
+                  (blur)="onQuantityBlur(item, $any($event.target))"
+                  (keydown.enter)="onQuantityBlur(item, $any($event.target))"
+                  (keydown.escape)="resetQuantityInput(item, $any($event.target))"
+                  aria-label="Quantity"
+                />
+                <button type="button" (click)="increaseCartItem(item)" [disabled]="isAtMaxLimit">
+                  +
+                </button>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+      <div class="cart-summary">
+        @if (cartSavings > 0) {
+          <div class="summary-row savings">
+            <span>PACK SAVINGS</span>
+            <strong>−€{{ formatPrice(cartSavings) }}</strong>
+          </div>
+        }
+        <div class="summary-row">
+          <span>DELIVERY</span>
+          <strong>FREE</strong>
+        </div>
+        <div class="summary-total">
+          <span>TOTAL</span>
+          <strong>€{{ formatPrice(cartTotal) }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>TOTAL CANS</span>
+          <strong>{{ cartCanCount }} / {{ maxTotalCans }}</strong>
+        </div>
+      </div>
+      @if (individualCartBlocked) {
+        <div class="cart-warning">
+          <span>!</span>
+          <p>
+            Add <strong>{{ remainingIndividualCans }}</strong> more can{{
+              remainingIndividualCans === 1 ? '' : 's'
+            }}
+            to continue.
+          </p>
+        </div>
+      }
+      @if (isAtMaxLimit) {
+        <div class="cart-warning cart-warning-max">
+          <span>!</span>
+          <p>
+            Maximum order limit of
+            <strong>{{ maxTotalCans }} cans</strong>
+            reached.
+          </p>
+          <button type="button" class="contact-link" (click)="navigateToContact()">
+            CONTACT US FOR LARGER ORDERS
+          </button>
+        </div>
+      }
+      <div class="cart-actions">
+        <button
+          type="button"
+          class="button checkout-button"
+          [class.disabled]="!canCheckout"
+          [disabled]="!canCheckout"
+          (click)="checkoutRequested.emit()"
+        >
+          CONTINUE TO CHECKOUT <span>→</span>
+        </button>
+        <button type="button" class="clear-cart-button" (click)="clearRequested.emit()">
+          CLEAR CART
+        </button>
+      </div>
+      <div class="cart-delivery">
+        <span class="delivery-symbol">+</span>
+        <div>
+          <strong>FREE DELIVERY</strong>
+          <small>No hidden delivery charges.</small>
+        </div>
+      </div>
+    }
+  </aside>
+}
+@if (showConfirmClear) {
+  <div class="dialog-backdrop">
+    <div
+      class="confirm-dialog glass-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="clear-cart-title"
+    >
+      <span class="dialog-number">02</span>
+      <h2 id="clear-cart-title">CLEAR <em>CART?</em></h2>
+      <p>Are you sure you want to remove all items from your selection?</p>
+      <div class="dialog-actions">
+        <button type="button" class="button dialog-confirm" (click)="clearConfirmed.emit()">
+          YES, CLEAR CART
+        </button>
+        <button type="button" class="dialog-cancel" (click)="clearCancelled.emit()">
+          KEEP MY SELECTION
+        </button>
+      </div>
+    </div>
+  </div>
+}
+@if (showCheckoutMessage) {
+  <div class="dialog-backdrop checkout-dialog-backdrop">
+    <div
+      class="confirm-dialog checkout-dialog glass-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="checkout-title"
+    >
+      <span class="dialog-number">01</span>
+      <h2 id="checkout-title">CHECK YOUR <em>ORDER</em></h2>
+      <p class="checkout-intro">Please make sure your order is correct before continuing.</p>
+      <div class="checkout-review">
+        <div class="checkout-review-row">
+          <span>ITEMS</span>
+          <strong>{{ cartItemCount }}</strong>
+        </div>
+        <div class="checkout-review-row">
+          <span>TOTAL CANS</span>
+          <strong>{{ cartCanCount }}</strong>
+        </div>
+        <div class="checkout-review-row checkout-review-total">
+          <span>TOTAL</span>
+          <strong>€{{ formatPrice(cartTotal) }}</strong>
+        </div>
+      </div>
+      <div class="dialog-actions checkout-actions">
+        <button
+          type="button"
+          class="button dialog-confirm checkout-pay-button"
+          [disabled]="isPlacingOrder"
+          (click)="placeOrder.emit()"
+        >
+          @if (isPlacingOrder) {
+            <span class="button-loading-line"></span>
+            PLACING ORDER
+          } @else {
+            ORDER &amp; PAY
+            <span>→</span>
+          }
+        </button>
+        <button
+          type="button"
+          class="dialog-cancel checkout-back-button"
+          (click)="checkoutMessageClosed.emit()"
+        >
+          BACK
+        </button>
+      </div>
+      <p class="checkout-disclaimer">
+        This is a fictional demo order. No real order will be placed and no payment will be
+        processed.
+      </p>
+    </div>
+  </div>
+}
+@if (showSuccessMessage) {
+  <div class="success-overlay" role="dialog" aria-modal="true" aria-labelledby="success-title">
+    <div class="success-modal">
+      <div class="success-mark">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12.5l4.5 4.5L19 7.5" />
+        </svg>
+      </div>
+      <span class="success-eyebrow">ORDER CONFIRMED</span>
+      <h3 id="success-title">
+        SUCCESSFULLY<br />
+        <em>ORDERED</em>
+      </h3>
+      <p>Your order has been placed successfully. Redirecting to your dashboard...</p>
+    </div>
+  </div>
+}

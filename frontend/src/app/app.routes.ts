@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 
 import { authGuard, guestGuard } from './core/services/backend/authentication/auth.guard';
 
-/** Application routes with lazy-loaded components. */
 export const routes: Routes = [
   {
     path: '',
@@ -25,6 +24,17 @@ export const routes: Routes = [
     path: 'dashboard',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/backend/dashboard/dashboard').then((m) => m.Dashboard),
+  },
+
+  {
+    path: 'shop',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/backend/shop/shop').then((m) => m.Shop),
+  },
+
+  {
+    path: 'contact',
+    loadComponent: () => import('./pages/contact/contact').then((m) => m.Contact),
   },
 
   {

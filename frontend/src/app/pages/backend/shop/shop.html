@@ -1,0 +1,98 @@
+<app-nav></app-nav>
+
+<main class="shop-page">
+  <button
+    type="button"
+    class="floating-cart"
+    [class.has-items]="cartItemCount > 0"
+    [class.is-visible]="showFloatingCart"
+    (click)="toggleCart()"
+    aria-label="Open shopping cart"
+  >
+    <span class="floating-cart-icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 7h12l1 14H5L6 7z" />
+        <path d="M9 7a3 3 0 0 1 6 0" />
+      </svg>
+    </span>
+    <span class="floating-cart-count">{{ cartItemCount }}</span>
+    <span class="floating-cart-label">CART</span>
+  </button>
+
+  <section class="shop-hero">
+    <div class="shop-hero-inner">
+      <div class="hero-content">
+        <span class="shop-overline">AMASIA / ENERGY COLLECTION</span>
+        <h1>
+          FIND YOUR
+          <em>ENERGY</em>
+        </h1>
+        <p>
+          Choose your collection, build your combination and make AMASIA part of your own rhythm
+        </p>
+        <div class="hero-benefits">
+          <span><i></i>FREE DELIVERY</span>
+          <span><i></i>10% OFF PACKS</span>
+          <span><i></i>PREMIUM SELECTION</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <app-pack-builder
+    [cart]="cart"
+    [cartCanCount]="cartCanCount"
+    [remainingCartCans]="remainingCartCans"
+    [maxTotalCans]="MAX_TOTAL_CANS"
+    (packAdded)="addPackToCart($event)"
+  ></app-pack-builder>
+
+  <app-individual-cans
+    [individualQuantities]="individualQuantities"
+    [cartCanCount]="cartCanCount"
+    [maxTotalCans]="MAX_TOTAL_CANS"
+    [canAddIndividual]="canAddIndividual"
+    (quantityChanged)="updateIndividualCart($event.cartItem, $event.flavorId, $event.quantity)"
+    (cartOpened)="showCart = true"
+  ></app-individual-cans>
+
+  <section class="shop-footer-cta">
+    <h3>AMASIA / OWN YOUR RHYTHM</h3>
+    <p>
+      Curate your selection, keep it simple or go all in <br />
+      Every order ships with <strong>FREE DELIVERY</strong>
+    </p>
+    <a routerLink="/dashboard" class="text-link"><strong>RETURN TO DASHBOARD →</strong></a>
+  </section>
+</main>
+
+<app-cart-dialog
+  [cart]="cart"
+  [showCart]="showCart"
+  [showConfirmClear]="showConfirmClear"
+  [showCheckoutMessage]="showCheckoutMessage"
+  [showSuccessMessage]="showOrderSuccess"
+  [checkoutMessage]="checkoutMessage"
+  [cartItemCount]="cartItemCount"
+  [cartCanCount]="cartCanCount"
+  [cartTotal]="cartTotal"
+  [cartSavings]="cartSavings"
+  [individualCartBlocked]="individualCartBlocked"
+  [remainingIndividualCans]="remainingIndividualCans"
+  [canCheckout]="canCheckout"
+  [maxTotalCans]="MAX_TOTAL_CANS"
+  [isAtMaxLimit]="isAtMaxLimit"
+  [isPlacingOrder]="isPlacingOrder"
+  (cartClosed)="closeCart()"
+  (clearRequested)="requestClearCart()"
+  (clearConfirmed)="confirmClearCart()"
+  (clearCancelled)="closeClearDialog()"
+  (checkoutRequested)="proceedToCheckout()"
+  (checkoutMessageClosed)="closeCheckoutMessage()"
+  (cartItemChanged)="updateCartItem($event)"
+  (cartItemRemoved)="removeCartItem($event)"
+  (individualQuantityReset)="individualQuantities[$event] = 0"
+  (placeOrder)="placeOrder()"
+></app-cart-dialog>
+
+<app-footer></app-footer>

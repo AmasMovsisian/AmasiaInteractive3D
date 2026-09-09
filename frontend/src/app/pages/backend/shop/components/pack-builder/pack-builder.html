@@ -1,0 +1,269 @@
+<section class="packs-section">
+  <div class="section-heading">
+    <h2>
+      BUILD YOUR
+      <em>PACK</em>
+    </h2>
+    <p>
+      Choose your pack size first, then curate the exact flavour combination you want<br />
+      <strong>10% OFF + FREE DELIVERY</strong>
+    </p>
+  </div>
+
+  <div class="builder-step">
+    <div class="step-heading">
+      <div class="step-index">01</div>
+      <div>
+        <span class="builder-label">FIRST / PACK SIZE</span>
+        <h3>HOW MANY CANS?</h3>
+      </div>
+    </div>
+
+    <div class="pack-size-switcher">
+      @for (pack of packs; track pack.size) {
+        <button
+          type="button"
+          [class.active]="selectedPack === pack.size"
+          [attr.aria-pressed]="selectedPack === pack.size"
+          (click)="selectPack(pack.size)"
+        >
+          <span>{{ pack.label }}</span>
+          <small>CANS</small>
+          @if (selectedPack === pack.size) {
+            <i>✓</i>
+          }
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="pack-builder glass-card">
+    <div class="pack-builder-header">
+      <div class="builder-heading">
+        <span class="builder-label">SELECTED PACK</span>
+        <h3>{{ selectedPackConfig.title }}</h3>
+        <p>{{ selectedPackConfig.description }}</p>
+      </div>
+
+      <div class="pack-price">
+        <span class="old-price">€{{ formatPrice(selectedPackBasePrice) }}</span>
+        <strong>€{{ formatPrice(selectedPackPrice) }}</strong>
+        <small>−10% PACK PRICE</small>
+      </div>
+    </div>
+
+    <div class="pack-builder-section">
+      <div class="step-heading compact">
+        <div class="step-index">02</div>
+        <div>
+          <span class="builder-label">SECOND / COLLECTION</span>
+          <h3>CHOOSE YOUR CATEGORY</h3>
+        </div>
+      </div>
+
+      <div class="category-grid">
+        @for (category of packCategories; track category.id) {
+          <button
+            type="button"
+            class="category-option"
+            [class.selected]="selectedPackCategory === category.id"
+            [attr.aria-pressed]="selectedPackCategory === category.id"
+            (click)="selectPackCategory(category.id)"
+          >
+            <span class="category-option-copy">
+              <small>COLLECTION</small>
+              <strong>{{ category.name }}</strong>
+            </span>
+
+            <span class="category-check">
+              @if (selectedPackCategory === category.id) {
+                ✓
+              } @else {
+                +
+              }
+            </span>
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (selectedPackFlavors.length > 0 && canSplitPack) {
+      <div class="pack-builder-section flavor-mode-section">
+        <div class="step-heading compact">
+          <div class="step-index">03</div>
+          <div>
+            <span class="builder-label">THIRD / COMBINATION</span>
+            <h3>HOW DO YOU WANT IT?</h3>
+          </div>
+        </div>
+
+        <div class="pack-split-toggle">
+          <button
+            type="button"
+            class="split-option"
+            [class.active]="!packIsSplit"
+            [attr.aria-pressed]="!packIsSplit"
+            (click)="packIsSplit = false"
+          >
+            <span class="split-option-top">
+              <strong>ONE FLAVOUR</strong>
+
+              @if (!packIsSplit) {
+                <i>✓</i>
+              }
+            </span>
+
+            <small>ALL {{ selectedPack }} CANS SAME FLAVOUR</small>
+          </button>
+
+          @if (selectedPackFlavors.length > 1) {
+            <button
+              type="button"
+              class="split-option"
+              [class.active]="packIsSplit"
+              [attr.aria-pressed]="packIsSplit"
+              (click)="packIsSplit = true"
+            >
+              <span class="split-option-top">
+                <strong>50 / 50</strong>
+
+                @if (packIsSplit) {
+                  <i>✓</i>
+                }
+              </span>
+
+              <small>{{ getPackSplitDescription() }}</small>
+            </button>
+          }
+        </div>
+      </div>
+    }
+
+    @if (selectedPackFlavors.length > 0) {
+      <div class="pack-builder-section flavor-selection-section">
+        <div class="step-heading compact">
+          <div class="step-index">{{ canSplitPack ? '04' : '03' }}</div>
+          <div>
+            <span class="builder-label">{{
+              canSplitPack ? 'FOURTH / FLAVOUR' : 'THIRD / FLAVOUR'
+            }}</span>
+            <h3>{{ packIsSplit ? 'CHOOSE TWO FLAVOURS' : 'CHOOSE YOUR FLAVOUR' }}</h3>
+          </div>
+        </div>
+
+        <div class="flavor-selection" [class.is-split]="packIsSplit">
+          <div class="flavor-column">
+            <div class="selection-title">
+              {{ packIsSplit ? 'FIRST FLAVOUR' : 'YOUR FLAVOUR' }}
+            </div>
+
+            <div class="flavor-grid">
+              @for (flavor of selectedPackFlavors; track flavor.id) {
+                <button
+                  type="button"
+                  class="flavor-option"
+                  [class.selected]="packFirstFlavor === flavor.id"
+                  [attr.aria-pressed]="packFirstFlavor === flavor.id"
+                  (click)="selectFirstFlavor(flavor.id)"
+                >
+                  <span class="flavor-dot" [style.background]="flavor.accent"></span>
+
+                  <span class="flavor-name">{{ flavor.name }}</span>
+
+                  @if (packFirstFlavor === flavor.id) {
+                    <b>✓</b>
+                  }
+                </button>
+              }
+            </div>
+          </div>
+
+          @if (packIsSplit) {
+            <div class="selection-divider">
+              <span>50<br />50</span>
+            </div>
+
+            <div class="flavor-column">
+              <div class="selection-title">SECOND FLAVOUR</div>
+
+              <div class="flavor-grid">
+                @for (flavor of selectedPackFlavors; track flavor.id) {
+                  <button
+                    type="button"
+                    class="flavor-option"
+                    [class.selected]="packSecondFlavor === flavor.id"
+                    [class.disabled]="packFirstFlavor === flavor.id"
+                    [disabled]="packFirstFlavor === flavor.id"
+                    [attr.aria-pressed]="packSecondFlavor === flavor.id"
+                    (click)="selectSecondFlavor(flavor.id)"
+                  >
+                    <span class="flavor-dot" [style.background]="flavor.accent"></span>
+
+                    <span class="flavor-name">{{ flavor.name }}</span>
+
+                    @if (packSecondFlavor === flavor.id) {
+                      <b>✓</b>
+                    }
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <div class="pack-summary">
+      <div class="pack-summary-selection">
+        <span>YOUR SELECTION</span>
+
+        <strong>
+          {{ getFlavorName(packFirstFlavor) || 'SELECT FLAVOUR' }}
+
+          @if (packIsSplit && packSecondFlavor) {
+            <em>+</em>
+            {{ getFlavorName(packSecondFlavor) }}
+          }
+        </strong>
+
+        <small>{{ getPackCompositionLabel() }}</small>
+      </div>
+
+      <div class="pack-summary-meta">
+        <span>{{ selectedPack }} CANS</span>
+        <span>SAVE €{{ formatPrice(selectedPackSavings) }}</span>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="button pack-button"
+      [disabled]="!canAddSelectedPack"
+      (click)="addPackToCart()"
+    >
+      <span>ADD PACK TO CART</span>
+      <i>→</i>
+    </button>
+
+    @if (!canAddSelectedPack && remainingCartCans > 0) {
+      <div class="pack-limit-notice">
+        <span>!</span>
+
+        <p>
+          Only
+          <strong>{{ remainingCartCans }}</strong>
+          cans of the 900-can maximum remain available
+        </p>
+      </div>
+    }
+
+    <div class="free-delivery">
+      <span class="delivery-symbol">+</span>
+
+      <div>
+        <strong>FREE DELIVERY</strong>
+        <small>Always included with every AMASIA order</small>
+      </div>
+    </div>
+  </div>
+</section>
