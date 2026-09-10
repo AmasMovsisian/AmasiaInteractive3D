@@ -14,11 +14,14 @@ export class OrdersCardComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
 
   orders: Order[] = [];
+  visibleOrders: Order[] = [];
   isLoading = true;
   errorMessage = '';
   confirmingOrderId: number | null = null;
   isCancelling = false;
   cancelErrorMessage = '';
+  showAllOrders = false;
+  readonly INITIAL_ORDERS_TO_SHOW = 3;
   private readonly DELIVERY_DAYS = 3;
 
   ngOnInit(): void {
@@ -31,6 +34,7 @@ export class OrdersCardComponent implements OnInit {
     this.ordersService.getOrders().subscribe({
       next: (orders) => {
         this.orders = orders ?? [];
+        this.updateVisibleOrders();
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -45,6 +49,19 @@ export class OrdersCardComponent implements OnInit {
         this.cdr.detectChanges();
       },
     });
+  }
+
+  private updateVisibleOrders(): void {
+    if (this.showAllOrders) {
+      this.visibleOrders = [...this.orders];
+    } else {
+      this.visibleOrders = this.orders.slice(0, this.INITIAL_ORDERS_TO_SHOW);
+    }
+  }
+
+  toggleShowAllOrders(): void {
+    this.showAllOrders = !this.showAllOrders;
+    this.updateVisibleOrders();
   }
 
   startCancelConfirmation(orderId: number): void {
@@ -77,6 +94,7 @@ export class OrdersCardComponent implements OnInit {
             ...this.orders[index],
             status: 'CANCELLED',
           };
+          this.updateVisibleOrders();
         }
         this.confirmingOrderId = null;
         this.isCancelling = false;

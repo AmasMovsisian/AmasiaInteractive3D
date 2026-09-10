@@ -11,7 +11,7 @@
   --text-inverse: #ffffff;
 
   --green: #368945;
-  
+
   --selection-bg: #2b2b2b;
   --selection-text: #f7f7f7;
   --link: #111111;
@@ -28,6 +28,9 @@
   --nav-shadow-start: rgba(0, 0, 0, 0.3);
   --nav-shadow-mid: rgba(0, 0, 0, 0.15);
   --nav-shadow-end: rgba(0, 0, 0, 0.05);
+
+  --shop-primary: rgba(217, 222, 226);
+  --shop-secondary: rgb(240, 247, 255);
 
   --theme-switch-border: rgba(255, 255, 255, 0.55);
   --theme-switch-border-hover: rgba(255, 255, 255, 0.75);
@@ -81,4 +84,22 @@
       transparent 100%
     ),
     linear-gradient(135deg, #d9dee2 0%, #f0f2f4 45%, #ffffff 100%);
+
+  --auth-bg:
+    radial-gradient(
+      ellipse 58% 48% at 50% 35%,
+      #c0c7cc 0%,
+      #ccd2d7 18%,
+      #d9dee2 38%,
+      #e4e7ea 58%,
+      #eef0f2 78%,
+      #f6f8f9 100%
+    ),
+    radial-gradient(
+      ellipse 130% 110% at 50% 105%,
+      rgba(202, 209, 215, 0.35) 0%,
+      rgba(222, 227, 231, 0.2) 45%,
+      transparent 75%
+    ),
+    #f0f2f4;
 }

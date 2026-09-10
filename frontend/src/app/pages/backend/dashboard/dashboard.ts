@@ -1,14 +1,11 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
-
+import { Router, RouterLink } from '@angular/router';
+import { ViewportScroller } from '@angular/common';
 import { environment } from '../../../../environments/environment';
-
 import { AuthService } from '../../../core/services/backend/authentication/auth.service';
 import { User } from '../../../core/services/backend/authentication/models/auth.models';
-
 import { Nav } from '../../../sections/shared/nav/nav';
 import { Footer } from '../../../sections/shared/footer/footer';
-
 import { ProfileSettingsDialogComponent } from './components/profile-settings-dialog/profile-settings-dialog';
 import { ProfileCardComponent } from './components/profile-card/profile-card';
 import { OrdersCardComponent } from './components/orders-card/orders-card';
@@ -16,7 +13,14 @@ import { OrdersCardComponent } from './components/orders-card/orders-card';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [Nav, Footer, ProfileSettingsDialogComponent, ProfileCardComponent, OrdersCardComponent],
+  imports: [
+    RouterLink,
+    Nav,
+    Footer,
+    ProfileSettingsDialogComponent,
+    ProfileCardComponent,
+    OrdersCardComponent,
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
@@ -24,15 +28,16 @@ export class Dashboard implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly viewportScroller = inject(ViewportScroller);
 
   user: User | null = null;
   isLoading = true;
   isLoggingOut = false;
   errorMessage = '';
-
   isProfileSettingsOpen = false;
 
   ngOnInit(): void {
+    this.viewportScroller.scrollToPosition([0, 0]);
     this.loadUser();
   }
 
@@ -75,6 +80,7 @@ export class Dashboard implements OnInit, OnDestroy {
 
   onProfileImageError(event: Event): void {
     const img = event.target as HTMLImageElement | null;
+
     if (img) {
       img.style.display = 'none';
     }

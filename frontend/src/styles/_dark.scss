@@ -28,6 +28,9 @@ html[data-theme='dark'] {
   --nav-shadow-mid: rgba(0, 0, 0, 0.5);
   --nav-shadow-end: rgba(0, 0, 0, 0.3);
 
+  --shop-primary: rgba(9, 9, 9);
+  --shop-secondary: rgba(18, 18, 18);
+
   --theme-switch-border: rgba(255, 255, 255, 0.18);
   --theme-switch-border-hover: rgba(255, 255, 255, 0.24);
 
@@ -62,6 +65,7 @@ html[data-theme='dark'] {
       transparent 100%
     ),
     linear-gradient(135deg, #252525 0%, #181818 42%, #0a0a0a 100%);
+
   --canvas-bg-2:
     radial-gradient(
       ellipse 0% 0% at 50% 32%,
@@ -81,7 +85,23 @@ html[data-theme='dark'] {
     ),
     linear-gradient(135deg, #292929 0%, #191919 42%, #080808 100%);
 
-    .settings-icon {
-  background-image: url('/icons/settings_dark.png');
-}
+  .settings-icon {
+    background-image: url('/icons/settings_dark.png');
+  }
+
+  --auth-bg:
+    radial-gradient(
+      ellipse 100% 85% at 50% 35%,
+      #141414 0%,
+      #131313 35%,
+      #121212 65%,
+      #111111 100%
+    ),
+    radial-gradient(
+      ellipse 130% 110% at 50% 105%,
+      rgba(22, 22, 22, 0.1) 0%,
+      rgba(18, 18, 18, 0.05) 45%,
+      transparent 75%
+    ),
+    #101010;
 }

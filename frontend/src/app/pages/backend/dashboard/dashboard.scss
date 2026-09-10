@@ -8,7 +8,7 @@
   min-height: 100vh;
   isolation: isolate;
   overflow: hidden;
-  background: var(--canvas-bg-2);
+  background: var(--auth-bg);
   color: var(--text-primary);
   transition:
     background 0.45s ease,
@@ -76,7 +76,11 @@ h1 {
   margin: 64px auto;
   padding: 24px;
   border: 1px solid rgba(216, 59, 59, 0.25);
-  background: color-mix(in srgb, var(--bg-surface) 88%, rgba(216, 59, 59, 0.05));
+  background: color-mix(
+    in srgb,
+    var(--bg-surface) 88%,
+    rgba(216, 59, 59, 0.05)
+  );
 }
 
 .status-dot {
@@ -111,27 +115,6 @@ h1 {
   margin-bottom: clamp(80px, 10vw, 120px);
   padding: clamp(60px, 8vw, 100px) 0 0;
   text-align: center;
-}
-
-.account-hero::before,
-.account-hero::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  width: min(17vw, 260px);
-  height: 1px;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent 0%, var(--border) 55%, var(--text-muted) 100%);
-  opacity: 0.78;
-}
-
-.account-hero::before {
-  right: calc(50% + min(31vw, 470px));
-}
-
-.account-hero::after {
-  left: calc(50% + min(31vw, 470px));
-  transform: rotate(180deg);
 }
 
 .hero-copy {
@@ -206,7 +189,7 @@ h1 {
 
 .account-section {
   width: 100%;
-  margin-bottom: clamp(80px, 10vw, 120px);
+  margin-bottom: clamp(60px, 7vw, 90px);
 }
 
 .section-header {
@@ -236,7 +219,7 @@ h1 {
     minmax(310px, 0.72fr)
     minmax(620px, 1.7fr);
   gap: clamp(32px, 3.6vw, 48px);
-  align-items: stretch;
+  align-items: start;
 }
 
 .profile-column,
@@ -249,12 +232,20 @@ h1 {
   box-shadow: none;
 }
 
-.profile-column,
+.profile-column {
+  height: auto;
+}
+
 .orders-column {
   min-height: 535px;
 }
 
-.profile-column > app-profile-card,
+.profile-column > app-profile-card {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .orders-column > app-orders-card {
   display: block;
   width: 100%;
@@ -267,13 +258,90 @@ h1 {
   object-fit: cover;
 }
 
-@media (min-width: 1201px) {
-  .account-hero::before,
-  .account-hero::after {
-    width: min(20vw, 310px);
-    background: linear-gradient(90deg, transparent 0%, var(--border) 45%, var(--text-muted) 100%);
-    opacity: 0.9;
-  }
+.shop-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding:
+    clamp(80px, 10vw, 130px)
+    24px
+    clamp(100px, 12vw, 150px);
+  text-align: center;
+  background: transparent !important;
+}
+
+.shop-overline {
+  display: block;
+  margin-bottom: clamp(16px, 2vw, 24px);
+  color: var(--text-muted);
+  font-family: var(--font-heading);
+  font-size: clamp(10px, 1.2vw, 12px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.22em;
+  opacity: 0.7;
+}
+
+.shop-section h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-size: clamp(64px, 8vw, 130px);
+  font-weight: 700;
+  line-height: 0.84;
+  letter-spacing: -0.065em;
+  text-shadow: 0 14px 24px var(--text-shadow);
+}
+
+.shop-section h2 em {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.shop-section p {
+  max-width: 520px;
+  margin-top: clamp(24px, 3vw, 32px);
+  color: var(--text-muted);
+  font-size: clamp(14px, 1.5vw, 17px);
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: 0.02em;
+}
+
+.shop-button {
+  width: fit-content;
+  min-width: 260px;
+  margin-top: clamp(32px, 4vw, 44px);
+  gap: 20px;
+}
+
+:host ::ng-deep app-footer,
+:host ::ng-deep app-footer footer,
+:host ::ng-deep app-footer .footer,
+:host ::ng-deep app-footer .footer__inner,
+:host ::ng-deep app-footer .footer-content,
+:host ::ng-deep app-footer .footer-container,
+:host ::ng-deep app-footer .footer-wrapper {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-top: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+:host ::ng-deep app-footer * {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
 }
 
 @media (min-width: 1500px) {
@@ -285,11 +353,6 @@ h1 {
   .account-hero {
     padding-top: 60px;
     margin-bottom: 120px;
-  }
-
-  .account-hero::before,
-  .account-hero::after {
-    width: min(21vw, 340px);
   }
 
   .hero-copy h1 {
@@ -307,7 +370,6 @@ h1 {
     gap: 56px;
   }
 
-  .profile-column,
   .orders-column {
     min-height: 570px;
   }
@@ -328,12 +390,6 @@ h1 {
     margin-bottom: 80px;
   }
 
-  .account-hero::before,
-  .account-hero::after {
-    width: 110px;
-    opacity: 0.7;
-  }
-
   .hero-copy h1 {
     font-size: clamp(75px, 10vw, 125px);
   }
@@ -345,7 +401,6 @@ h1 {
     gap: 32px;
   }
 
-  .profile-column,
   .orders-column {
     min-height: 510px;
   }
@@ -360,11 +415,6 @@ h1 {
   .account-hero {
     padding-top: 40px;
     margin-bottom: 72px;
-  }
-
-  .account-hero::before,
-  .account-hero::after {
-    display: none;
   }
 
   .hero-welcome {
@@ -416,9 +466,12 @@ h1 {
     gap: 24px;
   }
 
-  .profile-column,
   .orders-column {
     min-height: 430px;
+  }
+
+  .shop-section {
+    padding: 64px 24px 80px;
   }
 
   ::ng-deep app-profile-card img {
@@ -487,9 +540,35 @@ h1 {
     gap: 20px;
   }
 
-  .profile-column,
   .orders-column {
     min-height: 400px;
+  }
+
+  .shop-section {
+    padding: 48px 20px 64px;
+    background: transparent !important;
+  }
+
+  .shop-overline {
+    margin-bottom: 12px;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+  }
+
+  .shop-section h2 {
+    font-size: clamp(48px, 14vw, 72px);
+    line-height: 0.87;
+  }
+
+  .shop-section p {
+    margin-top: 20px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .shop-button {
+    width: 100%;
+    margin-top: 24px;
   }
 
   ::ng-deep app-profile-card img {
@@ -542,9 +621,29 @@ h1 {
     font-size: 9px;
   }
 
-  .profile-column,
   .orders-column {
     min-height: 380px;
+  }
+
+  .shop-section {
+    padding: 40px 16px 48px;
+    background: transparent !important;
+  }
+
+  .shop-overline {
+    font-size: 9px;
+  }
+
+  .shop-section h2 {
+    font-size: 46px;
+  }
+
+  .shop-section p {
+    font-size: 14px;
+  }
+
+  .shop-button {
+    margin-top: 20px;
   }
 
   ::ng-deep app-profile-card img {

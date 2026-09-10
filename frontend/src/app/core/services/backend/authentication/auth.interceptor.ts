@@ -1,89 +1,104 @@
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-
+import {
+  HttpErrorResponse,
+  HttpInterceptorFn,
+} from '@angular/common/http';
 import { inject } from '@angular/core';
-
-import { catchError, finalize, Observable, shareReplay, switchMap, throwError } from 'rxjs';
-
+import {
+  catchError,
+  finalize,
+  Observable,
+  shareReplay,
+  switchMap,
+  throwError,
+} from 'rxjs';
 import { Router } from '@angular/router';
-
 import { environment } from '../../../../../environments/environment';
-
 import { AuthService } from './auth.service';
+import { LoginResponse } from './models/auth.models';
 
-let refreshRequest$: Observable<any> | null = null;
+let refreshRequest$: Observable<LoginResponse> | null = null;
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // Nur Requests an unser Backend bearbeiten
   if (!req.url.startsWith(environment.apiUrl)) {
     return next(req);
   }
 
-  const isLoginRequest = req.url === `${environment.apiUrl}/auth/login/`;
+  const isLoginRequest =
+    req.url === `${environment.apiUrl}/auth/login/`;
+  const isRefreshRequest =
+    req.url === `${environment.apiUrl}/auth/refresh/`;
+  const isLogoutRequest =
+    req.url === `${environment.apiUrl}/auth/logout/`;
 
-  const isRefreshRequest = req.url === `${environment.apiUrl}/auth/refresh/`;
-
-  const accessToken = authService.getAccessToken();
-
-  /*
-   * Login und Refresh brauchen keinen bestehenden
-   * Access Token.
-   */
-  if (isLoginRequest || isRefreshRequest || !accessToken) {
+  if (isLoginRequest) {
     return next(req);
   }
 
-  const authReq = req.clone({
-    setHeaders: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  if (isRefreshRequest) {
+    return next(req);
+  }
 
-  return next(authReq).pipe(
+  if (isLogoutRequest) {
+    return next(req);
+  }
+
+  const accessToken = authService.getAccessToken();
+
+  if (!accessToken) {
+    return next(req);
+  }
+
+  const sendRequest = (token: string) => {
+    const authenticatedRequest = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return next(authenticatedRequest);
+  };
+
+  const refreshAndRetry = () => {
+    if (!refreshRequest$) {
+      refreshRequest$ = authService.refreshToken().pipe(
+        shareReplay(1),
+        finalize(() => {
+          refreshRequest$ = null;
+        }),
+      );
+    }
+
+    return refreshRequest$.pipe(
+      switchMap((response) => sendRequest(response.access)),
+    );
+  };
+
+  if (authService.isAccessTokenExpired()) {
+    return refreshAndRetry().pipe(
+      catchError((error) => {
+        authService.clearAuthentication();
+        if (router.url !== '/login') {
+          void router.navigate(['/login']);
+        }
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  return sendRequest(accessToken).pipe(
     catchError((error: HttpErrorResponse) => {
-      /*
-       * Ein 401 vom normalen Request kann einen
-       * Token-Refresh auslösen.
-
-       * Login und Refresh werden oben bereits
-       * ausgeschlossen.
-       */
       if (error.status !== 401) {
         return throwError(() => error);
       }
 
-      if (!refreshRequest$) {
-        refreshRequest$ = authService.refreshToken().pipe(
-          shareReplay(1),
-
-          finalize(() => {
-            refreshRequest$ = null;
-          }),
-        );
-      }
-
-      return refreshRequest$.pipe(
-        switchMap((response) => {
-          const newAccessToken = response.access;
-
-          const retryRequest = req.clone({
-            setHeaders: {
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-          });
-
-          return next(retryRequest);
-        }),
-
+      return refreshAndRetry().pipe(
         catchError((refreshError) => {
           authService.clearAuthentication();
-
           if (router.url !== '/login') {
-            router.navigate(['/login']);
+            void router.navigate(['/login']);
           }
-
           return throwError(() => refreshError);
         }),
       );

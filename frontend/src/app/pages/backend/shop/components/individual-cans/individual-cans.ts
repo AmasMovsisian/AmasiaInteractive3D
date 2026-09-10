@@ -46,12 +46,12 @@ export class IndividualCans implements OnInit {
   };
 
   readonly flavorAccents: Record<string, string> = {
-    akebi: '#9b7b5c',
-    keylime: '#b8c98b',
-    coconut: '#d8c9a4',
-    lychee: '#e6a9bb',
-    pandan: '#91a67a',
-    'black-edition': '#8c8c8c',
+    akebi: '#58469e',
+    keylime: '#39d92a',
+    coconut: '#4ec0fa',
+    lychee: '#a31229',
+    pandan: '#6f9274',
+    'black-edition': '#d8b85a',
   };
 
   ngOnInit(): void {
@@ -64,20 +64,20 @@ export class IndividualCans implements OnInit {
 
     this.ordersService.getProducts().subscribe({
       next: (products) => {
-        console.log('Individual Cans - Products loaded from backend:', products);
         this.backendProducts = products;
+
         this.flavors = products.map((p) => ({
           id: p.slug,
           name: p.name,
           description: p.description || '',
           price: Number(p.price),
           category: p.category as 'MAIN' | 'PREMIUM' | 'SIGNATURE',
-          accent: this.flavorAccents[p.slug] || '#9b7b5c',
+          accent: this.flavorAccents[p.slug] || '#58469e',
         }));
+
         this.isLoading = false;
       },
-      error: (error) => {
-        console.error('Failed to load products:', error);
+      error: () => {
         this.isLoading = false;
         this.errorMessage = 'Unable to load products.';
       },
@@ -94,7 +94,8 @@ export class IndividualCans implements OnInit {
   maxQuantityForFlavor(flavorId: string): number {
     return Math.max(
       0,
-      this.maxTotalCans - (this.individualCanCount - (this.individualQuantities[flavorId] ?? 0)),
+      this.maxTotalCans -
+        (this.individualCanCount - (this.individualQuantities[flavorId] ?? 0)),
     );
   }
 
@@ -143,7 +144,6 @@ export class IndividualCans implements OnInit {
     const backendProduct = this.backendProducts.find((p) => p.slug === flavorId);
 
     if (!backendProduct) {
-      console.error('Product not found for flavorId:', flavorId);
       return;
     }
 
@@ -176,7 +176,7 @@ export class IndividualCans implements OnInit {
 
   limitQuantityInput(flavorId: string, input: HTMLInputElement): void {
     const max = this.maxQuantityForFlavor(flavorId);
-    let value = input.value.replace(/\D/g, '');
+    const value = input.value.replace(/\D/g, '');
 
     if (value === '') {
       input.value = '0';

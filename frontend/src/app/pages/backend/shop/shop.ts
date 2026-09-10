@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable, forkJoin, of } from 'rxjs';
@@ -24,6 +24,7 @@ import {
 export class Shop implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly router = inject(Router);
+  private readonly viewportScroller = inject(ViewportScroller);
   private readonly ordersService = inject(OrdersService);
   private readonly http = inject(HttpClient);
 
@@ -56,6 +57,8 @@ export class Shop implements OnInit, OnDestroy {
   private scrollHandler = this.onScroll.bind(this);
 
   ngOnInit(): void {
+    this.viewportScroller.scrollToPosition([0, 0]);
+
     this.loadCartFromStorage();
     this.loadProducts();
 

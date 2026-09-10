@@ -1,7 +1,7 @@
 :host {
   display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
 }
 
 .profile-card {
@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 100%;
+  height: 800px;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--text-primary) 15%, transparent);
   border-radius: 18px;
@@ -283,7 +283,7 @@
   justify-content: space-between;
   width: 100%;
   margin-top: 20px;
-  padding-top: 16px;
+  padding-top: 46px;
   border-top: 1px solid var(--border);
   text-align: left;
 }
@@ -338,6 +338,11 @@
 }
 
 @media (max-width: 900px) {
+  .profile-card {
+    border-radius: 15px;
+    height: auto;
+  }
+
   .profile-image {
     height: 390px;
   }
@@ -354,6 +359,7 @@
 @media (max-width: 700px) {
   .profile-card {
     border-radius: 15px;
+    height: auto;
   }
 
   .card-header {

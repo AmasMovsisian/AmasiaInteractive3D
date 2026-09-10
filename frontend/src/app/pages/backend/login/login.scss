@@ -10,7 +10,7 @@
   flex-direction: column;
   min-height: 100vh;
   overflow: hidden;
-  background: var(--canvas-bg-2);
+  background: var(--auth-bg);
   color: var(--text-primary);
   transition:
     background 0.5s ease,
@@ -398,7 +398,6 @@ app-nav {
     transform: translateY(0);
     opacity: 0.25;
   }
-
   30% {
     transform: translateY(-5px);
     opacity: 1;
@@ -455,6 +454,27 @@ app-nav {
 
 .login-register__link:hover svg {
   transform: translateX(4px);
+}
+
+:host ::ng-deep app-footer.login-footer,
+:host ::ng-deep app-footer.login-footer footer,
+:host ::ng-deep app-footer.login-footer .footer,
+:host ::ng-deep app-footer.login-footer .footer__inner,
+:host ::ng-deep app-footer.login-footer .footer-content {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-top: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+:host ::ng-deep app-footer.login-footer * {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
 }
 
 @media (max-width: 900px) {

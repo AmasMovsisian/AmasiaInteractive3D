@@ -1,5 +1,6 @@
 <section class="dashboard">
   <app-nav></app-nav>
+
   <main class="dashboard-main">
     @if (isLoading) {
       <section class="dashboard-loading">
@@ -7,29 +8,36 @@
         <span>LOADING ACCOUNT</span>
       </section>
     }
+
     @if (errorMessage) {
       <section class="dashboard-error">
         <span class="status-dot"></span>
+
         <div>
           <span class="error-label">ACCOUNT ERROR</span>
           <p>{{ errorMessage }}</p>
         </div>
       </section>
     }
+
     @if (user; as currentUser) {
       <section class="account-hero">
         <div class="hero-copy">
           <h2 class="hero-welcome">WELCOME BACK</h2>
+
           <h1>
             {{ currentUser.username }}
           </h1>
+
           <p class="hero-description">Your private space at AMASIA</p>
         </div>
       </section>
+
       <section class="account-section">
         <div class="section-header">
           <span>YOUR ACCOUNT</span>
         </div>
+
         <div class="account-grid">
           <div class="profile-column">
             <app-profile-card
@@ -39,14 +47,34 @@
               (profileImageError)="onProfileImageError($event)"
             ></app-profile-card>
           </div>
+
           <div class="orders-column">
             <app-orders-card></app-orders-card>
           </div>
         </div>
       </section>
     }
+
+    <section class="shop-section">
+      <span class="shop-overline">AMASIA / ENERGY COLLECTION</span>
+
+      <h2>
+        FIND YOUR
+        <em>ENERGY</em>
+      </h2>
+
+      <p>
+        A refined balance of intensity, clarity and effortless character Discover the AMASIA
+        collection, crafted for those who choose their own rhythm
+      </p>
+
+      <a routerLink="/shop" class="button shop-button"> DISCOVER AMASIA </a>
+    </section>
   </main>
+
+  <app-footer class="dashboard-footer"></app-footer>
 </section>
+
 @if (isProfileSettingsOpen && user; as currentUser) {
   <app-profile-settings-dialog
     [user]="currentUser"
@@ -54,4 +82,3 @@
     (userUpdated)="onUserUpdated($event)"
   ></app-profile-settings-dialog>
 }
-<app-footer></app-footer>
