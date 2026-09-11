@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -18,7 +18,7 @@ import { Footer } from '../../../sections/shared/footer/footer';
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
-export class Login {
+export class Login implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
@@ -29,6 +29,16 @@ export class Login {
 
   errorMessage = '';
   isLoading = false;
+
+  ngOnInit(): void {
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'instant',
+      });
+    });
+  }
 
   /**
    * Submit the login form.

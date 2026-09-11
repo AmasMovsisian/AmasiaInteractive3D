@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
@@ -18,7 +18,7 @@ import { Footer } from '../../../sections/shared/footer/footer';
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
-export class Register {
+export class Register implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
@@ -33,6 +33,16 @@ export class Register {
 
   errorMessage = '';
   isLoading = false;
+
+  ngOnInit(): void {
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'instant',
+      });
+    });
+  }
 
   /**
    * Validate and submit the registration form.

@@ -8,6 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / ".env")
 
+
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 if not SECRET_KEY:
@@ -15,6 +16,7 @@ if not SECRET_KEY:
         "SECRET_KEY is missing. "
         "Please add SECRET_KEY to your .env file."
     )
+
 
 DEBUG = os.getenv("DEBUG", "False").lower() in (
     "true",
@@ -35,6 +37,7 @@ def get_env_list(name: str) -> list[str]:
 
 ALLOWED_HOSTS = get_env_list("ALLOWED_HOSTS")
 
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -54,6 +57,7 @@ INSTALLED_APPS = [
     "orders",
 ]
 
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
 
@@ -72,7 +76,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+
 ROOT_URLCONF = "core.urls"
+
 
 TEMPLATES = [
     {
@@ -89,7 +95,9 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = "core.wsgi.application"
+
 
 DATABASES = {
     "default": {
@@ -97,6 +105,7 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -125,6 +134,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -133,19 +143,29 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = "static/"
+
+STATIC_URL = "/static/"
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 
 MEDIA_URL = "/media/"
 
 MEDIA_ROOT = BASE_DIR / "media"
 
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
+
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
@@ -159,12 +179,24 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
+
 CORS_ALLOWED_ORIGINS = get_env_list(
     "CORS_ALLOWED_ORIGINS"
 )
 
+
+CSRF_TRUSTED_ORIGINS = get_env_list(
+    "CSRF_TRUSTED_ORIGINS"
+)
+
+
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
+
+    SECURE_PROXY_SSL_HEADER = (
+        "HTTP_X_FORWARDED_PROTO",
+        "https",
+    )
 
     SESSION_COOKIE_SECURE = True
 
@@ -173,8 +205,6 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000
 
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-
-    SECURE_HSTS_PRELOAD = True
 
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
