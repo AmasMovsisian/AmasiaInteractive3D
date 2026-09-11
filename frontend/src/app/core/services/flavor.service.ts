@@ -12,10 +12,12 @@ export interface Flavor {
   description: string;
 }
 
+/**
+ * Manages flavor data and selected flavor state.
+ */
 @Injectable({
   providedIn: 'root',
 })
-/** Manages flavor data and selected flavor state. */
 export class FlavorService {
   readonly flavors: readonly Flavor[] = [
     {
@@ -94,7 +96,9 @@ export class FlavorService {
     return this.flavorsById[this.selectedFlavorId()];
   });
 
-  /** Sets the selected flavor by ID. */
+  /**
+   * Set the selected flavor by id.
+   */
   selectFlavor(flavorId: FlavorId): void {
     this.selectedFlavorId.set(flavorId);
   }

@@ -1,4 +1,5 @@
 from django.urls import path
+
 from .views import (
     AddToCartView,
     CancelOrderView,
@@ -12,7 +13,7 @@ from .views import (
     UpdateCartItemView,
 )
 
-app_name = 'orders'
+app_name = "orders"
 
 urlpatterns = [
     path(

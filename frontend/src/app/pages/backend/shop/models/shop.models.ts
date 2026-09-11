@@ -1,3 +1,6 @@
+/**
+ * Product available in the shop.
+ */
 export interface Product {
   id: string;
   name: string;
@@ -7,6 +10,9 @@ export interface Product {
   accent: string;
 }
 
+/**
+ * Product as returned by the backend.
+ */
 export interface BackendProduct {
   id: number;
   name: string;
@@ -17,18 +23,27 @@ export interface BackendProduct {
   image: string | null;
 }
 
+/**
+ * Pack category definition.
+ */
 export interface PackCategory {
   id: 'MAIN' | 'PREMIUM' | 'SIGNATURE';
   name: string;
   description: string;
 }
 
+/**
+ * Product entry inside a pack cart item.
+ */
 export interface CartPackProduct {
   flavor: string;
   quantity: number;
   productId?: number;
 }
 
+/**
+ * Item inside the shopping cart.
+ */
 export interface CartItem {
   id: string;
   type: 'PACK' | 'INDIVIDUAL';
@@ -45,6 +60,9 @@ export interface CartItem {
   productId?: number;
 }
 
+/**
+ * Pack configuration options.
+ */
 export interface PackConfig {
   size: 6 | 12 | 36;
   label: string;

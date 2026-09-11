@@ -1,11 +1,16 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
 
 import { AuthService } from '../../../core/services/backend/authentication/auth.service';
 import { Nav } from '../../../sections/shared/nav/nav';
 import { Footer } from '../../../sections/shared/footer/footer';
 
+/**
+ * Register page component.
+ */
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -16,6 +21,7 @@ import { Footer } from '../../../sections/shared/footer/footer';
 export class Register {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   username = '';
   email = '';
@@ -28,7 +34,14 @@ export class Register {
   errorMessage = '';
   isLoading = false;
 
+  /**
+   * Validate and submit the registration form.
+   */
   onSubmit(): void {
+    if (this.isLoading) {
+      return;
+    }
+
     this.errorMessage = '';
 
     const username = this.username.trim();
@@ -38,19 +51,37 @@ export class Register {
 
     if (!username || !email || !password || !password2) {
       this.errorMessage = 'Please fill in all fields.';
+      this.changeDetectorRef.markForCheck();
+      return;
+    }
+
+    if (!this.isValidUsername(username)) {
+      this.errorMessage =
+        'Username must be 4–9 characters and contain only letters, numbers, or underscores.';
+      this.changeDetectorRef.markForCheck();
+      return;
+    }
+
+    if (!this.isValidEmail(email)) {
+      this.errorMessage = 'Please enter a valid email address.';
+      this.changeDetectorRef.markForCheck();
+      return;
+    }
+
+    if (password.length < 8) {
+      this.errorMessage = 'Password must be at least 8 characters long.';
+      this.changeDetectorRef.markForCheck();
       return;
     }
 
     if (password !== password2) {
       this.errorMessage = 'Passwords do not match.';
-      return;
-    }
-
-    if (this.isLoading) {
+      this.changeDetectorRef.markForCheck();
       return;
     }
 
     this.isLoading = true;
+    this.changeDetectorRef.markForCheck();
 
     this.authService
       .register({
@@ -59,39 +90,83 @@ export class Register {
         password,
         password2,
       })
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.changeDetectorRef.markForCheck();
+        }),
+      )
       .subscribe({
         next: () => {
-          this.isLoading = false;
-          this.router.navigate(['/login']);
+          void this.router.navigate(['/login']);
         },
 
-        error: (error) => {
-          this.isLoading = false;
-
-          console.error('Registration failed:', error);
-
-          if (error?.status === 400 && error?.error) {
-            this.errorMessage = this.getErrorMessage(error.error);
-            return;
-          }
-
-          this.errorMessage = 'Something went wrong. Please try again.';
+        error: (error: HttpErrorResponse) => {
+          this.handleRegistrationError(error);
+          this.changeDetectorRef.markForCheck();
         },
       });
   }
 
+  /**
+   * Map a registration error to a user-friendly message.
+   */
+  private handleRegistrationError(error: HttpErrorResponse): void {
+    const status = error.status;
+    const backendError = error.error;
+
+    if ((status === 400 || status === 409) && backendError) {
+      this.errorMessage = this.getErrorMessage(backendError);
+      return;
+    }
+
+    if (status === 0) {
+      this.errorMessage = 'The server is currently unavailable. Please try again in a moment.';
+      return;
+    }
+
+    if (status >= 500) {
+      this.errorMessage = 'The server encountered a problem. Please try again later.';
+      return;
+    }
+
+    this.errorMessage = 'Something went wrong. Please try again.';
+  }
+
+  /**
+   * Check if the username matches the allowed pattern.
+   */
+  private isValidUsername(username: string): boolean {
+    return /^[a-zA-Z0-9_]{4,9}$/.test(username);
+  }
+
+  /**
+   * Check if the email has a valid format.
+   */
+  private isValidEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  /**
+   * Extract a readable message from a backend error payload.
+   */
   private getErrorMessage(error: unknown): string {
     if (typeof error === 'string') {
       return error;
     }
 
-    if (typeof error === 'object' && error !== null) {
-      const messages = Object.values(error);
+    if (Array.isArray(error)) {
+      return error.map((message) => String(message)).join(' ');
+    }
 
-      return messages
+    if (typeof error === 'object' && error !== null) {
+      const messages = Object.values(error)
         .flat()
-        .map((message) => String(message))
-        .join(' ');
+        .map((message) => String(message));
+
+      if (messages.length > 0) {
+        return messages.join(' ');
+      }
     }
 
     return 'Registration failed. Please try again.';

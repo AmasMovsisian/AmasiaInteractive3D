@@ -1,23 +1,17 @@
-import {
-  HttpErrorResponse,
-  HttpInterceptorFn,
-} from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import {
-  catchError,
-  finalize,
-  Observable,
-  shareReplay,
-  switchMap,
-  throwError,
-} from 'rxjs';
+import { catchError, finalize, Observable, shareReplay, switchMap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+
 import { environment } from '../../../../../environments/environment';
 import { AuthService } from './auth.service';
 import { LoginResponse } from './models/auth.models';
 
 let refreshRequest$: Observable<LoginResponse> | null = null;
 
+/**
+ * Interceptor that attaches the access token and handles token refresh.
+ */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
@@ -26,22 +20,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  const isLoginRequest =
-    req.url === `${environment.apiUrl}/auth/login/`;
-  const isRefreshRequest =
-    req.url === `${environment.apiUrl}/auth/refresh/`;
-  const isLogoutRequest =
-    req.url === `${environment.apiUrl}/auth/logout/`;
+  const isLoginRequest = req.url.includes('/auth/login/');
+  const isRefreshRequest = req.url.includes('/auth/refresh/');
+  const isLogoutRequest = req.url.includes('/auth/logout/');
 
-  if (isLoginRequest) {
-    return next(req);
-  }
-
-  if (isRefreshRequest) {
-    return next(req);
-  }
-
-  if (isLogoutRequest) {
+  if (isLoginRequest || isRefreshRequest || isLogoutRequest) {
     return next(req);
   }
 
@@ -52,12 +35,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   const sendRequest = (token: string) => {
-    const authenticatedRequest = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return next(authenticatedRequest);
+    return next(
+      req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    );
   };
 
   const refreshAndRetry = () => {
@@ -70,18 +54,18 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       );
     }
 
-    return refreshRequest$.pipe(
-      switchMap((response) => sendRequest(response.access)),
-    );
+    return refreshRequest$.pipe(switchMap((response) => sendRequest(response.access)));
   };
 
   if (authService.isAccessTokenExpired()) {
     return refreshAndRetry().pipe(
       catchError((error) => {
         authService.clearAuthentication();
+
         if (router.url !== '/login') {
           void router.navigate(['/login']);
         }
+
         return throwError(() => error);
       }),
     );
@@ -96,9 +80,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       return refreshAndRetry().pipe(
         catchError((refreshError) => {
           authService.clearAuthentication();
+
           if (router.url !== '/login') {
             void router.navigate(['/login']);
           }
+
           return throwError(() => refreshError);
         }),
       );

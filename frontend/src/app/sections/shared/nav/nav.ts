@@ -10,6 +10,9 @@ import {
 } from '../../../core/services/hero-navigation';
 import { AuthService } from '../../../core/services/backend/authentication/auth.service';
 
+/**
+ * Navigation bar component with menu, theme and hero scrolling.
+ */
 @Component({
   selector: 'app-nav',
   standalone: true,
@@ -33,12 +36,18 @@ export class Nav implements OnInit, OnDestroy {
     this.loadTheme();
   }
 
+  /**
+   * Track the authentication state.
+   */
   ngOnInit(): void {
     this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
       this.isLoggedIn = !!user;
     });
   }
 
+  /**
+   * Log out and navigate home.
+   */
   logout(): void {
     this.closeMenu();
     this.authService.logout().subscribe(() => {
@@ -46,6 +55,9 @@ export class Nav implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Scroll to the hero start frame.
+   */
   goToStart(event?: Event): void {
     event?.preventDefault();
     this.closeMenu();
@@ -68,6 +80,9 @@ export class Nav implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Scroll to a hero section or the contact section.
+   */
   async scrollToSection(section: HeroNavigationSection, event?: Event): Promise<void> {
     event?.preventDefault();
     this.closeMenu();
@@ -99,6 +114,9 @@ export class Nav implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Navigate to home and scroll to the contact section.
+   */
   private async scrollToContact(): Promise<void> {
     const currentUrl = this.router.url.split('?')[0].split('#')[0];
     const isHeroPage = currentUrl === '/' || currentUrl === '';
@@ -135,36 +153,57 @@ export class Nav implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Toggle the mobile menu.
+   */
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
     this.updateBodyScrollLock();
   }
 
+  /**
+   * Close the mobile menu.
+   */
   closeMenu(): void {
     this.menuOpen = false;
     this.updateBodyScrollLock();
   }
 
+  /**
+   * Toggle between light and dark theme.
+   */
   toggleTheme(): void {
     this.isDarkMode = !this.isDarkMode;
     this.applyTheme();
     localStorage.setItem(this.themeKey, this.isDarkMode ? 'dark' : 'light');
   }
 
+  /**
+   * Load the saved theme from storage.
+   */
   private loadTheme(): void {
     const savedTheme = localStorage.getItem(this.themeKey);
     this.isDarkMode = savedTheme === 'dark';
     this.applyTheme();
   }
 
+  /**
+   * Apply the current theme to the document.
+   */
   private applyTheme(): void {
     document.documentElement.setAttribute('data-theme', this.isDarkMode ? 'dark' : 'light');
   }
 
+  /**
+   * Lock or unlock body scroll based on menu state.
+   */
   private updateBodyScrollLock(): void {
     document.body.style.overflow = this.menuOpen ? 'hidden' : '';
   }
 
+  /**
+   * Close the menu when resizing above the mobile breakpoint.
+   */
   @HostListener('window:resize')
   onResize(): void {
     if (window.innerWidth > 900 && this.menuOpen) {
@@ -173,6 +212,9 @@ export class Nav implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Close the menu when pressing Escape.
+   */
   @HostListener('window:keydown.escape')
   onEscape(): void {
     if (this.menuOpen) {
@@ -181,6 +223,9 @@ export class Nav implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Clean up subscriptions and body styles.
+   */
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

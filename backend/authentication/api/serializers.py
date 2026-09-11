@@ -7,6 +7,8 @@ from ..models import Profile
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    """Serializer for user registration."""
+
     password = serializers.CharField(
         write_only=True,
         required=True,
@@ -30,6 +32,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
+        """Ensure both password fields match."""
         if attrs["password"] != attrs["password2"]:
             raise serializers.ValidationError(
                 {"password": "Passwords do not match."}
@@ -38,6 +41,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        """Create a new user and profile."""
         validated_data.pop("password2")
 
         user = User.objects.create_user(
@@ -52,6 +56,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """Serializer for user details and profile image."""
+
     profile_image = serializers.ImageField(
         source="profile.profile_image",
         required=False,
@@ -68,14 +74,13 @@ class UserSerializer(serializers.ModelSerializer):
         ]
 
     def update(self, instance, validated_data):
+        """Update user and related profile data."""
         profile_data = validated_data.pop("profile", {})
 
         instance = super().update(instance, validated_data)
 
         if profile_data:
-            profile, created = Profile.objects.get_or_create(
-                user=instance
-            )
+            profile, created = Profile.objects.get_or_create(user=instance)
 
             if "profile_image" in profile_data:
                 profile.profile_image = profile_data["profile_image"]
@@ -85,6 +90,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ChangePasswordSerializer(serializers.Serializer):
+    """Serializer for changing the user password."""
+
     old_password = serializers.CharField(
         write_only=True,
         required=True,
@@ -102,20 +109,17 @@ class ChangePasswordSerializer(serializers.Serializer):
     )
 
     def validate(self, attrs):
+        """Validate old password and ensure new passwords match."""
         user = self.context["request"].user
 
         if not user.check_password(attrs["old_password"]):
             raise serializers.ValidationError(
-                {
-                    "old_password": "Current password is incorrect."
-                }
+                {"old_password": "Current password is incorrect."}
             )
 
         if attrs["new_password"] != attrs["new_password2"]:
             raise serializers.ValidationError(
-                {
-                    "new_password": "Passwords do not match."
-                }
+                {"new_password": "Passwords do not match."}
             )
 
         return attrs

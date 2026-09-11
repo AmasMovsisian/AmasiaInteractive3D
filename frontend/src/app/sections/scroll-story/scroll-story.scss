@@ -218,7 +218,8 @@
     color 650ms ease,
     border-color 650ms ease,
     box-shadow 650ms ease,
-    filter 650ms ease;
+    filter 650ms ease,
+    opacity 650ms ease;
 }
 .dark .button_section .button,
 [data-theme='dark'] .button_section .button,
@@ -235,6 +236,29 @@ body.dark .button_section .button {
 .button_section .button:disabled {
   pointer-events: none;
   cursor: default;
+  opacity: 0.35;
+  filter: grayscale(1) saturate(0.2);
+  transform: none;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.dark .button_section .button:disabled,
+[data-theme='dark'] .button_section .button:disabled,
+body.dark .button_section .button:disabled {
+  opacity: 0.3;
+  filter: grayscale(1) saturate(0.15);
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.button_section .button:disabled .button_letter {
+  text-shadow: none;
+  color: inherit !important;
+}
+.button_section .button:disabled::before,
+.button_section .button:disabled::after {
+  display: none;
 }
 .button_section .button:not(:disabled) {
   pointer-events: auto;

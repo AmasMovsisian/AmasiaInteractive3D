@@ -47,4 +47,10 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./sections/shared/pirvacy-policy/pirvacy-policy').then((m) => m.PirvacyPolicy),
   },
+
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./sections/shared/not-found/not-found').then((m) => m.NotFound),
+  },
 ];

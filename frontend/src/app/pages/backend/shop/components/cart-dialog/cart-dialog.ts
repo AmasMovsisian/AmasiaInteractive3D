@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CartItem } from '../../models/shop.models';
 
+/**
+ * Dialog component displaying and managing the shopping cart.
+ */
 @Component({
   selector: 'app-cart-dialog',
   standalone: true,
@@ -41,10 +44,16 @@ export class CartDialog {
   @Output() individualQuantityReset = new EventEmitter<string>();
   @Output() placeOrder = new EventEmitter<void>();
 
+  /**
+   * Format a number as a fixed two-decimal price string.
+   */
   formatPrice(value: number): string {
     return value.toFixed(2);
   }
 
+  /**
+   * Build a readable label describing a pack's composition.
+   */
   getPackCompositionLabel(item: CartItem): string {
     if (!item.firstFlavor) return '';
     if (!item.secondFlavor) {
@@ -54,6 +63,9 @@ export class CartDialog {
     return `${half} × ${item.firstFlavor} + ${half} × ${item.secondFlavor}`;
   }
 
+  /**
+   * Increase the quantity of a cart item.
+   */
   increaseCartItem(item: CartItem): void {
     if (this.isAtMaxLimit) return;
 
@@ -68,6 +80,9 @@ export class CartDialog {
     this.cartItemChanged.emit(updatedItem);
   }
 
+  /**
+   * Decrease the quantity of a cart item or remove it.
+   */
   decreaseCartItem(item: CartItem): void {
     if (item.quantity <= 1) {
       this.removeCartItem(item);
@@ -78,6 +93,9 @@ export class CartDialog {
     this.cartItemChanged.emit(updatedItem);
   }
 
+  /**
+   * Sanitize numeric input for the quantity field.
+   */
   onQuantityInput(item: CartItem, input: HTMLInputElement): void {
     const value = input.value.replace(/[^0-9]/g, '');
     if (value.length > 3) {
@@ -87,6 +105,9 @@ export class CartDialog {
     input.value = value;
   }
 
+  /**
+   * Validate and apply the quantity when the input loses focus.
+   */
   onQuantityBlur(item: CartItem, input: HTMLInputElement): void {
     const value = input.value.replace(/[^0-9]/g, '');
     let quantity = value === '' ? 0 : parseInt(value, 10);
@@ -127,10 +148,16 @@ export class CartDialog {
     this.cartItemChanged.emit(updatedItem);
   }
 
+  /**
+   * Reset the quantity input to the current item quantity.
+   */
   resetQuantityInput(item: CartItem, input: HTMLInputElement): void {
     input.value = String(item.quantity);
   }
 
+  /**
+   * Remove an item from the cart.
+   */
   removeCartItem(item: CartItem): void {
     this.cartItemRemoved.emit(item);
     if (item.type === 'INDIVIDUAL' && item.flavor) {
@@ -138,6 +165,9 @@ export class CartDialog {
     }
   }
 
+  /**
+   * Close the cart and navigate to the contact page.
+   */
   navigateToContact(): void {
     this.cartClosed.emit();
     this.router.navigate(['/contact']);

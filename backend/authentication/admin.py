@@ -10,6 +10,8 @@ admin.site.unregister(User)
 
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
+    """Admin configuration for the User model."""
+
     list_display = (
         "username",
         "email",
@@ -45,6 +47,8 @@ class UserAdmin(DjangoUserAdmin):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
+    """Admin configuration for the Profile model."""
+
     list_display = (
         "user",
         "profile_image",

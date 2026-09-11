@@ -14,6 +14,9 @@ import {
 } from '../../../../../../app/core/services/backend/orders/orders.service';
 import { CartItem, PackCategory, PackConfig, Product } from '../../models/shop.models';
 
+/**
+ * Component for building and adding packs to the cart.
+ */
 @Component({
   selector: 'app-pack-builder',
   standalone: true,
@@ -79,10 +82,16 @@ export class PackBuilder implements OnInit {
   packSecondFlavor: string | null = null;
   packIsSplit = false;
 
+  /**
+   * Load products on component initialization.
+   */
   ngOnInit(): void {
     this.loadProducts();
   }
 
+  /**
+   * Fetch products from the backend and map them to flavors.
+   */
   private loadProducts(): void {
     this.isLoading = true;
     this.errorMessage = '';
@@ -117,36 +126,60 @@ export class PackBuilder implements OnInit {
     });
   }
 
+  /**
+   * Return the currently selected pack configuration.
+   */
   get selectedPackConfig(): PackConfig {
     return this.packs.find((pack) => pack.size === this.selectedPack)!;
   }
 
+  /**
+   * Return the flavors available for the selected pack category.
+   */
   get selectedPackFlavors(): Product[] {
     return this.flavors.filter((flavor) => flavor.category === this.selectedPackCategory);
   }
 
+  /**
+   * Return the unit price for the selected pack.
+   */
   get selectedPackUnitPrice(): number {
     const categoryProducts = this.selectedPackFlavors;
     if (categoryProducts.length === 0) return 0;
     return categoryProducts[0].price;
   }
 
+  /**
+   * Return the base price before discount.
+   */
   get selectedPackBasePrice(): number {
     return this.selectedPackUnitPrice * this.selectedPack;
   }
 
+  /**
+   * Return the pack price after discount.
+   */
   get selectedPackPrice(): number {
     return this.selectedPackBasePrice * (1 - this.PACK_DISCOUNT);
   }
 
+  /**
+   * Return the savings compared to the base price.
+   */
   get selectedPackSavings(): number {
     return this.selectedPackBasePrice - this.selectedPackPrice;
   }
 
+  /**
+   * Check if the selected pack can be split.
+   */
   get canSplitPack(): boolean {
     return this.selectedPack !== 6;
   }
 
+  /**
+   * Check if the selected pack can be added to the cart.
+   */
   get canAddSelectedPack(): boolean {
     if (this.cartCanCount + this.selectedPack > this.maxTotalCans) {
       return false;
@@ -167,10 +200,16 @@ export class PackBuilder implements OnInit {
     return true;
   }
 
+  /**
+   * Check if the cart has reached the maximum limit.
+   */
   get isAtMaxLimit(): boolean {
     return this.cartCanCount >= this.maxTotalCans;
   }
 
+  /**
+   * Select a pack size.
+   */
   selectPack(size: 6 | 12 | 36): void {
     this.selectedPack = size;
     if (size === 6) {
@@ -180,6 +219,9 @@ export class PackBuilder implements OnInit {
     this.cdr.detectChanges();
   }
 
+  /**
+   * Select a pack category and reset flavor selection.
+   */
   selectPackCategory(category: 'MAIN' | 'PREMIUM' | 'SIGNATURE'): void {
     this.selectedPackCategory = category;
     const available = this.flavors.filter((flavor) => flavor.category === category);
@@ -189,6 +231,9 @@ export class PackBuilder implements OnInit {
     this.cdr.detectChanges();
   }
 
+  /**
+   * Select the first flavor of the pack.
+   */
   selectFirstFlavor(flavorId: string): void {
     const flavor = this.getFlavor(flavorId);
     if (!flavor || flavor.category !== this.selectedPackCategory) return;
@@ -206,6 +251,9 @@ export class PackBuilder implements OnInit {
     this.cdr.detectChanges();
   }
 
+  /**
+   * Select the second flavor of the pack.
+   */
   selectSecondFlavor(flavorId: string): void {
     if (!this.canSplitPack) return;
 
@@ -218,6 +266,9 @@ export class PackBuilder implements OnInit {
     this.cdr.detectChanges();
   }
 
+  /**
+   * Return a description of the pack split.
+   */
   getPackSplitDescription(): string {
     if (!this.packIsSplit || !this.packSecondFlavor) {
       return 'ALL CANS SAME FLAVOUR';
@@ -226,6 +277,9 @@ export class PackBuilder implements OnInit {
     return `${half} ${this.getFlavorName(this.packFirstFlavor)} + ${half} ${this.getFlavorName(this.packSecondFlavor)}`;
   }
 
+  /**
+   * Return the pack composition label.
+   */
   getPackCompositionLabel(): string {
     if (!this.packIsSplit || !this.packSecondFlavor) {
       return `${this.selectedPack} × ${this.getFlavorName(this.packFirstFlavor)}`;
@@ -234,6 +288,9 @@ export class PackBuilder implements OnInit {
     return `${half} × ${this.getFlavorName(this.packFirstFlavor)} + ${half} × ${this.getFlavorName(this.packSecondFlavor)}`;
   }
 
+  /**
+   * Add the currently configured pack to the cart.
+   */
   addPackToCart(): void {
     if (!this.canAddSelectedPack) return;
     if (!this.packFirstFlavor) return;
@@ -283,6 +340,9 @@ export class PackBuilder implements OnInit {
     }
   }
 
+  /**
+   * Build the list of products contained in the pack.
+   */
   private getPackProducts() {
     const first = this.getFlavor(this.packFirstFlavor);
     const second = this.packSecondFlavor ? this.getFlavor(this.packSecondFlavor) : null;
@@ -302,14 +362,23 @@ export class PackBuilder implements OnInit {
     ];
   }
 
+  /**
+   * Return the display name of a flavor by id.
+   */
   getFlavorName(flavorId: string): string {
     return this.getFlavor(flavorId)?.name ?? flavorId;
   }
 
+  /**
+   * Format a number as a fixed two-decimal price string.
+   */
   formatPrice(value: number): string {
     return value.toFixed(2);
   }
 
+  /**
+   * Return a flavor by its id.
+   */
   private getFlavor(flavorId: string): Product | undefined {
     return this.flavors.find((flavor) => flavor.id === flavorId);
   }

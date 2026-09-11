@@ -14,6 +14,9 @@ import {
   Product,
 } from '../../../../app/core/services/backend/orders/orders.service';
 
+/**
+ * Shop page component managing products, cart and checkout.
+ */
 @Component({
   selector: 'app-shop',
   standalone: true,
@@ -56,6 +59,9 @@ export class Shop implements OnInit, OnDestroy {
 
   private scrollHandler = this.onScroll.bind(this);
 
+  /**
+   * Initialize cart, products and floating cart.
+   */
   ngOnInit(): void {
     this.viewportScroller.scrollToPosition([0, 0]);
 
@@ -72,21 +78,33 @@ export class Shop implements OnInit, OnDestroy {
     this.recalculateCartState();
   }
 
+  /**
+   * Clean up listeners and persist the cart.
+   */
   ngOnDestroy(): void {
     window.removeEventListener('scroll', this.scrollHandler);
     this.saveCartToStorage();
   }
 
+  /**
+   * Keep the floating cart visible when items exist.
+   */
   onScroll(): void {
     if (this.cartItemCount > 0) {
       this.showFloatingCart = true;
     }
   }
 
+  /**
+   * Return the total quantity of cart items.
+   */
   get cartItemCount(): number {
     return this.cart.reduce((total, item) => total + item.quantity, 0);
   }
 
+  /**
+   * Return the total number of cans in the cart.
+   */
   get cartCanCount(): number {
     return this.cart.reduce((total, item) => {
       if (item.type === 'INDIVIDUAL') {
@@ -97,38 +115,65 @@ export class Shop implements OnInit, OnDestroy {
     }, 0);
   }
 
+  /**
+   * Return the remaining cans allowed in the cart.
+   */
   get remainingCartCans(): number {
     return Math.max(0, this.MAX_TOTAL_CANS - this.cartCanCount);
   }
 
+  /**
+   * Return the current cart total.
+   */
   get cartTotal(): number {
     return this.cart.reduce((total, item) => total + item.price * item.quantity, 0);
   }
 
+  /**
+   * Return the original cart total before discounts.
+   */
   get cartOriginalTotal(): number {
     return this.cart.reduce((total, item) => total + item.originalPrice * item.quantity, 0);
   }
 
+  /**
+   * Return the total savings in the cart.
+   */
   get cartSavings(): number {
     return Math.max(0, this.cartOriginalTotal - this.cartTotal);
   }
 
+  /**
+   * Return the cached count of individual cans.
+   */
   get individualCanCount(): number {
     return this.individualCanCountCache;
   }
 
+  /**
+   * Check if the cart contains individual items.
+   */
   get hasIndividualItems(): boolean {
     return this.hasIndividualItemsCache;
   }
 
+  /**
+   * Check if the individual minimum order is reached.
+   */
   get individualMinimumReached(): boolean {
     return this.individualCanCountCache >= this.MIN_INDIVIDUAL_CANS || this.hasPackInCartCache;
   }
 
+  /**
+   * Return the cached remaining individual cans.
+   */
   get remainingIndividualCans(): number {
     return this.remainingIndividualCansCache;
   }
 
+  /**
+   * Check if checkout is allowed for the current cart.
+   */
   get canCheckout(): boolean {
     if (this.cart.length === 0) {
       return false;
@@ -141,28 +186,46 @@ export class Shop implements OnInit, OnDestroy {
     return this.cartCanCount <= this.MAX_TOTAL_CANS;
   }
 
+  /**
+   * Check if the individual cart is blocked by minimum rules.
+   */
   get individualCartBlocked(): boolean {
     return this.individualCartBlockedCache;
   }
 
+  /**
+   * Check if individual cans can still be added.
+   */
   get canAddIndividual(): boolean {
     return this.cartCanCount < this.MAX_TOTAL_CANS;
   }
 
+  /**
+   * Check if the cart reached the maximum limit.
+   */
   get isAtMaxLimit(): boolean {
     return this.cartCanCount >= this.MAX_TOTAL_CANS;
   }
 
+  /**
+   * Toggle the cart dialog.
+   */
   toggleCart(): void {
     this.showCart = !this.showCart;
     this.cdr.detectChanges();
   }
 
+  /**
+   * Close the cart dialog.
+   */
   closeCart(): void {
     this.showCart = false;
     this.cdr.detectChanges();
   }
 
+  /**
+   * Add a pack to the cart.
+   */
   addPackToCart(packData: CartItem): void {
     if (this.cartCanCount + (packData.packSize ?? 0) > this.MAX_TOTAL_CANS) {
       this.checkoutMessage =
@@ -183,6 +246,9 @@ export class Shop implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+  /**
+   * Update or remove an individual item in the cart.
+   */
   updateIndividualCart(cartItem: CartItem | null, flavorId: string, quantity: number): void {
     const productId = cartItem?.productId;
 
@@ -265,6 +331,9 @@ export class Shop implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+  /**
+   * Update a cart item quantity.
+   */
   updateCartItem(item: CartItem): void {
     const index = this.cart.findIndex((cartItem) => cartItem.id === item.id);
 
@@ -302,6 +371,9 @@ export class Shop implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+  /**
+   * Remove an item from the cart.
+   */
   removeCartItem(item: CartItem): void {
     const index = this.cart.findIndex((cartItem) => cartItem.id === item.id);
 
@@ -318,6 +390,9 @@ export class Shop implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+  /**
+   * Request clearing the entire cart.
+   */
   requestClearCart(): void {
     if (this.cart.length === 0) {
       return;
@@ -326,6 +401,9 @@ export class Shop implements OnInit, OnDestroy {
     this.showConfirmClear = true;
   }
 
+  /**
+   * Confirm clearing the entire cart.
+   */
   confirmClearCart(): void {
     this.cart = [];
     this.individualQuantities = {};
@@ -336,10 +414,16 @@ export class Shop implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+  /**
+   * Close the clear cart confirmation dialog.
+   */
   closeClearDialog(): void {
     this.showConfirmClear = false;
   }
 
+  /**
+   * Validate the cart and show the checkout message.
+   */
   proceedToCheckout(): void {
     if (this.cart.length === 0) {
       return;
@@ -364,10 +448,16 @@ export class Shop implements OnInit, OnDestroy {
     this.showCheckoutMessage = true;
   }
 
+  /**
+   * Close the checkout message dialog.
+   */
   closeCheckoutMessage(): void {
     this.showCheckoutMessage = false;
   }
 
+  /**
+   * Sync the cart to the backend and place the order.
+   */
   placeOrder(): void {
     if (this.isPlacingOrder || this.showOrderSuccess) {
       return;
@@ -421,6 +511,9 @@ export class Shop implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Load all products from the backend.
+   */
   private loadProducts(): void {
     this.ordersService.getProducts().subscribe({
       next: (products) => {
@@ -434,6 +527,9 @@ export class Shop implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Sync all cart items to the backend.
+   */
   private syncCartToBackend(): Observable<any> {
     const syncOperations: Observable<any>[] = [];
 
@@ -507,6 +603,9 @@ export class Shop implements OnInit, OnDestroy {
     return syncOperations.length > 0 ? forkJoin(syncOperations) : of(null);
   }
 
+  /**
+   * Merge duplicate individual items into a single entry per product.
+   */
   private getNormalizedCart(): CartItem[] {
     const normalizedItems: CartItem[] = [];
     const individualMap = new Map<string, CartItem>();
@@ -544,6 +643,9 @@ export class Shop implements OnInit, OnDestroy {
     return normalizedItems;
   }
 
+  /**
+   * Merge duplicate individual items and sync quantities.
+   */
   private mergeDuplicateIndividualItems(): void {
     const normalizedCart = this.getNormalizedCart();
 
@@ -565,6 +667,9 @@ export class Shop implements OnInit, OnDestroy {
     this.cart = normalizedCart;
   }
 
+  /**
+   * Build a unique key for an individual cart item.
+   */
   private getIndividualItemKey(item: CartItem): string | null {
     if (item.productId !== undefined && item.productId !== null) {
       return `product-${item.productId}`;
@@ -581,14 +686,23 @@ export class Shop implements OnInit, OnDestroy {
     return null;
   }
 
+  /**
+   * Format a number as a fixed two-decimal price string.
+   */
   formatPrice(value: number): string {
     return value.toFixed(2);
   }
 
+  /**
+   * Track cart items by id for ngFor.
+   */
   trackCartItem(index: number, item: CartItem): string {
     return item.id;
   }
 
+  /**
+   * Load the cart and individual quantities from localStorage.
+   */
   private loadCartFromStorage(): void {
     try {
       const savedCart = localStorage.getItem(this.STORAGE_KEY);
@@ -614,6 +728,9 @@ export class Shop implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Persist the cart and individual quantities to localStorage.
+   */
   private saveCartToStorage(): void {
     try {
       this.mergeDuplicateIndividualItems();
@@ -625,6 +742,9 @@ export class Shop implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Recompute cached cart state values.
+   */
   private recalculateCartState(): void {
     const individualItems = this.cart.filter((item) => item.type === 'INDIVIDUAL');
     const packItems = this.cart.filter((item) => item.type === 'PACK');

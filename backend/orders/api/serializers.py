@@ -15,6 +15,8 @@ from ..models import (
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    """Serializer for the Product model."""
+
     class Meta:
         model = Product
         fields = [
@@ -29,9 +31,9 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class CartItemProductSerializer(serializers.ModelSerializer):
-    product = ProductSerializer(
-        read_only=True,
-    )
+    """Serializer for products inside a cart item pack."""
+
+    product = ProductSerializer(read_only=True)
 
     class Meta:
         model = CartItemProduct
@@ -43,13 +45,10 @@ class CartItemProductSerializer(serializers.ModelSerializer):
 
 
 class CartItemSerializer(serializers.ModelSerializer):
-    product = ProductSerializer(
-        read_only=True,
-    )
-    pack_products = CartItemProductSerializer(
-        many=True,
-        read_only=True,
-    )
+    """Serializer for cart items including pack products and subtotal."""
+
+    product = ProductSerializer(read_only=True)
+    pack_products = CartItemProductSerializer(many=True, read_only=True)
     subtotal = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -71,10 +70,9 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 
 class CartSerializer(serializers.ModelSerializer):
-    items = CartItemSerializer(
-        many=True,
-        read_only=True,
-    )
+    """Serializer for the cart with totals and total units."""
+
+    items = CartItemSerializer(many=True, read_only=True)
     total = serializers.SerializerMethodField()
     total_units = serializers.SerializerMethodField()
 
@@ -88,35 +86,28 @@ class CartSerializer(serializers.ModelSerializer):
         ]
 
     def get_total(self, obj):
+        """Return the total price of all cart items."""
         return sum(
-            (
-                item.subtotal
-                for item in obj.items.all()
-            ),
+            (item.subtotal for item in obj.items.all()),
             start=0,
         )
 
     def get_total_units(self, obj):
+        """Return the total number of units in the cart."""
         total_units = 0
 
         for item in obj.items.all():
-            if (
-                item.item_type
-                == CartItem.ItemType.INDIVIDUAL
-            ):
+            if item.item_type == CartItem.ItemType.INDIVIDUAL:
                 total_units += item.quantity
             else:
-                total_units += (
-                    item.pack_size
-                    * item.quantity
-                )
+                total_units += item.pack_size * item.quantity
 
         return total_units
 
 
-class OrderItemProductSerializer(
-    serializers.ModelSerializer
-):
+class OrderItemProductSerializer(serializers.ModelSerializer):
+    """Serializer for products inside an order item pack."""
+
     class Meta:
         model = OrderItemProduct
         fields = [
@@ -129,13 +120,10 @@ class OrderItemProductSerializer(
         ]
 
 
-class OrderItemSerializer(
-    serializers.ModelSerializer
-):
-    pack_products = OrderItemProductSerializer(
-        many=True,
-        read_only=True,
-    )
+class OrderItemSerializer(serializers.ModelSerializer):
+    """Serializer for order items including pack products."""
+
+    pack_products = OrderItemProductSerializer(many=True, read_only=True)
 
     class Meta:
         model = OrderItem
@@ -153,13 +141,10 @@ class OrderItemSerializer(
         ]
 
 
-class OrderSerializer(
-    serializers.ModelSerializer
-):
-    items = OrderItemSerializer(
-        many=True,
-        read_only=True,
-    )
+class OrderSerializer(serializers.ModelSerializer):
+    """Serializer for orders with computed status and delivery date."""
+
+    items = OrderItemSerializer(many=True, read_only=True)
     status = serializers.SerializerMethodField()
     estimated_delivery = serializers.SerializerMethodField()
 
@@ -178,15 +163,11 @@ class OrderSerializer(
     DELIVERY_DAYS = 3
 
     def get_status(self, obj):
+        """Return the computed order status based on delivery date."""
         if obj.status == Order.Status.CANCELLED:
             return Order.Status.CANCELLED
 
-        delivery_date = (
-            obj.created_at
-            + timedelta(
-                days=self.DELIVERY_DAYS
-            )
-        )
+        delivery_date = obj.created_at + timedelta(days=self.DELIVERY_DAYS)
 
         now = timezone.now()
 
@@ -196,14 +177,10 @@ class OrderSerializer(
         return Order.Status.CONFIRMED
 
     def get_estimated_delivery(self, obj):
+        """Return the estimated delivery date or None if cancelled."""
         if obj.status == Order.Status.CANCELLED:
             return None
 
-        delivery_date = (
-            obj.created_at
-            + timedelta(
-                days=self.DELIVERY_DAYS
-            )
-        )
+        delivery_date = obj.created_at + timedelta(days=self.DELIVERY_DAYS)
 
         return delivery_date

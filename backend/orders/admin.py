@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import (
     Cart,
     CartItem,
@@ -10,6 +11,8 @@ from .models import (
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    """Admin configuration for the Product model."""
+
     list_display = (
         "name",
         "category",
@@ -31,6 +34,8 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
+    """Admin configuration for the Cart model."""
+
     list_display = (
         "user",
         "created_at",
@@ -40,6 +45,8 @@ class CartAdmin(admin.ModelAdmin):
 
 @admin.register(CartItem)
 class CartItemAdmin(admin.ModelAdmin):
+    """Admin configuration for the CartItem model."""
+
     list_display = (
         "cart",
         "product",
@@ -49,6 +56,8 @@ class CartItemAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
+    """Admin configuration for the Order model."""
+
     list_display = (
         "order_number",
         "user",
@@ -68,6 +77,8 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
+    """Admin configuration for the OrderItem model."""
+
     list_display = (
         "order",
         "product_name",

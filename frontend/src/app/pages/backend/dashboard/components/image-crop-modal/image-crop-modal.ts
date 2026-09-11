@@ -14,6 +14,9 @@ import {
 import { AuthService } from '../../../../../core/services/backend/authentication/auth.service';
 import { User } from '../../../../../core/services/backend/authentication/models/auth.models';
 
+/**
+ * Modal component for cropping and uploading a profile image.
+ */
 @Component({
   selector: 'app-image-crop-modal',
   standalone: true,
@@ -55,16 +58,25 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
   private cropStartX = 0;
   private cropStartY = 0;
 
+  /**
+   * Lock body scroll while the modal is open.
+   */
   ngOnInit(): void {
     document.body.style.overflow = 'hidden';
   }
 
+  /**
+   * Release resources when the modal is destroyed.
+   */
   ngOnDestroy(): void {
     this.revokeCropObjectUrl();
     this.isCropDragging = false;
     this.cropPointerId = null;
   }
 
+  /**
+   * Open the file picker for image upload.
+   */
   triggerFileUpload(): void {
     if (this.isUpdatingProfile) {
       return;
@@ -77,6 +89,9 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Handle the selected file and prepare it for cropping.
+   */
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement | null;
     if (!input) {
@@ -117,6 +132,9 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Wait for the crop image to load and reset the position.
+   */
   private prepareCropImage(): void {
     const image = this.cropImage?.nativeElement;
     if (!image) {
@@ -141,6 +159,9 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     };
   }
 
+  /**
+   * Start dragging the crop image.
+   */
   onPointerDown(event: PointerEvent): void {
     if (this.isUpdatingProfile) {
       return;
@@ -162,6 +183,9 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Update the crop position while dragging.
+   */
   onPointerMove(event: PointerEvent): void {
     if (!this.isCropDragging || this.cropPointerId !== event.pointerId) {
       return;
@@ -178,6 +202,9 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     this.updateCropTransform();
   }
 
+  /**
+   * Stop dragging the crop image.
+   */
   onPointerUp(event: PointerEvent): void {
     if (this.cropPointerId !== null && event.pointerId !== this.cropPointerId) {
       return;
@@ -195,6 +222,9 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Update the zoom level of the crop image.
+   */
   onZoomChange(event: Event): void {
     const input = event.target as HTMLInputElement | null;
     if (!input) {
@@ -230,11 +260,17 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     this.updateCropTransform();
   }
 
+  /**
+   * Recompute the crop image transform.
+   */
   private updateCropTransform(): void {
     const scale = this.getCropImageScale();
     this.cropTransform = `translate3d(calc(-50% + ${this.cropX}px), calc(-50% + ${this.cropY}px), 0) scale(${scale})`;
   }
 
+  /**
+   * Compute the rendered scale of the crop image.
+   */
   private getCropImageScale(zoomPercent = this.cropZoomPercent): number {
     const stage = this.cropStage?.nativeElement;
     const image = this.cropImage?.nativeElement;
@@ -256,6 +292,9 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     return baseScale * Math.max(1, zoomPercent / 100);
   }
 
+  /**
+   * Compute crop geometry values used for positioning.
+   */
   private getCropGeometry(zoomPercent = this.cropZoomPercent) {
     const stage = this.cropStage?.nativeElement;
     const image = this.cropImage?.nativeElement;
@@ -293,6 +332,9 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     };
   }
 
+  /**
+   * Reset the crop position to the center.
+   */
   private resetCropPosition(): void {
     this.cropX = 0;
     this.cropY = 0;
@@ -301,6 +343,9 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+  /**
+   * Clamp the crop position within allowed bounds.
+   */
   private limitCropPosition(): void {
     const geometry = this.getCropGeometry();
     if (!geometry) {
@@ -311,6 +356,9 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     this.cropY = Math.max(-geometry.maxY, Math.min(geometry.maxY, this.cropY));
   }
 
+  /**
+   * Close the modal and reset crop state.
+   */
   closeModal(): void {
     if (this.isUpdatingProfile) {
       return;
@@ -328,6 +376,9 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     this.close.emit();
   }
 
+  /**
+   * Revoke the current crop object URL.
+   */
   private revokeCropObjectUrl(): void {
     if (!this.cropObjectUrl) {
       return;
@@ -337,6 +388,9 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     this.cropObjectUrl = null;
   }
 
+  /**
+   * Crop the image and upload it as the profile image.
+   */
   async applyCrop(): Promise<void> {
     if (this.isUpdatingProfile || !this.cropSourceFile) {
       return;
@@ -377,6 +431,9 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Create a cropped image file from the source file.
+   */
   private createCroppedImageFile(
     sourceFile: File,
     offsetX: number,
@@ -488,6 +545,9 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Resolve the output mime type based on the source type.
+   */
   private getOutputMimeType(sourceType: string): string {
     if (sourceType === 'image/png') {
       return 'image/png';
@@ -500,6 +560,9 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     return 'image/jpeg';
   }
 
+  /**
+   * Resolve the output file extension from a mime type.
+   */
   private getOutputExtension(mimeType: string): string {
     switch (mimeType) {
       case 'image/png':

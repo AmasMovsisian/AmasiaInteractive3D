@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   OrdersService,
@@ -6,6 +14,9 @@ import {
 } from '../../../../../../app/core/services/backend/orders/orders.service';
 import { CartItem, Product } from '../../models/shop.models';
 
+/**
+ * Component for selecting individual can quantities per flavor.
+ */
 @Component({
   selector: 'app-individual-cans',
   standalone: true,
@@ -15,6 +26,7 @@ import { CartItem, Product } from '../../models/shop.models';
 })
 export class IndividualCans implements OnInit {
   private readonly ordersService = inject(OrdersService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   @Input() individualQuantities: Record<string, number> = {};
   @Input() cartCanCount = 0;
@@ -54,10 +66,16 @@ export class IndividualCans implements OnInit {
     'black-edition': '#d8b85a',
   };
 
+  /**
+   * Load products on component initialization.
+   */
   ngOnInit(): void {
     this.loadProducts();
   }
 
+  /**
+   * Fetch products from the backend and map them to flavors.
+   */
   private loadProducts(): void {
     this.isLoading = true;
     this.errorMessage = '';
@@ -76,14 +94,19 @@ export class IndividualCans implements OnInit {
         }));
 
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.isLoading = false;
         this.errorMessage = 'Unable to load products.';
+        this.cdr.detectChanges();
       },
     });
   }
 
+  /**
+   * Return the total count of individual cans.
+   */
   get individualCanCount(): number {
     return Object.values(this.individualQuantities).reduce(
       (total, quantity) => total + quantity,
@@ -91,14 +114,19 @@ export class IndividualCans implements OnInit {
     );
   }
 
+  /**
+   * Return the maximum allowed quantity for a flavor.
+   */
   maxQuantityForFlavor(flavorId: string): number {
     return Math.max(
       0,
-      this.maxTotalCans -
-        (this.individualCanCount - (this.individualQuantities[flavorId] ?? 0)),
+      this.maxTotalCans - (this.individualCanCount - (this.individualQuantities[flavorId] ?? 0)),
     );
   }
 
+  /**
+   * Increase the quantity for a flavor.
+   */
   increaseIndividual(flavorId: string): void {
     if (!this.canAddIndividual) return;
 
@@ -110,6 +138,9 @@ export class IndividualCans implements OnInit {
     this.setIndividualQuantity(flavorId, current + 1);
   }
 
+  /**
+   * Decrease the quantity for a flavor.
+   */
   decreaseIndividual(flavorId: string): void {
     const current = this.individualQuantities[flavorId] ?? 0;
 
@@ -118,6 +149,9 @@ export class IndividualCans implements OnInit {
     this.setIndividualQuantity(flavorId, current - 1);
   }
 
+  /**
+   * Set and emit the quantity for a flavor.
+   */
   setIndividualQuantity(flavorId: string, value: string | number): void {
     const parsedValue = typeof value === 'number' ? value : Number(value);
     const current = this.individualQuantities[flavorId] ?? 0;
@@ -136,10 +170,16 @@ export class IndividualCans implements OnInit {
     this.emitQuantity(flavorId, quantity);
   }
 
+  /**
+   * Format a number as a fixed two-decimal price string.
+   */
   formatPrice(value: number): string {
     return value.toFixed(2);
   }
 
+  /**
+   * Emit the quantity change as a cart item or removal.
+   */
   private emitQuantity(flavorId: string, quantity: number): void {
     const backendProduct = this.backendProducts.find((p) => p.slug === flavorId);
 
@@ -174,6 +214,9 @@ export class IndividualCans implements OnInit {
     }
   }
 
+  /**
+   * Sanitize and clamp the quantity input field.
+   */
   limitQuantityInput(flavorId: string, input: HTMLInputElement): void {
     const max = this.maxQuantityForFlavor(flavorId);
     const value = input.value.replace(/\D/g, '');
