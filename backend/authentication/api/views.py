@@ -4,12 +4,15 @@ from rest_framework import generics, permissions, status
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from ..models import Profile
 
 from .serializers import (
+    CaseInsensitiveTokenObtainPairSerializer,
     ChangePasswordSerializer,
     RegisterSerializer,
     UserSerializer,
@@ -23,6 +26,12 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
 
 
+class LoginView(TokenObtainPairView):
+    """JWT login view with case-insensitive usernames."""
+
+    serializer_class = CaseInsensitiveTokenObtainPairSerializer
+
+
 class MeView(APIView):
     """API view to retrieve or update the authenticated user."""
 
@@ -31,6 +40,7 @@ class MeView(APIView):
 
     def get(self, request):
         """Return the authenticated user's data."""
+
         Profile.objects.get_or_create(user=request.user)
 
         serializer = UserSerializer(request.user)
@@ -39,6 +49,7 @@ class MeView(APIView):
 
     def patch(self, request):
         """Partially update the authenticated user's data."""
+
         Profile.objects.get_or_create(user=request.user)
 
         serializer = UserSerializer(
@@ -61,6 +72,7 @@ class DeleteAccountView(APIView):
     @transaction.atomic
     def delete(self, request):
         """Delete the authenticated user."""
+
         user = request.user
 
         user.delete()
@@ -78,6 +90,7 @@ class ChangePasswordView(APIView):
 
     def post(self, request):
         """Change the authenticated user's password."""
+
         serializer = ChangePasswordSerializer(
             data=request.data,
             context={"request": request},
@@ -87,7 +100,9 @@ class ChangePasswordView(APIView):
 
         user = request.user
 
-        user.set_password(serializer.validated_data["new_password"])
+        user.set_password(
+            serializer.validated_data["new_password"]
+        )
 
         user.save()
 
@@ -104,6 +119,7 @@ class LogoutView(APIView):
 
     def post(self, request):
         """Blacklist the refresh token if provided."""
+
         refresh_token = request.data.get("refresh")
 
         if not refresh_token:
@@ -126,3 +142,4 @@ class LogoutView(APIView):
                 {"detail": "Successfully logged out."},
                 status=status.HTTP_205_RESET_CONTENT,
             )
+
