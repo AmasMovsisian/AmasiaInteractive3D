@@ -475,8 +475,6 @@ export class Shop implements OnInit, OnDestroy {
       next: () => {
         this.ordersService.createOrder({}).subscribe({
           next: (order) => {
-            console.log('Order created:', order);
-
             this.isPlacingOrder = false;
             this.showCheckoutMessage = false;
             this.showOrderSuccess = true;
@@ -518,7 +516,6 @@ export class Shop implements OnInit, OnDestroy {
     this.ordersService.getProducts().subscribe({
       next: (products) => {
         this.products = products;
-        console.log('Products loaded:', products);
         this.cdr.detectChanges();
       },
       error: (error) => {
@@ -534,10 +531,6 @@ export class Shop implements OnInit, OnDestroy {
     const syncOperations: Observable<any>[] = [];
 
     const normalizedCart = this.getNormalizedCart();
-
-    console.log('=== SYNC CART TO BACKEND ===');
-    console.log('Normalized cart items:', normalizedCart);
-    console.log('Products loaded:', this.products);
 
     for (const item of normalizedCart) {
       if (item.type === 'PACK') {
