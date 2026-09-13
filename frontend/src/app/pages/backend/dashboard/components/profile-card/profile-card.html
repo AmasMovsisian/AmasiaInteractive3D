@@ -4,6 +4,7 @@
       <span class="card-index">01.</span>
       <span class="card-title">PROFILE</span>
     </div>
+
     <button
       type="button"
       class="profile-settings-button"
@@ -13,35 +14,54 @@
       <span class="settings-icon" aria-hidden="true"></span>
     </button>
   </header>
-  <div class="profile-image">
+
+  <div
+    class="profile-image"
+    role="button"
+    tabindex="0"
+    aria-label="Open profile settings"
+    (click)="openProfileSettings()"
+    (keydown.enter)="openProfileSettings()"
+    (keydown.space)="openProfileSettings()"
+  >
     @if (profileImageUrl) {
-      <img [src]="profileImageUrl" [alt]="user.username" (error)="onProfileImageError($event)" />
+      <img
+        [src]="profileImageUrl"
+        [alt]="user.username"
+        (error)="onProfileImageError($event)"
+      />
     } @else {
       <span class="profile-image-fallback">
         {{ user.username.charAt(0).toUpperCase() }}
       </span>
     }
+
     <div class="image-meta" aria-hidden="true">
       <span>AMASIA</span>
       <span>PROFILE</span>
     </div>
   </div>
+
   <div class="profile-content">
     <div class="profile-info">
       <span class="profile-label"> ACCOUNT HOLDER </span>
+
       <h2>
         {{ user.username }}
       </h2>
+
       <a [href]="'mailto:' + user.email">
         {{ user.email }}
       </a>
     </div>
+
     <div class="profile-status">
       <span class="status-item">
         <i aria-hidden="true"></i>
         ACTIVE
       </span>
     </div>
+
     <div class="profile-access">
       <span>MEMBER ACCESS</span>
       <strong>STANDARD</strong>

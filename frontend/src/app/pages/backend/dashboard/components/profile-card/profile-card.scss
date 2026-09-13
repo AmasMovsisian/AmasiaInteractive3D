@@ -138,6 +138,14 @@
   overflow: hidden;
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition:
+    filter 350ms ease,
+    border-color 350ms ease;
+}
+
+.profile-image:hover {
+  filter: brightness(0.97);
 }
 
 .profile-image img {

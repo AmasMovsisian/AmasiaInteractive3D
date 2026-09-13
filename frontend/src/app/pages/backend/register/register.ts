@@ -126,6 +126,16 @@ export class Register implements OnInit {
     const backendError = error.error;
 
     if ((status === 400 || status === 409) && backendError) {
+      if (backendError.username) {
+        this.errorMessage = 'This username is already taken.';
+        return;
+      }
+
+      if (backendError.email) {
+        this.errorMessage = 'This email address is already registered.';
+        return;
+      }
+
       this.errorMessage = this.getErrorMessage(backendError);
       return;
     }
