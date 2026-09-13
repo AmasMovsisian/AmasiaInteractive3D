@@ -210,6 +210,15 @@ export class ProfileSettingsDialogComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Handle a failed profile image upload.
+   */
+  onImageError(message: string): void {
+    this.closeImageCrop();
+
+    this.showProfileMessage(message, true);
+  }
+
+  /**
    * Enter username editing mode.
    */
   editName(): void {

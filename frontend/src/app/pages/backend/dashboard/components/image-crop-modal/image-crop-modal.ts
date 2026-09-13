@@ -32,6 +32,7 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
 
   @Output() close = new EventEmitter<void>();
   @Output() imageUploaded = new EventEmitter<User>();
+  @Output() imageError = new EventEmitter<string>();
 
   @ViewChild('cropStage')
   private cropStage?: ElementRef<HTMLElement>;
@@ -108,12 +109,12 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
 
     if (!allowedTypes.includes(file.type)) {
-      this.closeModal();
+      this.failWithMessage('INVALID IMAGE FORMAT / USE JPG, PNG OR WEBP');
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      this.closeModal();
+      this.failWithMessage('IMAGE TOO LARGE / MAXIMUM SIZE IS 5MB');
       return;
     }
 
@@ -155,8 +156,26 @@ export class ImageCropModalComponent implements OnInit, OnDestroy {
     };
 
     image.onerror = () => {
-      this.closeModal();
+      this.failWithMessage('UNABLE TO LOAD IMAGE / TRY ANOTHER FILE');
     };
+  }
+
+  /**
+   * Emit an error message, close the modal and reset its state.
+   */
+  private failWithMessage(message: string): void {
+    this.cropSourceFile = null;
+    this.revokeCropObjectUrl();
+    this.cropImageUrl = '';
+    this.cropZoomPercent = 100;
+    this.cropX = 0;
+    this.cropY = 0;
+    this.cropTransform = 'translate3d(-50%, -50%, 0) scale(1)';
+    this.isCropDragging = false;
+    this.cropPointerId = null;
+
+    this.imageError.emit(message);
+    this.close.emit();
   }
 
   /**
