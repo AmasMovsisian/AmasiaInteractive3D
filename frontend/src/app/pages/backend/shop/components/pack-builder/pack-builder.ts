@@ -98,7 +98,6 @@ export class PackBuilder implements OnInit {
 
     this.ordersService.getProducts().subscribe({
       next: (products) => {
-        console.log('Pack Builder - Products loaded from backend:', products);
         this.backendProducts = products;
         this.flavors = products.map((p) => ({
           id: p.slug,
@@ -119,7 +118,6 @@ export class PackBuilder implements OnInit {
         this.cdr.detectChanges();
       },
       error: (error) => {
-        console.error('Failed to load products:', error);
         this.isLoading = false;
         this.errorMessage = 'Unable to load products.';
       },

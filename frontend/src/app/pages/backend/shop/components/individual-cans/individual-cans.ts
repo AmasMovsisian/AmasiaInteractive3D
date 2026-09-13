@@ -76,47 +76,34 @@ export class IndividualCans implements OnInit {
   /**
    * Fetch products from the backend and map them to flavors.
    */
- private loadProducts(): void {
-  this.isLoading = true;
-  this.errorMessage = '';
+  private loadProducts(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
 
-  this.ordersService.getProducts().subscribe({
-    next: (products) => {
-      console.log('=== INDIVIDUAL CANS DEBUG ===');
-      console.log('PRODUCTS FROM BACKEND:', products);
-      console.log('PRODUCT COUNT:', products.length);
+    this.ordersService.getProducts().subscribe({
+      next: (products) => {
+        this.backendProducts = products;
 
-      this.backendProducts = products;
+        this.flavors = products.map((p) => ({
+          id: p.slug,
+          name: p.name,
+          description: p.description || '',
+          price: Number(p.price),
+          category: p.category as 'MAIN' | 'PREMIUM' | 'SIGNATURE',
+          accent: this.flavorAccents[p.slug] || '#58469e',
+        }));
 
-      this.flavors = products.map((p) => ({
-        id: p.slug,
-        name: p.name,
-        description: p.description || '',
-        price: Number(p.price),
-        category: p.category as 'MAIN' | 'PREMIUM' | 'SIGNATURE',
-        accent: this.flavorAccents[p.slug] || '#58469e',
-      }));
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
 
-      console.log('FLAVORS AFTER MAPPING:', this.flavors);
-      console.log('FLAVOR COUNT:', this.flavors.length);
-
-      this.isLoading = false;
-      this.cdr.detectChanges();
-    },
-
-    error: (error) => {
-      console.error('=== INDIVIDUAL CANS API ERROR ===');
-      console.error('ERROR:', error);
-      console.error('STATUS:', error.status);
-      console.error('URL:', error.url);
-
-      this.isLoading = false;
-      this.errorMessage = 'Unable to load products.';
-      this.cdr.detectChanges();
-    },
-  });
-}
-
+      error: (error) => {
+        this.isLoading = false;
+        this.errorMessage = 'Unable to load products.';
+        this.cdr.detectChanges();
+      },
+    });
+  }
 
   /**
    * Return the total count of individual cans.
