@@ -69,12 +69,12 @@ Every aspect of the visual identity was designed and produced from the ground up
 <table>
   <tr>
     <td align="center" width="50%">
-      <img src="docs/screenshots/about.png" width="100%" alt="AMASIA About Page" />
-      <br /><sub><b>About</b></sub>
+      <img src="docs/screenshots/hero.png" width="100%" alt="AMASIA Hero" />
+      <br /><sub><b>Hero</b></sub>
     </td>
     <td align="center" width="50%">
-      <img src="docs/screenshots/new-flavors.png" width="100%" alt="AMASIA New Flavors" />
-      <br /><sub><b>New Flavors</b></sub>
+      <img src="docs/screenshots/about.png" width="100%" alt="AMASIA About Page" />
+      <br /><sub><b>About</b></sub>
     </td>
   </tr>
   <tr>
@@ -83,18 +83,18 @@ Every aspect of the visual identity was designed and produced from the ground up
       <br /><sub><b>Flavor & Price</b></sub>
     </td>
     <td align="center" width="50%">
-      <img src="docs/screenshots/registration.png" width="100%" alt="AMASIA Registration" />
-      <br /><sub><b>Registration</b></sub>
+      <img src="docs/screenshots/new-flavors.png" width="100%" alt="AMASIA New Flavors" />
+      <br /><sub><b>New Flavors</b></sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="50%">
-      <img src="docs/screenshots/sign-in.png" width="100%" alt="AMASIA Sign In" />
-      <br /><sub><b>Sign In</b></sub>
+      <img src="docs/screenshots/registration.png" width="100%" alt="AMASIA Registration" />
+      <br /><sub><b>Registration</b></sub>
     </td>
     <td align="center" width="50%">
-      <img src="docs/screenshots/hero.png" width="100%" alt="AMASIA Hero" />
-      <br /><sub><b>Hero</b></sub>
+      <img src="docs/screenshots/sign-in.png" width="100%" alt="AMASIA Sign In" />
+      <br /><sub><b>Sign In</b></sub>
     </td>
   </tr>
 </table>
