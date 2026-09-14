@@ -2,7 +2,7 @@
 
 ### Interactive 3D Luxury Energy Experience
 
-<img src="docs/screenshots/hero.gif" width="100%" alt="AMASIA Hero" />
+<img src="docs/screenshots/hero.png" width="100%" alt="AMASIA Hero" />
 
 ## A Full Stack Production
 
