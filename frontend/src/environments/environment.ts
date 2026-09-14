@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://api.amasmovsisian.com/api'
+  apiUrl: 'http://localhost:8000/api'
 };
