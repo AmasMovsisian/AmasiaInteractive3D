@@ -10,21 +10,48 @@ The backend is deployed on an Ubuntu Linux server using Nginx and Gunicorn, whil
 
 ## Preview
 
-| Shop and Product Catalog | Cart with Live Savings |
-| :---: | :---: |
-| ![Shop](docs/screenshots/shop-individual.png) | ![Cart](docs/screenshots/order-cart.png) |
-
-| Checkout Confirmation | Order Confirmed |
-| :---: | :---: |
-| ![Checkout](docs/screenshots/order-checkout.png) | ![Success](docs/screenshots/order-successfully.png) |
-
-| Order History | Profile Settings |
-| :---: | :---: |
-| ![Orders](docs/screenshots/order-history.png) | ![Profile](docs/screenshots/profile-settings.png) |
-
-| Empty Order History | Django Admin |
-| :---: | :---: |
-| ![Empty](docs/screenshots/order-history-no-order.png) | ![Admin](docs/screenshots/admin-products.png) |
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/shop-individual.png" width="100%" alt="Shop and Product Catalog" />
+      <br /><sub><b>Shop and Product Catalog</b></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/order-cart.png" width="100%" alt="Cart with Live Savings" />
+      <br /><sub><b>Cart with Live Savings</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/order-checkout.png" width="100%" alt="Checkout Confirmation" />
+      <br /><sub><b>Checkout Confirmation</b></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/order-successfully.png" width="100%" alt="Order Confirmed" />
+      <br /><sub><b>Order Confirmed</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/order-history.png" width="100%" alt="Order History" />
+      <br /><sub><b>Order History</b></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/profile-settings.png" width="100%" alt="Profile Settings" />
+      <br /><sub><b>Profile Settings</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/order-history-no-order.png" width="100%" alt="Empty Order History" />
+      <br /><sub><b>Empty Order History</b></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/admin-products.png" width="100%" alt="Django Admin" />
+      <br /><sub><b>Django Admin</b></sub>
+    </td>
+  </tr>
+</table>
 
 ---
 
