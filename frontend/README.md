@@ -1,4 +1,4 @@
-![AMASIA Logo](docs/screenshots/logo.png)
+# AMASIA Frontend
 
 # Interactive 3D Luxury Energy Experience
 
@@ -37,27 +37,89 @@ Every aspect of the visual identity was designed and produced from the ground up
 - **PBR Texturing:** The initial assets were refined into true PBR materials with real metallic and roughness maps in **Adobe Substance Painter**.
 - **3D Modeling & Export:** High poly product modeling was created in **Autodesk Maya**. The final animation and optimized GLB export for Three.js was handled in **Houdini** (including the Redshift renders for the upcoming flavors).
 
-### 3D Pipeline Preview
+### 3D Production Pipeline
 
 <table>
   <tr>
     <td align="center" width="50%">
       <img src="docs/screenshots/maya.png" width="100%" alt="Autodesk Maya Pipeline" />
-      <br /><sub><b>Autodesk Maya</b></sub>
+      <br /><sub><b>Autodesk Maya</b><br/>High fidelity 3D modeling</sub>
     </td>
     <td align="center" width="50%">
       <img src="docs/screenshots/substance.png" width="100%" alt="Adobe Substance Painter Pipeline" />
-      <br /><sub><b>Adobe Substance Painter</b></sub>
+      <br /><sub><b>Adobe Substance Painter</b><br/>PBR texturing</sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="50%">
       <img src="docs/screenshots/photoshop.png" width="100%" alt="Adobe Photoshop Pipeline" />
-      <br /><sub><b>Adobe Photoshop</b></sub>
+      <br /><sub><b>Adobe Photoshop</b><br/>Label & UI design</sub>
     </td>
     <td align="center" width="50%">
-      <img src="docs/screenshots/hero1.png" width="100%" alt="AMASIA Web Result" />
-      <br /><sub><b>Web Result</b></sub>
+      <img src="docs/screenshots/houdini.png" width="100%" alt="Houdini Pipeline" />
+      <br /><sub><b>Houdini</b><br/>Procedural detailing, animation, GLB export & Redshift rendering</sub>
+    </td>
+  </tr>
+</table>
+
+---
+
+## Web Result
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/about.png" width="100%" alt="AMASIA About Page" />
+      <br /><sub><b>About</b></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/new-flavors.png" width="100%" alt="AMASIA New Flavors" />
+      <br /><sub><b>New Flavors</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/flavor-price.png" width="100%" alt="AMASIA Flavor & Price" />
+      <br /><sub><b>Flavor & Price</b></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/registration.png" width="100%" alt="AMASIA Registration" />
+      <br /><sub><b>Registration</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/sign-in.png" width="100%" alt="AMASIA Sign In" />
+      <br /><sub><b>Sign In</b></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/hero.png" width="100%" alt="AMASIA Hero" />
+      <br /><sub><b>Hero</b></sub>
+    </td>
+  </tr>
+</table>
+
+---
+
+## Mobile Responsiveness
+
+<table>
+  <tr>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/mobile-hero.png" width="100%" alt="Mobile Hero" />
+      <br /><sub><b>Hero</b></sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/mobile-flavor-price.png" width="100%" alt="Mobile Flavor & Price" />
+      <br /><sub><b>Flavor & Price</b></sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/mobile-contact.png" width="100%" alt="Mobile Contact" />
+      <br /><sub><b>Contact</b></sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/mobile-hamburger.png" width="100%" alt="Mobile Hamburger Menu" />
+      <br /><sub><b>Hamburger Menu</b></sub>
     </td>
   </tr>
 </table>
@@ -211,6 +273,7 @@ frontend/
 - Cart, pack composition, checkout, and order history
 - Dashboard with profile card, settings dialog, and order management
 - Client side image cropping for profile uploads
+
 ---
 
 ## About the Creator
