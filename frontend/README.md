@@ -57,7 +57,7 @@ Every aspect of the visual identity was designed and produced from the ground up
     </td>
     <td align="center" width="50%">
       <img src="docs/screenshots/houdini.png" width="100%" alt="Houdini Pipeline" />
-      <br /><sub><b>Houdini</b><br/>Procedural detailing, animation, GLB export & Redshift rendering</sub>
+      <br /><sub><b>Houdini</b><br/>GLB export & Redshift rendering</sub>
     </td>
   </tr>
 </table>
