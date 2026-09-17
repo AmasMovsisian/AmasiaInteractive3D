@@ -19,22 +19,22 @@ The result is an immersive 3D product experience built with **Angular 20 and Thr
 <table>
   <tr>
     <td align="center" width="50%">
-      <a href="https://github.com/AmasMovsisian/AmasiaInteractive3D/tree/main/frontend">
+      <a href="https://github.com/AmasMovsisian/AmasiaInteractive3D/tree/main/frontend"><br>
         <img src="https://skillicons.dev/icons?i=angular,threejs,ts" alt="Frontend Stack" />
       </a>
       <br /><br />
       <a href="https://github.com/AmasMovsisian/AmasiaInteractive3D/tree/main/frontend"><b>Frontend</b></a>
       <br />
-      <sub>Angular 20, Three.js, KTX2, custom 3D pipeline</sub>
+      <sub>Angular, Three.js, 3D pipeline</sub>
     </td>
     <td align="center" width="50%">
-      <a href="https://github.com/AmasMovsisian/AmasiaInteractive3D/tree/main/backend">
+      <a href="https://github.com/AmasMovsisian/AmasiaInteractive3D/tree/main/backend"><br>
         <img src="https://skillicons.dev/icons?i=django,python,linux" alt="Backend Stack" />
       </a>
       <br /><br />
       <a href="https://github.com/AmasMovsisian/AmasiaInteractive3D/tree/main/backend"><b>Backend</b></a>
       <br />
-      <sub>Django REST, JWT, cart, checkout, orders</sub>
+      <sub>Django REST, JWT, Ubuntu</sub>
     </td>
   </tr>
 </table>
