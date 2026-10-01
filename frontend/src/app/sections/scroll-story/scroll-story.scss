@@ -681,6 +681,8 @@ h2 {
   .Section_1_Right_Desktop,
   .Section_1_Left_Desktop {
     scale: 1;
+    font-size: 12px;
+
   }
   .section_1_bottom_txt {
     margin-top: -76px;
@@ -688,11 +690,11 @@ h2 {
   }
   .Section_2_Right_Desktop {
     scale: 1;
-    margin-left: -36px;
+    margin-left: -64px;
   }
   .Section_2_Left_Desktop {
     scale: 1;
-    margin-left: 36px;
+    margin-left: 64px;
   }
   .Section_3_Desktop {
     scale: 0.69;
@@ -703,7 +705,7 @@ h2 {
     scale: 0.65;
   }
   .Section_4_about_flavor {
-    scale: 0.65;
+    scale: 0.5;
   }
 }
 @media (max-width: 1420px) {
@@ -711,10 +713,10 @@ h2 {
     scale: 0.7;
   }
   .Section_4_flavor {
-    scale: 0.7;
+    scale: 0.65;
   }
   .Section_4_about_flavor {
-    scale: 0.72;
+    scale: 0.62;
   }
 }
 @media (max-width: 1180px) {
